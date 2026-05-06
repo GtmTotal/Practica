@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioGestionFotografias {
-  private readonly apiBase = 'http://192.168.1.135:8081/api';
+  private readonly apiBase = 'http://192.168.1.135:5000/api';
 
   constructor(
     private http: HttpClient,
