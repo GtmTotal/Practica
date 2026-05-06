@@ -1,0 +1,239 @@
+﻿{
+    "nombre":  "VILLADANGOS",
+    "bombasQuimicas":  [
+                           "Bomba dosificadora Ã¡cido",
+                           "Bomba dosificadora sosa",
+                           "Bomba trasvase Ã¡cido",
+                           "Bomba trasvase sosa"
+                       ],
+    "secciones":  [
+                      {
+                          "titulo":  "1 - SINFÃN COMPACTADOR Y ROTOTAMIZ",
+                          "tipo":  "simple",
+                          "prefijo":  1,
+                          "tareas":  [
+                                         {
+                                             "descripcion":  "Revisar partes mÃ³viles expuestas a desgaste, cojinetes, sistema de limpieza, cepillos, juntas, etc."
+                                         },
+                                         {
+                                             "descripcion":  "Verificar estado de las uniones mediante tornillos, realizar un reapriete."
+                                         },
+                                         {
+                                             "descripcion":  "Verificar la presencia de sÃ³lidos en el cajÃ³n del rototamiz."
+                                         },
+                                         {
+                                             "descripcion":  "ComprobaciÃ³n sinfÃ­n compactador:",
+                                             "campos":  [
+                                                            {
+                                                                "clave":  "amperios",
+                                                                "sufijo":  "A"
+                                                            },
+                                                            {
+                                                                "clave":  "hz",
+                                                                "sufijo":  "HZ"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "descripcion":  "ComprobaciÃ³n rototamiz:",
+                                             "campos":  [
+                                                            {
+                                                                "clave":  "amperios",
+                                                                "sufijo":  "A"
+                                                            },
+                                                            {
+                                                                "clave":  "hz",
+                                                                "sufijo":  "HZ"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "descripcion":  "La limpieza del equipo. (Agua a presiÃ³n)"
+                                         }
+                                     ]
+                      },
+                      {
+                          "titulo":  "2 - SISTEMA DE BOMBEO - GENERAL",
+                          "tipo":  "bombeo",
+                          "prefijo":  2,
+                          "tareas":  [
+                                         {
+                                             "descripcion":  "Comprobar intensidad de las bombas"
+                                         },
+                                         {
+                                             "descripcion":  "Limpiar sonda de nivel (boyas, piezomÃ©trico..)"
+                                         },
+                                         {
+                                             "descripcion":  "Comprobar correcto funcionamiento bomba: sentido de giro y presiÃ³n"
+                                         },
+                                         {
+                                             "descripcion":  "Caudal e intensidad Bomba 1",
+                                             "campos":  [
+                                                            {
+                                                                "clave":  "amperios",
+                                                                "sufijo":  "A"
+                                                            },
+                                                            {
+                                                                "clave":  "hz",
+                                                                "sufijo":  "HZ"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "descripcion":  "Caudal e intensidad Bomba 2",
+                                             "campos":  [
+                                                            {
+                                                                "clave":  "amperios",
+                                                                "sufijo":  "A"
+                                                            },
+                                                            {
+                                                                "clave":  "hz",
+                                                                "sufijo":  "HZ"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "descripcion":  "Vaciar arqueta al mÃ¡ximo y observar el estado de mangueras, acoples, sÃ³lidos en el fondo... (FOTOS)"
+                                         }
+                                     ]
+                      },
+                      {
+                          "titulo":  "3 - SOPLANTES - HOMOGENEIZADOR Y NEUTRALIZADOR",
+                          "tipo":  "soplantes",
+                          "prefijo":  3,
+                          "tareas":  [
+                                         {
+                                             "descripcion":  "Comprobar que los difusores reparte el aire por igual y que no estÃ©n rotos"
+                                         },
+                                         {
+                                             "descripcion":  "Limpiar filtro aire soplante"
+                                         },
+                                         {
+                                             "descripcion":  "ComprobaciÃ³n soplante homogeneizador:",
+                                             "campos":  [
+                                                            {
+                                                                "clave":  "amperios",
+                                                                "sufijo":  "A"
+                                                            },
+                                                            {
+                                                                "clave":  "porcentaje",
+                                                                "sufijo":  "%"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "descripcion":  "ComprobaciÃ³n soplante neutralizador:",
+                                             "campos":  [
+                                                            {
+                                                                "clave":  "amperios",
+                                                                "sufijo":  "A"
+                                                            },
+                                                            {
+                                                                "clave":  "porcentaje",
+                                                                "sufijo":  "%"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "descripcion":  "Comprobar estado de las mangueras de aire."
+                                         }
+                                     ]
+                      },
+                      {
+                          "titulo":  "4 - PRODUCTOS QUÃMICOS",
+                          "tipo":  "quimicos",
+                          "prefijo":  4,
+                          "tareas":  [
+                                         {
+                                             "descripcion":  "ComprobaciÃ³n de que las bombas dosifiquen producto. ANOTAR CAUDALES E INTENSIDAD:"
+                                         },
+                                         {
+                                             "descripcion":  "RevisiÃ³n de sensores de niveles y recargar producto (FOTOS antes y despuÃ©s)"
+                                         },
+                                         {
+                                             "descripcion":  "Revisar que el nivel coincide con el representado en la pantalla HMI."
+                                         }
+                                     ]
+                      },
+                      {
+                          "titulo":  "5 - HOMOGENEIZADOR",
+                          "tipo":  "homogeneizador",
+                          "prefijo":  5,
+                          "tareas":  [
+                                         {
+                                             "descripcion":  "Revisar que el nivel coincide con el representado en la pantalla HMI."
+                                         },
+                                         {
+                                             "descripcion":  "Comprobar que el equipo funciona sin anomalÃ­as."
+                                         },
+                                         {
+                                             "descripcion":  "Vaciar homogeneizador completamente y observar el estado de mangueras, acoples, sÃ³lidos en el fondo... (FOTOS)"
+                                         }
+                                     ]
+                      },
+                      {
+                          "titulo":  "6 - NEUTRALIZADOR",
+                          "tipo":  "neutralizador",
+                          "prefijo":  6,
+                          "tareas":  [
+                                         {
+                                             "descripcion":  "Revisar que el nivel coincide con el representado en la pantalla HMI."
+                                         },
+                                         {
+                                             "descripcion":  "ComprobaciÃ³n consumo bomba recirculaciÃ³n:",
+                                             "campos":  [
+                                                            {
+                                                                "clave":  "amperios",
+                                                                "sufijo":  "A"
+                                                            },
+                                                            {
+                                                                "clave":  "hz",
+                                                                "sufijo":  "HZ"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "descripcion":  "Comprobar que el equipo funciona sin anomalÃ­as."
+                                         },
+                                         {
+                                             "descripcion":  "Vaciar neutralizador 2 completamente y observar el estado de mangueras, acoples, sÃ³lidos en el fondo... (FOTOS)"
+                                         }
+                                     ]
+                      },
+                      {
+                          "titulo":  "7 - CONTROLADOR PH - NEUTRALIZADOR",
+                          "tipo":  "simple",
+                          "prefijo":  7,
+                          "tareas":  [
+                                         {
+                                             "descripcion":  "Limpiar sondas (foto)"
+                                         },
+                                         {
+                                             "descripcion":  "Calibrar sondas."
+                                         }
+                                     ]
+                      },
+                      {
+                          "titulo":  "8 - CUADRO ELÃ‰CTRICO",
+                          "tipo":  "simple",
+                          "prefijo":  8,
+                          "tareas":  [
+                                         {
+                                             "descripcion":  "Eliminar y consignar las fuentes de energÃ­a al cuadro para realizar su preventivo."
+                                         },
+                                         {
+                                             "descripcion":  "Comprobar, revisar todas las conexiones y cableados elÃ©ctricos."
+                                         },
+                                         {
+                                             "descripcion":  "Reapretar todos bornes y conexiones de los circuitos elÃ©ctricos."
+                                         },
+                                         {
+                                             "descripcion":  "Revisar el estado general del cuadro elÃ©ctrico (envolvente)."
+                                         },
+                                         {
+                                             "descripcion":  "Verificar seguridades (FOTOS del cuadro antes y despuÃ©s)."
+                                         }
+                                     ]
+                      }
+                  ]
+}

@@ -1,0 +1,11 @@
+<div class="lista-borradores">
+  @for (grupo of grupos(); track grupo.clave) {
+    <app-cuatrimestre
+      [grupo]="grupo"
+      [colapsado]="estaColapsado(grupo.clave)"
+      (toggle)="onToggle($event)"
+      (eliminarCuatrimestre)="eliminarCuatrimestre.emit($event)"
+      (editarInforme)="editarInforme.emit($event)">
+    </app-cuatrimestre>
+  }
+</div>

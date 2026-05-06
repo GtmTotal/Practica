@@ -1,0 +1,35 @@
+<div [formGroup]="seccionGroup()" class="seccion-card">
+  <button type="button" class="seccion-titulo" (click)="onToggle()">
+    <span>{{ seccionGroup().get('titulo')?.value }}</span>
+    <span>{{ colapsada() ? '➕' : '➖' }}</span>
+  </button>
+
+  @if (!colapsada()) {
+    <div class="seccion-contenido">
+      <app-lista-tareas
+        [tareasArray]="getTareasArray()"
+        [prefijo]="getPrefijo()"
+        [idxSeccion]="idxSeccion()"
+        (eliminarFoto)="onEliminarFoto($event)"
+      >
+      </app-lista-tareas>
+
+      <div class="fotos-seccion">
+        <input type="file" #fileInput hidden (change)="onAgregarFoto($event)" multiple />
+        <button type="button" class="btn-foto" (click)="fileInput.click()">📸 Añadir Fotos</button>
+        <app-galeria-fotos
+          [fotos]="fotosSignal()()"
+          [idxSeccion]="idxSeccion()"
+          (eliminarFoto)="onEliminarFoto($event)"
+          (descargarFoto)="descargarFoto.emit($event)"
+        />
+      </div>
+
+      <textarea
+        formControlName="observaciones"
+        placeholder="Observaciones generales de la sección..."
+        class="obs-area"
+      ></textarea>
+    </div>
+  }
+</div>

@@ -1,0 +1,111 @@
+.historial-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.inicio-logo-container {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.inicio-logo-container img {
+  height: 150px;
+  width: auto;
+  max-width: 100%;
+}
+
+h2 {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #0f5a4f;
+  margin-bottom: 22px;
+  border-bottom: 2px solid #0f5a4f;
+  padding-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+.btn-crear-cuatri {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #19b67f, #0f9b6d);
+  color: #fff;
+  font-size: 1.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-crear-cuatri:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.35);
+}
+
+.grupo-cuatri {
+  margin-bottom: 18px;
+}
+
+.grupo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 12px;
+}
+
+.grupo-header h3 {
+  margin: 0;
+  color: #0f4ea1;
+  font-size: 1.85rem;
+  font-weight: 800;
+}
+
+.btn-toggle-cuatri {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.btn-toggle-cuatri span {
+  color: #0f4ea1;
+  font-size: 0.95rem;
+}
+
+.btn-eliminar-cuatri {
+  border: none;
+  border-radius: 6px;
+  background: #b91c1c;
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .btn-crear-cuatri {
+    font-size: 1.1rem;
+  }
+
+  .grupo-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .grupo-header h3 {
+    font-size: 1.25rem;
+  }
+}

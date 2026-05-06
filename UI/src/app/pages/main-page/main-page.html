@@ -1,0 +1,16 @@
+<div class="historial-container">
+  <div class="inicio-logo-container">
+    <img src="/logo-gtm.png" alt="Logo" style="height: 80px" />
+  </div>
+  <h2>📂 Informes Guardados</h2>
+  <button class="btn-crear-cuatri" (click)="crearCuatrimestre()">📅 CREAR CUATRIMESTRE</button>
+  @if (informesGuardados().length === 0) {
+    <div>No hay borradores guardados.</div>
+  } @else {
+    <app-lista-cuatrimestres
+      [grupos]="informesPorCuatrimestre"
+      (eliminarCuatrimestre)="eliminarCuatrimestre($event)"
+      (editarInforme)="editarInforme($event)">
+    </app-lista-cuatrimestres>
+  }
+</div>

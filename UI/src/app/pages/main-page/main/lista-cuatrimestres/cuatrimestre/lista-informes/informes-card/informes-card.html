@@ -1,0 +1,13 @@
+<div class="card-informe">
+  <div>
+    <strong>
+      {{ informe().nombreObra }}
+      @if (informe().protegido) {
+        <span>🔒</span>
+      }
+    </strong>
+    <br />
+    <small>💾 {{ informe().ultimaModificacion }}</small>
+  </div>
+  <button class="btn-editar" (click)="editar.emit(informe())">Editar</button>
+</div>

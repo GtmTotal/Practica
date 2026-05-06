@@ -1,0 +1,27 @@
+<header class="form-header">
+  <div class="header-main-row">
+    <div class="logo-container">
+      <img src="/logo-gtm.png" alt="Logo" class="logo-empresa">
+    </div>
+    <div class="header-info">
+      <div class="header-title-row">
+        <h1>{{ centro() }}</h1>
+        <button type="button" class="btn-back-minimal" (click)="cerrar()">✕</button>
+      </div>
+      <div class="progreso-container-mini">
+        <div class="progreso-bar-fill" [style.width.%]="progreso()"></div>
+        <span class="progreso-texto">{{ progreso() }}% completado</span>
+      </div>
+    </div>
+  </div>
+  <div class="header-inputs-grid" [formGroup]="formGroup()">
+    <div class="input-field">
+      <label>Técnico</label>
+      <input type="text" formControlName="tecnico" placeholder="Nombre completo">
+    </div>
+    <div class="input-field">
+      <label>Fecha</label>
+      <input type="date" formControlName="fecha">
+    </div>
+  </div>
+</header>

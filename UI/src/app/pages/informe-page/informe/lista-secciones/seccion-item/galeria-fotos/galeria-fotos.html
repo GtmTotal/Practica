@@ -1,0 +1,9 @@
+<div class="fotos-previa">
+  @for (foto of fotos(); track $index) {
+    <div class="foto-thumb">
+      <img [src]="foto.preview || foto.url || foto.base64">
+      <button type="button" class="btn-del-foto" (click)="eliminarFoto.emit($index)">✕</button>
+      <button type="button" class="btn-download-foto" (click)="descargarFoto.emit(foto)">⬇️</button>
+    </div>
+  }
+</div>

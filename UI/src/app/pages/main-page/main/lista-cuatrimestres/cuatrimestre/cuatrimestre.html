@@ -1,0 +1,16 @@
+<div class="grupo-cuatri">
+  <div class="grupo-header">
+    <button class="btn-toggle-cuatri" type="button" (click)="toggle.emit(grupo().clave)">
+      <span>{{ colapsado() ? '▶' : '▼' }}</span>
+      <h3>{{ grupo().label }} ({{ grupo().informes.length }})</h3>
+    </button>
+    @if (grupo().clave !== 'sin-cuatri') {
+      <button class="btn-eliminar-cuatri" (click)="eliminarCuatrimestre.emit(grupo().clave)">
+        🗑️ Eliminar cuatrimestre
+      </button>
+    }
+  </div>
+  @if (!colapsado()) {
+    <app-lista-informes [informes]="grupo().informes" (editar)="editarInforme.emit($event)"></app-lista-informes>
+  }
+</div>

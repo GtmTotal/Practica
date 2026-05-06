@@ -1,0 +1,9 @@
+{
+  "workbench.colorTheme": "Dark+",
+  "workbench.iconTheme": "material-icon-theme",
+
+  "material-icon-theme.folders.color": "#ffd54f",
+  "material-icon-theme.folders.associations": {
+    "Infraestructura": "database"
+  }
+}
