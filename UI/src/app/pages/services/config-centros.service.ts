@@ -14,7 +14,7 @@ export class ServicioConfiguracionCentros {
     if (this.cache) return this.cache;
 
     this.cache = await firstValueFrom(
-      this.http.get<Record<string, ConfigCentro>>('http://localhost:5003/api/main-page/config-centros')
+      this.http.get<Record<string, ConfigCentro>>('http://192.168.1.135:8081/api/main-page/config-centros')
     );
 
     for (const [nombre, config] of Object.entries(this.cache)) {
@@ -31,7 +31,7 @@ export class ServicioConfiguracionCentros {
 
     try {
       const config = await firstValueFrom(
-        this.http.get<ConfigCentro>(`http://localhost:5003/api/main-page/config-centros/${encodeURIComponent(nombre)}`)
+        this.http.get<ConfigCentro>(`http://192.168.1.135:8081/api/main-page/config-centros/${encodeURIComponent(nombre)}`)
       );
       this.centroCache.set(nombre, config);
       return config;

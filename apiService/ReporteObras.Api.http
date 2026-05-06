@@ -1,4 +1,4 @@
-@ReporteObras.Api_HostAddress = http://localhost:5003
+@ReporteObras.Api_HostAddress = http://192.168.1.135:8081
 
 GET {{ReporteObras.Api_HostAddress}}/weatherforecast/
 Accept: application/json
