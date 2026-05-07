@@ -15,7 +15,7 @@ export class ServicioInicializacionFormulario {
     private servicioConfiguracionCentros: ServicioConfiguracionCentros,
   ) {}
 
-  async inicializarFormulario(nombre: string): Promise<void> {
+  async inicializarFormulario(nombre: string, cuatrimestre: string | null = null): Promise<void> {
     this.obraForm = this.fb.group({
       id: [null],
       nombreObra: [nombre, Validators.required],
@@ -23,7 +23,7 @@ export class ServicioInicializacionFormulario {
       fecha: [new Date().toISOString().split('T')[0], Validators.required],
       secciones: this.fb.array([]),
       conclusiones: [''],
-      cuatrimestre: [null],
+      cuatrimestre: [cuatrimestre],
       protegido: [false]
     });
 

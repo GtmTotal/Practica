@@ -87,9 +87,8 @@ export class InformePageComponent implements OnDestroy {
       if (informeExistente) {
         await this.editarInforme(informeExistente);
       } else {
-        // Si no existe, inicializar uno nuevo con ese centro y cuatrimestre
-        await this.seleccionarCentro(centroParam);
-        this.obraForm?.get('cuatrimestre')?.setValue(cuatriParam);
+        // No existe, inicializar uno nuevo con ese centro y cuatrimestre
+        await this.seleccionarCentro(centroParam, cuatriParam);
       }
       return;
     }
@@ -116,9 +115,9 @@ export class InformePageComponent implements OnDestroy {
     this.navService.volver();
   };
 
-  async seleccionarCentro(nombre: string) {
-    await this.navService.seleccionarCentro(nombre);
-    await this.initService.inicializarFormulario(nombre);
+  async seleccionarCentro(nombre: string, cuatrimestre?: string) {
+    await this.navService.seleccionarCentro(nombre, cuatrimestre);
+    await this.initService.inicializarFormulario(nombre, cuatrimestre || null);
     this.configurarProgreso();
     this.configurarAutoGuardado(() =>
       this.persistService.soloGuardar(this.obraForm, this.fotosPorSeccionBase64),
@@ -153,7 +152,7 @@ export class InformePageComponent implements OnDestroy {
       this.configurarAutoGuardado(() =>
         this.persistService.soloGuardar(this.obraForm, this.fotosPorSeccionBase64),
       );
-      await this.navService.irAFormulario();
+      await this.navService.irAFormulario(inf.cuatrimestre, inf.nombreObra);
     }
   }
 
