@@ -107,7 +107,8 @@ export class ServicioPersistenciaFormulario {
     fotosPorSeccionBase64: WritableSignal<Foto[]>[];
     seccionesColapsadas: boolean[];
   } | null> {
-    const completo = await this.dbService.obtenerPorId(inf.id);
+    try {
+      const completo = await this.dbService.obtenerPorId(inf.id);
     if (!completo) return null;
 
     const nombreCentro = inf.nombreObra || completo.nombreObra || completo.nombre_obra;
@@ -150,7 +151,11 @@ export class ServicioPersistenciaFormulario {
       }
     }
 
-    return { obraForm, fotosPorSeccionBase64, seccionesColapsadas };
+      return { obraForm, fotosPorSeccionBase64, seccionesColapsadas };
+    } catch (error) {
+      console.error('Error crítico al editar informe:', error);
+      return null;
+    }
   }
 
   async generarPDF(obraForm: FormGroup, fotosPorSeccion: WritableSignal<Foto[]>[]): Promise<void> {
@@ -163,10 +168,15 @@ export class ServicioPersistenciaFormulario {
 
   async buscarPorCuatrimestreYCentro(cuatrimestre: string, centro: string): Promise<InformeGuardado | null> {
     const informes = await firstValueFrom(this.dbService.obtenerTodos$());
-    return informes.find(inf =>
-      inf.cuatrimestre?.trim() === cuatrimestre.trim() &&
-      inf.nombreObra?.trim().toLowerCase() === centro.trim().toLowerCase()
-    ) || null;
+    const cLow = centro.trim().toLowerCase();
+    
+    return informes.find(inf => {
+      const infCuatri = (inf.cuatrimestre || '').trim();
+      const infCentro = (inf.nombreObra || '').trim().toLowerCase();
+      
+      return infCuatri === cuatrimestre.trim() && 
+             (infCentro === cLow || infCentro.startsWith(cLow));
+    }) || null;
   }
 
   async eliminarInforme(id: number): Promise<void> {
@@ -185,7 +195,7 @@ export class ServicioPersistenciaFormulario {
 
     const tareasArray = seccionGroup.get('tareas') as FormArray;
     (sec.tareas || []).forEach((t: any) => {
-      const tareaGroup = this.fb.group({
+      const tareaGroup: FormGroup = this.fb.group({
         descripcion: [t.descripcion],
         rev: [t.rev || false],
         ok: [t.ok || false],
@@ -197,6 +207,18 @@ export class ServicioPersistenciaFormulario {
           sufijo: [c.sufijo]
         })))
       });
+
+      // Restaurar bombas químicas si existen
+      if (t.bombasQuimicas) {
+        tareaGroup.addControl('bombasQuimicas', this.fb.array(
+          (t.bombasQuimicas as any[]).map(b => this.fb.group({
+            nombre: [b.nombre],
+            amperios: [b.amperios],
+            porcentaje: [b.porcentaje]
+          }))
+        ));
+      }
+
       tareasArray.push(tareaGroup);
     });
 

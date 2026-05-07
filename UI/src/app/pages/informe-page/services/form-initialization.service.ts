@@ -31,14 +31,21 @@ export class ServicioInicializacionFormulario {
     this.seccionesColapsadas = [];
 
     const centroConfig = await this.servicioConfiguracionCentros.getByCentro(nombre);
-    if (centroConfig?.secciones) {
-      const bombas = centroConfig.bombasQuimicas || [];
-      centroConfig.secciones.forEach((seccionTemplate: any) => {
-        const seccionGroup = this.agregarSeccion(seccionTemplate, bombas);
-        (this.obraForm.get('secciones') as FormArray).push(seccionGroup);
-        this.fotosPorSeccionBase64.push(signal(seccionTemplate.fotos || []));
-        this.seccionesColapsadas.push(false);
-      });
+    if (centroConfig) {
+      // Actualizamos al nombre real (oficial) del centro si la API nos devuelve uno
+      if (centroConfig.nombre) {
+        this.obraForm.get('nombreObra')?.setValue(centroConfig.nombre);
+      }
+
+      if (centroConfig.secciones) {
+        const bombas = centroConfig.bombasQuimicas || [];
+        centroConfig.secciones.forEach((seccionTemplate: any) => {
+          const seccionGroup = this.agregarSeccion(seccionTemplate, bombas);
+          (this.obraForm.get('secciones') as FormArray).push(seccionGroup);
+          this.fotosPorSeccionBase64.push(signal(seccionTemplate.fotos || []));
+          this.seccionesColapsadas.push(false);
+        });
+      }
     }
   }
 

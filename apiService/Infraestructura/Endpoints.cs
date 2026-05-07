@@ -277,10 +277,12 @@ public static class Endpoints
         {
             var folderPath = Path.Combine(env.ContentRootPath, "Infraestructura", "Datos", "config-centros");
             
-            // Búsqueda insensible a mayúsculas para Linux/Docker
+            // Búsqueda inteligente: Exacta o el primero que empiece por el nombre
             var files = Directory.GetFiles(folderPath, "*.json");
             var filePath = files.FirstOrDefault(f => 
-                Path.GetFileNameWithoutExtension(f).Equals(centro, StringComparison.OrdinalIgnoreCase));
+                Path.GetFileNameWithoutExtension(f).Equals(centro, StringComparison.OrdinalIgnoreCase))
+                ?? files.FirstOrDefault(f => 
+                Path.GetFileNameWithoutExtension(f).StartsWith(centro, StringComparison.OrdinalIgnoreCase));
 
             if (filePath == null || !File.Exists(filePath))
             {
