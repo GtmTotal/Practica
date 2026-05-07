@@ -35,7 +35,10 @@ export class ServicioCuatrimestre {
     const { fechaBase, claveCuatri } = datos;
 
     const existe = informesGuardados.some(i => i.cuatrimestre === claveCuatri);
-    if (existe && !confirm(`El cuatrimestre ${claveCuatri} ya existe. Crear de nuevo?`)) return;
+    if (existe) {
+      alert(`El cuatrimestre ${claveCuatri} ya existe. No se puede duplicar.`);
+      return;
+    }
 
     const configsPorCentro = await this.servicioConfiguracionCentros.getAll();
     const nombresCentros = Object.keys(configsPorCentro);
