@@ -1,4 +1,4 @@
-﻿{
+{
     "nombre":  "PARC DE SAGUNT",
     "bombasQuimicas":  [
                            "Bomba coagulante",
@@ -11,13 +11,13 @@
                           "prefijo":  1,
                           "tareas":  [
                                          {
-                                             "descripcion":  "Revisar partes mÃ³viles expuestas a desgaste, cojinetes, sistema de limpieza, cepillos, juntas, etc."
+                                             "descripcion":  "Revisar partes móviles expuestas a desgaste, cojinetes, sistema de limpieza, cepillos, juntas, etc."
                                          },
                                          {
                                              "descripcion":  "Verificar estado de las uniones mediante tornillos, realizar un reapriete."
                                          },
                                          {
-                                             "descripcion":  "La limpieza del equipo. (Agua a presiÃ³n)"
+                                             "descripcion":  "La limpieza del equipo. (Agua a presión)"
                                          }
                                      ]
                       },
@@ -27,25 +27,25 @@
                           "prefijo":  2,
                           "tareas":  [
                                          {
-                                             "descripcion":  "Comprobar que el equipo funciona sin presentar anomalÃ­as."
+                                             "descripcion":  "Comprobar que el equipo funciona sin presentar anomalías."
                                          },
                                          {
                                              "descripcion":  "Comprobar que la banda filtrante se encuentra alineada."
                                          },
                                          {
-                                             "descripcion":  "Comprobar la tensiÃ³n de la banda filtrante."
+                                             "descripcion":  "Comprobar la tensión de la banda filtrante."
                                          },
                                          {
-                                             "descripcion":  "Comprobar que en la cuna no hay sÃ³lidos peligrosos que puedan deteriorar la banda filtrante."
+                                             "descripcion":  "Comprobar que en la cuna no hay sólidos peligrosos que puedan deteriorar la banda filtrante."
                                          },
                                          {
-                                             "descripcion":  "Comprobar que los rodillos de soporte de la banda filtrante no estÃ¡n deteriorados y giran correctamente."
+                                             "descripcion":  "Comprobar que los rodillos de soporte de la banda filtrante no están deteriorados y giran correctamente."
                                          },
                                          {
-                                             "descripcion":  "Observar que el cepillo de limpieza se encuentra en contacto con la banda filtrante, en caso de no sea asÃ­ ajustar la proximidad del mismo o sustituirlo si estÃ¡ muy desgastado. "
+                                             "descripcion":  "Observar que el cepillo de limpieza se encuentra en contacto con la banda filtrante, en caso de no sea así ajustar la proximidad del mismo o sustituirlo si está muy desgastado. "
                                          },
                                          {
-                                             "descripcion":  "Comprobar que los motores no hagan ruido y tengan un consumo dentro de los lÃ­mites."
+                                             "descripcion":  "Comprobar que los motores no hagan ruido y tengan un consumo dentro de los límites."
                                          },
                                          {
                                              "descripcion":  "Lubricar rodamientos de la cinta."
@@ -67,10 +67,10 @@
                                              "descripcion":  "Comprobar intensidad de las bombas"
                                          },
                                          {
-                                             "descripcion":  "Limpiar sonda de nivel (boyas, piezomÃ©trico..)"
+                                             "descripcion":  "Limpiar sonda de nivel (boyas, piezométrico..)"
                                          },
                                          {
-                                             "descripcion":  "Comprobar correcto funcionamiento bomba: sentido de giro y presiÃ³n"
+                                             "descripcion":  "Comprobar correcto funcionamiento bomba: sentido de giro y presión"
                                          },
                                          {
                                              "descripcion":  "Caudal e intensidad Bomba 1",
@@ -99,7 +99,7 @@
                                                         ]
                                          },
                                          {
-                                             "descripcion":  "Vaciar arqueta y observar el estado de mangueras, acoples, sÃ³lidos en el fondoâ€¦ (FOTOS)"
+                                             "descripcion":  "Vaciar arqueta y observar el estado de mangueras, acoples, sólidos en el fondoâ€¦ (FOTOS)"
                                          }
                                      ]
                       },
@@ -109,10 +109,10 @@
                           "prefijo":  4,
                           "tareas":  [
                                          {
-                                             "descripcion":  "ComprobaciÃ³n de que las bombas dosifiquen producto. ANOTAR CAUDALES E INTENSIDAD:"
+                                             "descripcion":  "Comprobación de que las bombas dosifiquen producto. ANOTAR CAUDALES E INTENSIDAD:"
                                          },
                                          {
-                                             "descripcion":  "RevisiÃ³n de sensores de niveles y recargar producto"
+                                             "descripcion":  "Revisión de sensores de niveles y recargar producto"
                                          },
                                          {
                                              "descripcion":  "Comprobar que el estado del floculante preparado es el adecuado. Ajustar si es necesario."
@@ -123,7 +123,7 @@
                                      ]
                       },
                       {
-                          "titulo":  "5 - HOMOGENEIZADOR Y DEPÃ“SITOS OZONIZACIÃ“N",
+                          "titulo":  "5 - HOMOGENEIZADOR Y DEPÓSITOS OZONIZACIÓN",
                           "tipo":  "homogeneizador",
                           "prefijo":  5,
                           "tareas":  [
@@ -131,13 +131,13 @@
                                              "descripcion":  "Revisar que el nivel coincide con el representado en la pantalla HMI."
                                          },
                                          {
-                                             "descripcion":  "Comprobar que el equipo funciona sin anomalÃ­as."
+                                             "descripcion":  "Comprobar que el equipo funciona sin anomalías."
                                          },
                                          {
-                                             "descripcion":  "Vaciar homogeneizador y observar el estado de mangueras, acoples, sÃ³lidos en el fondoâ€¦ (FOTOS)"
+                                             "descripcion":  "Vaciar homogeneizador y observar el estado de mangueras, acoples, sólidos en el fondoâ€¦ (FOTOS)"
                                          },
                                          {
-                                             "descripcion":  "Vaciar depÃ³sitos ozonizaciÃ³n y observar el estado de mangueras, acoples, sÃ³lidos en el fondoâ€¦ (FOTOS)"
+                                             "descripcion":  "Vaciar depósitos ozonización y observar el estado de mangueras, acoples, sólidos en el fondoâ€¦ (FOTOS)"
                                          }
                                      ]
                       },
@@ -150,7 +150,7 @@
                                              "descripcion":  "Comprobar que las boyas funcionan correctamente y limpiar lodo adherido."
                                          },
                                          {
-                                             "descripcion":  "Comprobar reacciÃ³n"
+                                             "descripcion":  "Comprobar reacción"
                                          },
                                          {
                                              "descripcion":  "Bomba trasvase a reactor: comprobar estado de las bolas y los asientos."
@@ -176,19 +176,19 @@
                           "prefijo":  7,
                           "tareas":  [
                                          {
-                                             "descripcion":  "Comprobar que la malla metÃ¡lica se encuentra alineada."
+                                             "descripcion":  "Comprobar que la malla metálica se encuentra alineada."
                                          },
                                          {
                                              "descripcion":  "Comprobar que la bobina de papel filtrante se encuentra alineada."
                                          },
                                          {
-                                             "descripcion":  "Comprobar la tensiÃ³n de la malla metÃ¡lica."
+                                             "descripcion":  "Comprobar la tensión de la malla metálica."
                                          },
                                          {
-                                             "descripcion":  "Comprobar que en la bandeja inferior no hay sÃ³lidos que haya podido colarse a travÃ©s del papel filtrante. "
+                                             "descripcion":  "Comprobar que en la bandeja inferior no hay sólidos que haya podido colarse a través del papel filtrante. "
                                          },
                                          {
-                                             "descripcion":  "Comprobar el correcto funcionamiento de los motores, que no hacen ruidos extraÃ±os y que el consumo se encuentra dentro de los lÃ­mites del motor. "
+                                             "descripcion":  "Comprobar el correcto funcionamiento de los motores, que no hacen ruidos extraños y que el consumo se encuentra dentro de los límites del motor. "
                                          },
                                          {
                                              "descripcion":  "Comprobar el nivel del aceite del reductor. En caso de ser necesario rellenar o reemplazar."
@@ -200,7 +200,7 @@
                                              "descripcion":  "Observar que las pletinas de apoyo no se encuentran deterioradas. En caso de ser necesario reemplazar por unas nuevas. "
                                          },
                                          {
-                                             "descripcion":  "Observar que los piÃ±ones engranan correctamente con la malla metÃ¡lica. En caso contrario sustituirlos por unos nuevos."
+                                             "descripcion":  "Observar que los piñones engranan correctamente con la malla metálica. En caso contrario sustituirlos por unos nuevos."
                                          },
                                          {
                                              "descripcion":  "Observar que el rodillo frontal gira libremente. En caso contrario sustituirlo por uno nuevo "
@@ -208,21 +208,21 @@
                                      ]
                       },
                       {
-                          "titulo":  "8 - CUADRO ELÃ‰CTRICO",
+                          "titulo":  "8 - CUADRO ELÉCTRICO",
                           "tipo":  "simple",
                           "prefijo":  8,
                           "tareas":  [
                                          {
-                                             "descripcion":  "Eliminar y consignar las fuentes de energÃ­a al cuadro para realizar su preventivo."
+                                             "descripcion":  "Eliminar y consignar las fuentes de energía al cuadro para realizar su preventivo."
                                          },
                                          {
-                                             "descripcion":  "Comprobar, revisar todas las conexiones y cableados elÃ©ctricos."
+                                             "descripcion":  "Comprobar, revisar todas las conexiones y cableados eléctricos."
                                          },
                                          {
-                                             "descripcion":  "Reapretar todos bornes y conexiones de los circuitos elÃ©ctricos."
+                                             "descripcion":  "Reapretar todos bornes y conexiones de los circuitos eléctricos."
                                          },
                                          {
-                                             "descripcion":  "Revisar el estado general del cuadro elÃ©ctrico (envolvente)."
+                                             "descripcion":  "Revisar el estado general del cuadro eléctrico (envolvente)."
                                          },
                                          {
                                              "descripcion":  "Verificar seguridades."

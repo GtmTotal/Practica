@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 using InformeObras.Infraestructura.Persistencia;
 using InformeObras.Infraestructura.Persistencia.Entidades;
 
@@ -264,7 +265,7 @@ public static class Endpoints
             foreach (var file in files)
             {
                 var key = Path.GetFileNameWithoutExtension(file);
-                var content = await File.ReadAllTextAsync(file);
+                var content = await File.ReadAllTextAsync(file, Encoding.UTF8);
                 using var doc = JsonDocument.Parse(content);
                 result[key] = doc.RootElement.Clone();
             }
@@ -282,7 +283,7 @@ public static class Endpoints
                 return Results.NotFound(new { message = "Center config not found." });
             }
 
-            var content = await File.ReadAllTextAsync(filePath);
+            var content = await File.ReadAllTextAsync(filePath, Encoding.UTF8);
             using var doc = JsonDocument.Parse(content);
             return Results.Ok(doc.RootElement.Clone());
         });

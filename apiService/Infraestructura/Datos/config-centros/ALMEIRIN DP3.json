@@ -1,4 +1,4 @@
-﻿{
+{
     "nombre":  "ALMEIRIN DP3",
     "secciones":  [
                       {
@@ -7,16 +7,16 @@
                           "prefijo":  1,
                           "tareas":  [
                                          {
-                                             "descripcion":  "Revisar partes mÃ³viles expuestas a desgaste, cojinetes, sistema de limpieza, cepillos, juntas, etc."
+                                             "descripcion":  "Revisar partes móviles expuestas a desgaste, cojinetes, sistema de limpieza, cepillos, juntas, etc."
                                          },
                                          {
                                              "descripcion":  "Verificar estado de las uniones mediante tornillos, realizar un reapriete."
                                          },
                                          {
-                                             "descripcion":  "Verificar la presencia de sÃ³lidos en el cajÃ³n del rototamiz."
+                                             "descripcion":  "Verificar la presencia de sólidos en el cajón del rototamiz."
                                          },
                                          {
-                                             "descripcion":  "ComprobaciÃ³n sinfÃ­n compactador:",
+                                             "descripcion":  "Comprobación sinfín compactador:",
                                              "campos":  [
                                                             {
                                                                 "clave":  "amperios",
@@ -29,7 +29,7 @@
                                                         ]
                                          },
                                          {
-                                             "descripcion":  "ComprobaciÃ³n rototamiz:",
+                                             "descripcion":  "Comprobación rototamiz:",
                                              "campos":  [
                                                             {
                                                                 "clave":  "amperios",
@@ -42,7 +42,7 @@
                                                         ]
                                          },
                                          {
-                                             "descripcion":  "La limpieza del equipo. (Agua a presiÃ³n)"
+                                             "descripcion":  "La limpieza del equipo. (Agua a presión)"
                                          }
                                      ]
                       },
@@ -55,10 +55,10 @@
                                              "descripcion":  "Comprobar intensidad de las bombas"
                                          },
                                          {
-                                             "descripcion":  "Limpiar sonda de nivel (boyas, piezomÃ©trico..)"
+                                             "descripcion":  "Limpiar sonda de nivel (boyas, piezométrico..)"
                                          },
                                          {
-                                             "descripcion":  "Comprobar correcto funcionamiento bomba: sentido de giro y presiÃ³n"
+                                             "descripcion":  "Comprobar correcto funcionamiento bomba: sentido de giro y presión"
                                          },
                                          {
                                              "descripcion":  "Caudal e intensidad Bomba 1",
@@ -90,7 +90,7 @@
                                              "descripcion":  "Comprobar sentido de giro y estado de las aspas del agitador submarino."
                                          },
                                          {
-                                             "descripcion":  "Vaciar arqueta al mÃ¡ximo y observar estado de mangueras, acoples, sÃ³lidos en el fondo... (FOTOS)"
+                                             "descripcion":  "Vaciar arqueta al máximo y observar estado de mangueras, acoples, sólidos en el fondo... (FOTOS)"
                                          }
                                      ]
                       },
@@ -103,10 +103,10 @@
                                              "descripcion":  "Comprobar intensidad de las bombas"
                                          },
                                          {
-                                             "descripcion":  "Limpiar sonda de nivel (boyas, piezomÃ©trico..)"
+                                             "descripcion":  "Limpiar sonda de nivel (boyas, piezométrico..)"
                                          },
                                          {
-                                             "descripcion":  "Comprobar correcto funcionamiento bomba: sentido de giro y presiÃ³n"
+                                             "descripcion":  "Comprobar correcto funcionamiento bomba: sentido de giro y presión"
                                          },
                                          {
                                              "descripcion":  "Caudal e intensidad Bomba 1",
@@ -138,7 +138,7 @@
                                              "descripcion":  "Comprobar sentido de giro y estado de las aspas del agitador submarino."
                                          },
                                          {
-                                             "descripcion":  "Vaciar arqueta al mÃ¡ximo y observar estado de mangueras, acoples, sÃ³lidos en el fondo... (FOTOS)"
+                                             "descripcion":  "Vaciar arqueta al máximo y observar estado de mangueras, acoples, sólidos en el fondo... (FOTOS)"
                                          }
                                      ]
                       },
@@ -151,10 +151,10 @@
                                              "descripcion":  "Comprobar intensidad de las bombas"
                                          },
                                          {
-                                             "descripcion":  "Limpiar sonda de nivel (boyas, piezomÃ©trico..)"
+                                             "descripcion":  "Limpiar sonda de nivel (boyas, piezométrico..)"
                                          },
                                          {
-                                             "descripcion":  "Comprobar correcto funcionamiento bomba: sentido de giro y presiÃ³n"
+                                             "descripcion":  "Comprobar correcto funcionamiento bomba: sentido de giro y presión"
                                          },
                                          {
                                              "descripcion":  "Caudal e intensidad Bomba 1",
@@ -183,7 +183,7 @@
                                                         ]
                                          },
                                          {
-                                             "descripcion":  "Vaciar arqueta al mÃ¡ximo y observar estado de mangueras, acoples, sÃ³lidos en el fondo... (FOTOS)"
+                                             "descripcion":  "Vaciar arqueta al máximo y observar estado de mangueras, acoples, sólidos en el fondo... (FOTOS)"
                                          }
                                      ]
                       },
@@ -193,13 +193,13 @@
                           "prefijo":  3,
                           "tareas":  [
                                          {
-                                             "descripcion":  "Comprobar que los difusores reparten el aire por igual y que no estÃ©n rotos."
+                                             "descripcion":  "Comprobar que los difusores reparten el aire por igual y que no estén rotos."
                                          },
                                          {
                                              "descripcion":  "Limpiar filtro aire soplante"
                                          },
                                          {
-                                             "descripcion":  "ComprobaciÃ³n soplante homogenizador:",
+                                             "descripcion":  "Comprobación soplante homogenizador:",
                                              "campos":  [
                                                             {
                                                                 "clave":  "amperios",
@@ -229,7 +229,7 @@
                                              "descripcion":  "Revisar que el nivel coincide con el representado en la pantalla HMI."
                                          },
                                          {
-                                             "descripcion":  "Comprobar que el equipo funciona sin anomalÃ­as."
+                                             "descripcion":  "Comprobar que el equipo funciona sin anomalías."
                                          },
                                          {
                                              "descripcion":  "Comprobar bomba 1 homogenizador a agua a tratar:",
@@ -258,51 +258,51 @@
                                                         ]
                                          },
                                          {
-                                             "descripcion":  "Vaciar neutralizador completamente y observar estado de mangueras, acoples, sÃ³lidos en el fondo... (FOTOS)"
+                                             "descripcion":  "Vaciar neutralizador completamente y observar estado de mangueras, acoples, sólidos en el fondo... (FOTOS)"
                                          }
                                      ]
                       },
                       {
-                          "titulo":  "5 - CUADRO ELÃ‰CTRICO",
+                          "titulo":  "5 - CUADRO ELÉCTRICO",
                           "tipo":  "simple",
                           "prefijo":  5,
                           "tareas":  [
                                          {
-                                             "descripcion":  "Eliminar y consignar las fuentes de energÃ­a al cuadro para realizar su preventivo."
+                                             "descripcion":  "Eliminar y consignar las fuentes de energía al cuadro para realizar su preventivo."
                                          },
                                          {
-                                             "descripcion":  "Comprobar, revisar todas las conexiones y cableados elÃ©ctricos."
+                                             "descripcion":  "Comprobar, revisar todas las conexiones y cableados eléctricos."
                                          },
                                          {
-                                             "descripcion":  "Reapretar todos bornes y conexiones de los circuitos elÃ©ctricos."
+                                             "descripcion":  "Reapretar todos bornes y conexiones de los circuitos eléctricos."
                                          },
                                          {
-                                             "descripcion":  "Revisar el estado general del cuadro elÃ©ctrico (envolvente)."
+                                             "descripcion":  "Revisar el estado general del cuadro eléctrico (envolvente)."
                                          },
                                          {
-                                             "descripcion":  "Verificar seguridades (FOTOS del cuadro antes y despuÃ©s)."
+                                             "descripcion":  "Verificar seguridades (FOTOS del cuadro antes y después)."
                                          }
                                      ]
                       },
                       {
-                          "titulo":  "6 - CUADRO ELÃ‰CTRICO BOMBEO ARQUETA C",
+                          "titulo":  "6 - CUADRO ELÉCTRICO BOMBEO ARQUETA C",
                           "tipo":  "simple",
                           "prefijo":  6,
                           "tareas":  [
                                          {
-                                             "descripcion":  "Eliminar y consignar las fuentes de energÃ­a al cuadro para realizar su preventivo."
+                                             "descripcion":  "Eliminar y consignar las fuentes de energía al cuadro para realizar su preventivo."
                                          },
                                          {
-                                             "descripcion":  "Comprobar, revisar todas las conexiones y cableados elÃ©ctricos."
+                                             "descripcion":  "Comprobar, revisar todas las conexiones y cableados eléctricos."
                                          },
                                          {
-                                             "descripcion":  "Reapretar todos bornes y conexiones de los circuitos elÃ©ctricos."
+                                             "descripcion":  "Reapretar todos bornes y conexiones de los circuitos eléctricos."
                                          },
                                          {
-                                             "descripcion":  "Revisar el estado general del cuadro elÃ©ctrico (envolvente)."
+                                             "descripcion":  "Revisar el estado general del cuadro eléctrico (envolvente)."
                                          },
                                          {
-                                             "descripcion":  "Verificar seguridades (FOTOS del cuadro antes y despuÃ©s)."
+                                             "descripcion":  "Verificar seguridades (FOTOS del cuadro antes y después)."
                                          }
                                      ]
                       }
