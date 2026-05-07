@@ -83,11 +83,24 @@ export class InformePageComponent implements OnDestroy {
     const centroParam = this.route.snapshot.paramMap.get('centro');
 
     if (cuatriParam && centroParam) {
-      const informeExistente = await this.persistService.buscarPorCuatrimestreYCentro(cuatriParam, centroParam);
-      if (informeExistente) {
-        await this.editarInforme(informeExistente);
-      } else {
-        // No existe, inicializar uno nuevo con ese centro y cuatrimestre
+      try {
+        console.log(`Buscando informe para: ${cuatriParam} - ${centroParam}`);
+        
+        // CRÍTICO: Establecer el centro seleccionado para que los servicios sepan qué cargar
+        this.navService.centroSeleccionado.set(centroParam);
+        
+        const informeExistente = await this.persistService.buscarPorCuatrimestreYCentro(cuatriParam, centroParam);
+        
+        if (informeExistente) {
+          console.log('Informe encontrado, editando...');
+          await this.editarInforme(informeExistente);
+        } else {
+          console.log('Informe no encontrado, creando nuevo...');
+          await this.seleccionarCentro(centroParam, cuatriParam);
+        }
+      } catch (error) {
+        console.error('Error al inicializar desde URL:', error);
+        this.navService.centroSeleccionado.set(centroParam);
         await this.seleccionarCentro(centroParam, cuatriParam);
       }
       return;

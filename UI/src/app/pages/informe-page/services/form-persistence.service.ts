@@ -145,8 +145,8 @@ export class ServicioPersistenciaFormulario {
   async buscarPorCuatrimestreYCentro(cuatrimestre: string, centro: string): Promise<InformeGuardado | null> {
     const informes = await firstValueFrom(this.dbService.obtenerTodos$());
     return informes.find(inf =>
-      inf.cuatrimestre === cuatrimestre &&
-      inf.nombreObra.toLowerCase() === centro.toLowerCase()
+      inf.cuatrimestre?.trim() === cuatrimestre.trim() &&
+      inf.nombreObra?.trim().toLowerCase() === centro.trim().toLowerCase()
     ) || null;
   }
 
