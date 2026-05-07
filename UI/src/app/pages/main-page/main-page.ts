@@ -20,11 +20,11 @@ export class MainPageComponent implements OnDestroy {
   private autoSaveSub?: Subscription;
 
   get informesGuardados() {
-    return this.persistService.historial();
+    return this.persistService.informesGuardados;
   }
 
   get informesPorCuatrimestre() {
-    return this.cuatriService.getInformesPorCuatrimestre(this.informesGuardados);
+    return this.cuatriService.getInformesPorCuatrimestre(this.informesGuardados());
   }
 
   constructor(
@@ -54,7 +54,7 @@ export class MainPageComponent implements OnDestroy {
   }
 
   async crearCuatrimestre() {
-    await this.cuatriService.crearCuatrimestreConUI(this.informesGuardados);
+    await this.cuatriService.crearCuatrimestreConUI(this.informesGuardados());
     this.persistService.cargarHistorial().subscribe();
   }
 

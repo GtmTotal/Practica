@@ -36,7 +36,7 @@ function calcularProgresoFormulario(form: FormGroup): number {
 
 @Injectable({ providedIn: 'root' })
 export class ServicioPersistenciaFormulario {
-  private historialSignal = signal<InformeGuardado[]>([]);
+  private informesGuardadosSignal = signal<InformeGuardado[]>([]);
 
   constructor(
     private fb: FormBuilder,
@@ -48,8 +48,8 @@ export class ServicioPersistenciaFormulario {
     private pdfService: ServicioReporteDocumento
   ) {}
 
-  get historial() {
-    return this.historialSignal;
+  get informesGuardados() {
+    return this.informesGuardadosSignal;
   }
 
   cargarHistorial(): Observable<InformeGuardado[]> {
@@ -60,7 +60,7 @@ export class ServicioPersistenciaFormulario {
           const dateB = b.ultimaModificacion ? new Date(b.ultimaModificacion).getTime() : 0;
           return dateB - dateA;
         });
-        this.historialSignal.set(ordenados);
+        this.informesGuardadosSignal.set(ordenados);
         return ordenados;
       })
     );

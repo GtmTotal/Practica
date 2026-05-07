@@ -1,11 +1,11 @@
-FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 COPY *.csproj .
 RUN dotnet restore InformeObras.csproj
 COPY . .
 RUN dotnet publish InformeObras.csproj -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=build /app/out .
 EXPOSE 8080
