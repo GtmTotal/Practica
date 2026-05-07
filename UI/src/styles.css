@@ -32,7 +32,7 @@ body {
 .main-wrapper {
   max-width: 800px;
   margin: 0 auto;
-  padding: 100px 16px 120px;
+  padding: 220px 16px 120px;
 }
 
 .form-header {
@@ -127,12 +127,14 @@ body {
 }
 .input-field input {
   width: 100%;
+  max-width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--gray-300);
   border-radius: var(--radius-md);
   font-size: 0.9rem;
   transition: var(--transition);
   background: white;
+  box-sizing: border-box;
 }
 .input-field input:focus {
   outline: none;
@@ -472,7 +474,7 @@ h2 {
 
 @media (max-width: 600px) {
   .form-header { padding: 12px 16px; }
-  .main-wrapper { padding-top: 90px; }
+  .main-wrapper { padding-top: 260px; }
   .header-inputs-grid { grid-template-columns: 1fr; gap: 12px; }
   .tarea-main-row { flex-direction: column; }
   .inspeccion-controles { justify-content: flex-start; }

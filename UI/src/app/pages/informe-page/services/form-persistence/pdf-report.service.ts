@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 export interface DatosPDF {
   nombreObra: string;
@@ -115,12 +115,12 @@ export class ServicioReporteDocumento {
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...COLOR_GRIS);
-    doc.text('TÃ‰CNICO RESPONSABLE', MX + 4, y + 7);
+    doc.text('TÉCNICO RESPONSABLE', MX + 4, y + 7);
     doc.text('FECHA', MX + CW / 2 + 4, y + 7);
     doc.setFontSize(12);
     doc.setTextColor(...COLOR_TEXT);
-    doc.text(X(datos.tecnico) || 'â€”', MX + 4, y + 16);
-    doc.text(X(datos.fecha) || 'â€”', MX + CW / 2 + 4, y + 16);
+    doc.text(X(datos.tecnico) || '—', MX + 4, y + 16);
+    doc.text(X(datos.fecha) || '—', MX + CW / 2 + 4, y + 16);
     y += 35;
 
     // â”€â”€ SECCIONES (sin cambios) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -205,7 +205,7 @@ export class ServicioReporteDocumento {
           doc.roundedRect(MX + 32, currentY, CW - 35, bH, 1, 1, 'F');
           let by = currentY + 4.5;
           for (const b of punto.bombasQuimicas) {
-            const txt = `${b.nombre}: ${b.amperios || 'â€”'} A / ${b.porcentaje || 'â€”'} %`;
+            const txt = `${b.nombre}: ${b.amperios || '—'} A / ${b.porcentaje || '—'} %`;
             doc.setFontSize(7.5);
             doc.setTextColor(154, 90, 0);
             doc.text(txt, MX + 34, by);
@@ -252,7 +252,7 @@ export class ServicioReporteDocumento {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(8);
         doc.setTextColor(...COLOR_GRIS);
-        doc.text('FOTOS DE LA SECCIÃ“N', MX + 3, y + 4.2);
+        doc.text('FOTOS DE LA SECCIÓN', MX + 3, y + 4.2);
         y += 8;
 
         const fotoCols = 3;
@@ -274,7 +274,7 @@ export class ServicioReporteDocumento {
             doc.rect(posX, y, fotoW, fotoH, 'S');
             doc.addImage(base64, formato, posX + 1, y + 1, fotoW - 2, fotoH - 2, undefined, 'FAST');
           } catch (e) {
-            console.warn('Error aÃ±adiendo foto al PDF:', e);
+            console.warn('Error añadiendo foto al PDF:', e);
             doc.setFillColor(220, 220, 220);
             doc.rect(posX + 1, y + 1, fotoW - 2, fotoH - 2, 'F');
             doc.setFontSize(7);
@@ -313,8 +313,8 @@ export class ServicioReporteDocumento {
       doc.setFontSize(7);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(255, 255, 255);
-      doc.text(`Mantenimiento Preventivo â€” ${datos.nombreObra}`, MX, 294);
-      doc.text(`PÃ¡g. ${i} / ${totalPages}`, PW - MX, 294, { align: 'right' });
+      doc.text(`Mantenimiento Preventivo — ${datos.nombreObra}`, MX, 294);
+      doc.text(`Pág. ${i} / ${totalPages}`, PW - MX, 294, { align: 'right' });
     }
 
     const nombreFichero = `Informe_${datos.nombreObra}_${datos.fecha}.pdf`.replace(/\s+/g, '_');
@@ -334,7 +334,7 @@ export class ServicioReporteDocumento {
     doc.setFontSize(8);
     // Texto del encabezado: NEGRO (antes blanco)
     doc.setTextColor(...COLOR_NEGRO);
-    doc.text(`INFORME â€” ${datos.nombreObra}`, mx, 8);
+    doc.text(`INFORME — ${datos.nombreObra}`, mx, 8);
     doc.text(`${datos.tecnico} | ${datos.fecha}`, pw - mx - (this.logoBase64 ? 24 : 0), 8, { align: 'right' });
   }
 
@@ -345,7 +345,7 @@ export class ServicioReporteDocumento {
       doc.roundedRect(x, y, S, S, 0.8, 0.8, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(6);
-      doc.text('âœ“', x + 0.8, y + 3.2);
+      doc.text('✓', x + 0.8, y + 3.2);
     } else {
       doc.setDrawColor(...COLOR_BORDE);
       doc.setFillColor(248, 249, 248);

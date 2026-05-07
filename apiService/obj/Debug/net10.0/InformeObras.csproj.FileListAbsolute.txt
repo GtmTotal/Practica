@@ -134,3 +134,4 @@ C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\Infraestr
 C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\Infraestructura\Datos\config-centros\SAN ISIDRO.json
 C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\Infraestructura\Datos\config-centros\VILLADANGOS.json
 C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\Infraestructura\Datos\config-centros\VITORIA.json
+C:\desarrollo-software\reporte-obras-main\apiService\obj\Debug\net10.0\InformeObras.sourcelink.json
