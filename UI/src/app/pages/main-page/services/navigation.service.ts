@@ -1,14 +1,19 @@
-﻿// navigation.service.ts
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { Vista } from './vista.type';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioNavegacion {
-  vistaActual = signal<Vista>('inicio');
-  centroSeleccionado = signal<string>('');
+  vistaActual = signal<Vista>((localStorage.getItem('vistaActual') as Vista) || 'inicio');
+  centroSeleccionado = signal<string>(localStorage.getItem('centroSeleccionado') || '');
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    // Persistencia automática del estado de navegación
+    effect(() => {
+      localStorage.setItem('vistaActual', this.vistaActual());
+      localStorage.setItem('centroSeleccionado', this.centroSeleccionado());
+    });
+  }
 
   async irASeleccion(): Promise<void> {
     this.vistaActual.set('seleccion');
@@ -17,6 +22,7 @@ export class ServicioNavegacion {
 
   async volver(): Promise<void> {
     this.vistaActual.set('inicio');
+    this.centroSeleccionado.set('');
     await this.router.navigate(['/']);
   }
 
@@ -34,7 +40,8 @@ export class ServicioNavegacion {
   async reset(): Promise<void> {
     this.vistaActual.set('inicio');
     this.centroSeleccionado.set('');
+    localStorage.removeItem('vistaActual');
+    localStorage.removeItem('centroSeleccionado');
     await this.router.navigate(['/']);
   }
 }
-

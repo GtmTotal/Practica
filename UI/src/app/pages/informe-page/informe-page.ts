@@ -75,6 +75,12 @@ export class InformePageComponent implements OnDestroy {
 
   async ngOnInit() {
     this.persistService.cargarHistorial().subscribe();
+
+    // Recuperar estado al refrescar si hay un centro seleccionado pero no hay formulario
+    const centro = this.navService.centroSeleccionado();
+    if (centro && !this.obraForm) {
+      await this.seleccionarCentro(centro);
+    }
   }
 
   get informesPorCuatrimestre() {
