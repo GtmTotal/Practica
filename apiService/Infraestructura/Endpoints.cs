@@ -276,11 +276,15 @@ public static class Endpoints
         app.MapGet("/api/main-page/config-centros/{centro}", async (string centro, IHostEnvironment env) =>
         {
             var folderPath = Path.Combine(env.ContentRootPath, "Infraestructura", "Datos", "config-centros");
-            var filePath = Path.Combine(folderPath, $"{centro}.json");
+            
+            // Búsqueda insensible a mayúsculas para Linux/Docker
+            var files = Directory.GetFiles(folderPath, "*.json");
+            var filePath = files.FirstOrDefault(f => 
+                Path.GetFileNameWithoutExtension(f).Equals(centro, StringComparison.OrdinalIgnoreCase));
 
-            if (!File.Exists(filePath))
+            if (filePath == null || !File.Exists(filePath))
             {
-                return Results.NotFound(new { message = "Center config not found." });
+                return Results.NotFound(new { message = $"Center config '{centro}' not found." });
             }
 
             var content = await File.ReadAllTextAsync(filePath, Encoding.UTF8);
