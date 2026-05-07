@@ -183,8 +183,6 @@ export class InformePageComponent implements OnDestroy {
     }
   }
 
-
-
   toggleSeccion(idx: number) {
     if (idx >= 0 && idx < this.seccionesColapsadas.length) {
       this.seccionesColapsadas[idx] = !this.seccionesColapsadas[idx];
