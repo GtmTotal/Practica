@@ -103,9 +103,8 @@ export class InformePageComponent implements OnDestroy {
         }
       } catch (error) {
         console.error('[ERROR] Fallo crítico al inicializar desde URL:', error);
-        // Intentar al menos mostrar el formulario vacío para no bloquear la pantalla
-        this.navService.centroSeleccionado.set(centroParam);
-        await this.seleccionarCentro(centroParam, cuatriParam);
+        alert(`Error: El centro '${centroParam}' no existe o no se ha podido cargar.`);
+        this.irASeleccion();
       }
       return;
     }
