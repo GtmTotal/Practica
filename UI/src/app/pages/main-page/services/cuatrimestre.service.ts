@@ -1,13 +1,10 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ServicioBaseDeDatos } from './database.service';
 import { GrupoCuatrimestre, InformeGuardado } from '../../informe.interface';
 import { ServicioConfiguracionCentros } from '../../services/config-centros.service';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioCuatrimestre {
-  readonly CENTROS_CUATRIMESTRE = [
-    'ALMEIRIN DP2'
-  ];
 
   constructor(
     private dbService: ServicioBaseDeDatos,
@@ -41,8 +38,9 @@ export class ServicioCuatrimestre {
     if (existe && !confirm(`El cuatrimestre ${claveCuatri} ya existe. Crear de nuevo?`)) return;
 
     const configsPorCentro = await this.servicioConfiguracionCentros.getAll();
+    const nombresCentros = Object.keys(configsPorCentro);
 
-    for (const centro of this.CENTROS_CUATRIMESTRE) {
+    for (const centro of nombresCentros) {
       const id = Date.now() + Math.floor(Math.random() * 1000);
       const config = configsPorCentro[centro];
       if (!config) continue;
