@@ -1,15 +1,21 @@
-<app-informe
-  [formGroup]="obraForm"
-  [centro]="centroSeleccionado()"
-  [progreso]="progresoSignal()"
-  [seccionesGroups]="seccionesGroups"
-  [seccionesColapsadas]="seccionesColapsadas"
-  [fotosPorSeccionBase64]="fotosPorSeccionBase64"
-  [guardando]="guardando"
-  [onCerrar]="volver"
-  (toggleSeccion)="toggleSeccion($event)"
-  (agregarFoto)="agregarFotos($event.event, $event.secIdx)"
-  (eliminarFoto)="eliminarFoto($event.secIdx, $event.fotoIdx)"
-  (descargarFoto)="descargarFoto($event)"
-  (generarPDF)="generarPDF()">
-</app-informe>
+@if (obraForm) {
+  <app-informe
+    [formGroup]="obraForm"
+    [centro]="centroSeleccionado()"
+    [progreso]="progresoSignal()"
+    [seccionesGroups]="seccionesGroups"
+    [seccionesColapsadas]="seccionesColapsadas"
+    [fotosPorSeccionBase64]="fotosPorSeccionBase64"
+    [guardando]="guardando"
+    [onCerrar]="volver"
+    (toggleSeccion)="toggleSeccion($event)"
+    (agregarFoto)="agregarFotos($event.event, $event.secIdx)"
+    (eliminarFoto)="eliminarFoto($event.secIdx, $event.fotoIdx)"
+    (descargarFoto)="descargarFoto($event)"
+    (generarPDF)="generarPDF()">
+  </app-informe>
+} @else {
+  <div class="loading-container">
+    <p>Cargando informe...</p>
+  </div>
+}

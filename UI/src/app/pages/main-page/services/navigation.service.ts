@@ -26,15 +26,23 @@ export class ServicioNavegacion {
     await this.router.navigate(['/']);
   }
 
-  async seleccionarCentro(nombre: string): Promise<void> {
+  async seleccionarCentro(nombre: string, cuatrimestre?: string): Promise<void> {
     this.centroSeleccionado.set(nombre);
     this.vistaActual.set('formulario');
-    await this.router.navigate(['/informe']);
+    if (cuatrimestre) {
+      await this.router.navigate(['/informe', cuatrimestre, nombre]);
+    } else {
+      await this.router.navigate(['/informe']);
+    }
   }
 
-  async irAFormulario(): Promise<void> {
+  async irAFormulario(cuatrimestre?: string, centro?: string): Promise<void> {
     this.vistaActual.set('formulario');
-    await this.router.navigate(['/informe']);
+    if (cuatrimestre && centro) {
+      await this.router.navigate(['/informe', cuatrimestre, centro]);
+    } else {
+      await this.router.navigate(['/informe']);
+    }
   }
 
   async reset(): Promise<void> {

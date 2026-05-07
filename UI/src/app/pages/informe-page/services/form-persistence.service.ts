@@ -1,4 +1,4 @@
-﻿// form-persistence.service.ts (completo)
+// form-persistence.service.ts (completo)
 import { Injectable, WritableSignal, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ServicioBaseDeDatos } from '../../main-page/services/database.service';
@@ -140,6 +140,14 @@ export class ServicioPersistenciaFormulario {
     await this.pdfService.generarPDF(datos);
     await this.navService.reset();
     alert('PDF generado y guardado correctamente');
+  }
+
+  async buscarPorCuatrimestreYCentro(cuatrimestre: string, centro: string): Promise<InformeGuardado | null> {
+    const informes = await firstValueFrom(this.dbService.obtenerTodos$());
+    return informes.find(inf =>
+      inf.cuatrimestre === cuatrimestre &&
+      inf.nombreObra.toLowerCase() === centro.toLowerCase()
+    ) || null;
   }
 
   private restaurarSeccionGuardada(seccionGuardada: any): { seccionGroup: FormGroup; fotos: Foto[] } {

@@ -1,4 +1,4 @@
-﻿import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -49,7 +49,7 @@ export class MainPageComponent implements OnDestroy {
       this.configurarAutoGuardado(result.obraForm, () =>
         this.persistService.soloGuardar(result.obraForm, result.fotosPorSeccionBase64),
       );
-      await this.navService.irAFormulario();
+      await this.navService.irAFormulario(inf.cuatrimestre, inf.nombreObra);
     }
   }
 

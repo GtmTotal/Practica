@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 import { ServicioNavegacion } from '../main-page/services/navigation.service';
 import { ServicioCuatrimestre } from '../main-page/services/cuatrimestre.service';
@@ -71,15 +72,32 @@ export class InformePageComponent implements OnDestroy {
     private fotoManager: ServicioGestionFotografias,
     private initService: ServicioInicializacionFormulario,
     private persistService: ServicioPersistenciaFormulario,
+    private route: ActivatedRoute,
   ) { }
 
   async ngOnInit() {
     this.persistService.cargarHistorial().subscribe();
 
-    // Recuperar estado al refrescar si hay un centro seleccionado pero no hay formulario
-    const centro = this.navService.centroSeleccionado();
-    if (centro && !this.obraForm) {
-      await this.seleccionarCentro(centro);
+    // 1. Prioridad: Parámetros en la URL (BOSS requirements)
+    const cuatriParam = this.route.snapshot.paramMap.get('cuatrimestre');
+    const centroParam = this.route.snapshot.paramMap.get('centro');
+
+    if (cuatriParam && centroParam) {
+      const informeExistente = await this.persistService.buscarPorCuatrimestreYCentro(cuatriParam, centroParam);
+      if (informeExistente) {
+        await this.editarInforme(informeExistente);
+      } else {
+        // Si no existe, inicializar uno nuevo con ese centro y cuatrimestre
+        await this.seleccionarCentro(centroParam);
+        this.obraForm?.get('cuatrimestre')?.setValue(cuatriParam);
+      }
+      return;
+    }
+
+    // 2. Segunda prioridad: Estado persistido en navService (Refresh)
+    const centroPersistido = this.navService.centroSeleccionado();
+    if (centroPersistido && !this.obraForm) {
+      await this.seleccionarCentro(centroPersistido);
     }
   }
 

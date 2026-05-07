@@ -6,5 +6,6 @@ import { InformePageComponent } from './pages/informe-page/informe-page';
 export const routes: Routes = [
   { path: '', component: MainPageComponent },
   { path: 'informe', component: InformePageComponent },
+  { path: 'informe/:cuatrimestre/:centro', component: InformePageComponent },
   { path: '**', redirectTo: '' },
 ];
