@@ -6,17 +6,17 @@ import { CampoMedicion } from '../../config.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioInicializacionFormulario {
-  obraForm!: FormGroup;
+  obraForm = signal<FormGroup | null>(null);
   fotosPorSeccionBase64: WritableSignal<Foto[]>[] = [];
   seccionesColapsadas: boolean[] = [];
 
   constructor(
     private fb: FormBuilder,
     private servicioConfiguracionCentros: ServicioConfiguracionCentros,
-  ) {}
+  ) { }
 
   async inicializarFormulario(nombre: string, cuatrimestre: string | null = null): Promise<void> {
-    this.obraForm = this.fb.group({
+    const form = this.fb.group({
       id: [null],
       nombreObra: [nombre, Validators.required],
       tecnico: ['', Validators.required],
@@ -27,6 +27,8 @@ export class ServicioInicializacionFormulario {
       protegido: [false]
     });
 
+    this.obraForm.set(form);
+
     this.fotosPorSeccionBase64 = [];
     this.seccionesColapsadas = [];
 
@@ -34,17 +36,23 @@ export class ServicioInicializacionFormulario {
     if (centroConfig) {
       // Actualizamos al nombre real (oficial) del centro si la API nos devuelve uno
       if (centroConfig.nombre) {
-        this.obraForm.get('nombreObra')?.setValue(centroConfig.nombre);
+        const form = this.obraForm();
+        if (form) {
+          form.get('nombreObra')?.setValue(centroConfig.nombre);
+        }
       }
 
       if (centroConfig.secciones) {
         const bombas = centroConfig.bombasQuimicas || [];
         centroConfig.secciones.forEach((seccionTemplate: any) => {
-          const seccionGroup = this.agregarSeccion(seccionTemplate, bombas);
-          (this.obraForm.get('secciones') as FormArray).push(seccionGroup);
-          this.fotosPorSeccionBase64.push(signal(seccionTemplate.fotos || []));
-          this.seccionesColapsadas.push(false);
-        });
+        const seccionGroup = this.agregarSeccion(seccionTemplate, bombas);
+        const form = this.obraForm();
+        if (form) {
+          (form.get('secciones') as FormArray).push(seccionGroup);
+        }
+        this.fotosPorSeccionBase64.push(signal(seccionTemplate.fotos || []));
+        this.seccionesColapsadas.push(false);
+      });
       }
     }
   }
@@ -54,7 +62,7 @@ export class ServicioInicializacionFormulario {
     fotosPorSeccionBase64: WritableSignal<Foto[]>[],
     seccionesColapsadas: boolean[]
   ): void {
-    this.obraForm = obraForm;
+    this.obraForm.set(obraForm);
     this.fotosPorSeccionBase64 = fotosPorSeccionBase64;
     this.seccionesColapsadas = seccionesColapsadas;
   }

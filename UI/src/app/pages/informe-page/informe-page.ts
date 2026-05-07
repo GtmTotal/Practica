@@ -36,7 +36,7 @@ export class InformePageComponent implements OnDestroy {
     return this.progresoSignalEstado;
   }
   get obraForm() {
-    return this.initService.obraForm;
+    return this.initService.obraForm();
   }
   get informesGuardados() {
     return this.persistService.informesGuardados;
@@ -49,7 +49,8 @@ export class InformePageComponent implements OnDestroy {
   }
 
   get secciones(): FormArray {
-    const seccionesControl = this.initService.obraForm?.get('secciones');
+    const form = this.obraForm;
+    const seccionesControl = form?.get('secciones');
     return seccionesControl instanceof FormArray ? seccionesControl : this.fb.array([]);
   }
 
@@ -135,20 +136,27 @@ export class InformePageComponent implements OnDestroy {
     await this.navService.seleccionarCentro(nombre, cuatrimestre);
     await this.initService.inicializarFormulario(nombre, cuatrimestre || null);
     this.configurarProgreso();
-    this.configurarAutoGuardado(() =>
-      this.persistService.soloGuardar(this.obraForm, this.fotosPorSeccionBase64),
-    );
+    this.configurarAutoGuardado(() => {
+      const form = this.obraForm;
+      if (form) {
+        this.persistService.soloGuardar(form, this.fotosPorSeccionBase64);
+      }
+    });
   }
 
   async agregarFotos(event: Event, secIdx: number) {
+    const form = this.obraForm;
+    if (!form) return;
     await this.fotoManager.agregarFotosDesdeInput(event, this.fotosPorSeccionBase64[secIdx], () =>
-      this.persistService.soloGuardar(this.obraForm, this.fotosPorSeccionBase64),
+      this.persistService.soloGuardar(form, this.fotosPorSeccionBase64),
     );
   }
 
   async eliminarFoto(secIdx: number, fotoIdx: number) {
+    const form = this.obraForm;
+    if (!form) return;
     await this.fotoManager.eliminarFoto(this.fotosPorSeccionBase64[secIdx], fotoIdx, () =>
-      this.persistService.soloGuardar(this.obraForm, this.fotosPorSeccionBase64),
+      this.persistService.soloGuardar(form, this.fotosPorSeccionBase64),
     );
   }
 
@@ -165,9 +173,12 @@ export class InformePageComponent implements OnDestroy {
         result.seccionesColapsadas,
       );
       this.configurarProgreso();
-      this.configurarAutoGuardado(() =>
-        this.persistService.soloGuardar(this.obraForm, this.fotosPorSeccionBase64),
-      );
+      this.configurarAutoGuardado(() => {
+        const form = this.obraForm;
+        if (form) {
+          this.persistService.soloGuardar(form, this.fotosPorSeccionBase64);
+        }
+      });
       await this.navService.irAFormulario(inf.cuatrimestre, inf.nombreObra);
     }
   }
@@ -188,8 +199,10 @@ export class InformePageComponent implements OnDestroy {
 
   async generarPDF() {
     this._guardando = true;
+    const form = this.obraForm;
+    if (!form) return;
     try {
-      await this.persistService.generarPDF(this.obraForm, this.fotosPorSeccionBase64);
+      await this.persistService.generarPDF(form, this.fotosPorSeccionBase64);
     } catch (error) {
       console.error('Error al generar PDF:', error);
       alert('Error al generar el PDF. Revisa la consola.');
@@ -206,17 +219,24 @@ export class InformePageComponent implements OnDestroy {
 
   private configurarProgreso() {
     this.progressSub?.unsubscribe();
-    if (!this.obraForm) return;
-    this.progresoSignalEstado.set(calcularProgresoFormulario(this.obraForm));
-    this.progressSub = this.obraForm.valueChanges.pipe(debounceTime(100)).subscribe(() => {
-      this.progresoSignalEstado.set(calcularProgresoFormulario(this.obraForm));
+    const form = this.obraForm;
+    if (!form) return;
+
+    this.progresoSignalEstado.set(calcularProgresoFormulario(form));
+
+    this.progressSub = form.valueChanges.subscribe(() => {
+      this.progresoSignalEstado.set(calcularProgresoFormulario(form));
     });
   }
 
   private configurarAutoGuardado(onSave: () => void, delay = 2000) {
     this.autoSaveSub?.unsubscribe();
-    if (!this.obraForm) return;
-    this.autoSaveSub = this.obraForm.valueChanges.pipe(debounceTime(delay)).subscribe(() => onSave());
+    const form = this.obraForm;
+    if (!form) return;
+
+    this.autoSaveSub = form.valueChanges
+      .pipe(debounceTime(delay))
+      .subscribe(() => onSave());
   }
 
   ngOnDestroy() {
