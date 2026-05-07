@@ -5,7 +5,7 @@ import { InformeGuardado } from '../../informe.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioBaseDeDatos {
-  private readonly apiBase = 'http://192.168.1.135:5000/api';
+  private readonly apiBase = `http://${window.location.hostname}:5000/api`;
 
   constructor(private http: HttpClient) {}
 
