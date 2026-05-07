@@ -39,7 +39,7 @@ export class InformePageComponent implements OnDestroy {
     return this.initService.obraForm;
   }
   get informesGuardados() {
-    return this.persistService.informesGuardados;
+    return this.persistService.historial();
   }
   get fotosPorSeccionBase64() {
     return this.initService.fotosPorSeccionBase64;
@@ -114,7 +114,7 @@ export class InformePageComponent implements OnDestroy {
   }
 
   get informesPorCuatrimestre() {
-    return this.cuatriService.getInformesPorCuatrimestre(this.informesGuardados());
+    return this.cuatriService.getInformesPorCuatrimestre(this.informesGuardados);
   }
 
   getSeccionAsFormGroup(seccion: any): FormGroup {
@@ -174,7 +174,7 @@ export class InformePageComponent implements OnDestroy {
   }
 
   async crearCuatrimestre() {
-    await this.cuatriService.crearCuatrimestreConUI(this.informesGuardados());
+    await this.cuatriService.crearCuatrimestreConUI(this.informesGuardados);
     this.persistService.cargarHistorial().subscribe();
   }
 
