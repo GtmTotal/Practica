@@ -1,4 +1,4 @@
-﻿import { Component, OnDestroy, signal } from '@angular/core';
+import { Component, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -159,20 +159,22 @@ export class InformePageComponent implements OnDestroy {
     }
   }
 
-  toggleSeccion(idx: number) {
-    if (idx >= 0 && idx < this.seccionesColapsadas.length) {
-      this.seccionesColapsadas[idx] = !this.seccionesColapsadas[idx];
+
+  async generarPDF() {
+    this._guardando = true;
+    try {
+      await this.persistService.generarPDF(this.obraForm, this.fotosPorSeccionBase64);
+    } catch (error) {
+      console.error('Error al generar PDF:', error);
+      alert('Error al generar el PDF. Revisa la consola.');
+    } finally {
+      this._guardando = false;
     }
   }
 
-  onEstadoChange(tarea: any, tipo: string) {
-    if (tipo === 'rev') return;
-    const ok = tarea.get('ok');
-    const noOk = tarea.get('noOk');
-    if (tipo === 'ok' && ok?.value === true) {
-      noOk?.setValue(false, { emitEvent: false });
-    } else if (tipo === 'noOk' && noOk?.value === true) {
-      ok?.setValue(false, { emitEvent: false });
+  toggleSeccion(idx: number) {
+    if (idx >= 0 && idx < this.seccionesColapsadas.length) {
+      this.seccionesColapsadas[idx] = !this.seccionesColapsadas[idx];
     }
   }
 

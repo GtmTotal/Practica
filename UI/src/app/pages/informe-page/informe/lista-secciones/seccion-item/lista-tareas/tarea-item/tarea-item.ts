@@ -27,4 +27,16 @@ getBombasQuimicas(): FormArray | null {
 
   // Método para obtener campos de medición (si existen)
   getCamposArray() { return this.tareaGroup().get('campos') as any; }
+
+  toggleOk() {
+    if (this.tareaGroup().get('ok')?.value) {
+      this.tareaGroup().get('noOk')?.setValue(false);
+    }
+  }
+
+  toggleNoOk() {
+    if (this.tareaGroup().get('noOk')?.value) {
+      this.tareaGroup().get('ok')?.setValue(false);
+    }
+  }
 }

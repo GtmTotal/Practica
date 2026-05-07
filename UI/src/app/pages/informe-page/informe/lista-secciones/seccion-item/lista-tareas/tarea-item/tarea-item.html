@@ -8,11 +8,11 @@
         <span class="box-label">REV</span>
       </label>
       <label class="check-inspeccion ok">
-        <input type="checkbox" formControlName="ok">
+        <input type="checkbox" formControlName="ok" (change)="toggleOk()">
         <span class="box-label">OK</span>
       </label>
       <label class="check-inspeccion nook">
-        <input type="checkbox" formControlName="noOk">
+        <input type="checkbox" formControlName="noOk" (change)="toggleNoOk()">
         <span class="box-label">NO OK</span>
       </label>
     </div>

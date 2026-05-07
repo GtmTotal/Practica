@@ -1,4 +1,4 @@
-﻿import { Injectable, signal, WritableSignal } from '@angular/core';
+import { Injectable, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Foto } from '../foto.interface';
 import { ServicioConfiguracionCentros } from '../../services/config-centros.service';
@@ -42,7 +42,6 @@ export class ServicioInicializacionFormulario {
     }
   }
 
-  // MÃ©todo para restaurar datos despuÃ©s de editar un informe
   setFormData(
     obraForm: FormGroup,
     fotosPorSeccionBase64: WritableSignal<Foto[]>[],
@@ -96,6 +95,7 @@ export class ServicioInicializacionFormulario {
           campos: this.fb.array((tareaTemplate.campos || []).map((c: any) => this.crearCampo(c)))
         });
       }
+
       tareasArray.push(tareaGroup);
     });
     return seccionGroup;
@@ -109,6 +109,3 @@ export class ServicioInicializacionFormulario {
     });
   }
 }
-
-
-
