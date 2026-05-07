@@ -108,45 +108,56 @@ export class ServicioPersistenciaFormulario {
     seccionesColapsadas: boolean[];
   } | null> {
     try {
+      console.log('[DEBUG-DEEP] Iniciando editarInforme para ID:', inf.id);
       const completo = await this.dbService.obtenerPorId(inf.id);
-    if (!completo) return null;
+      console.log('[DEBUG-DEEP] Resultado de obtenerPorId:', completo ? 'ENCONTRADO' : 'NULL');
+      
+      if (!completo) return null;
 
-    const nombreCentro = inf.nombreObra || completo.nombreObra || completo.nombre_obra;
-    this.navService.centroSeleccionado.set(nombreCentro);
+      const nombreCentro = inf.nombreObra || completo.nombreObra || completo.nombre_obra;
+      console.log('[DEBUG-DEEP] Nombre del centro:', nombreCentro);
+      this.navService.centroSeleccionado.set(nombreCentro);
 
-    const obraForm = this.fb.group({
-      id: [completo.id],
-      nombreObra: [nombreCentro],
-      tecnico: [completo.tecnico || ''],
-      fecha: [completo.fecha || ''],
-      cuatrimestre: [completo.cuatrimestre || ''],
-      secciones: this.fb.array([]),
-      conclusiones: [completo.conclusiones || '']
-    });
+      console.log('[DEBUG-DEEP] Construyendo FormGroup inicial...');
+      const obraForm = this.fb.group({
+        id: [completo.id],
+        nombreObra: [nombreCentro],
+        tecnico: [completo.tecnico || ''],
+        fecha: [completo.fecha || ''],
+        cuatrimestre: [completo.cuatrimestre || ''],
+        secciones: this.fb.array([]),
+        conclusiones: [completo.conclusiones || '']
+      });
 
     const fotosPorSeccionBase64: WritableSignal<Foto[]>[] = [];
     const seccionesColapsadas: boolean[] = [];
 
     if (completo.secciones?.length) {
-      completo.secciones.forEach((sec: any) => {
+      console.log(`[DEBUG-DEEP] Restaurando ${completo.secciones.length} secciones guardadas...`);
+      completo.secciones.forEach((sec: any, idx: number) => {
+        console.log(`[DEBUG-DEEP] Restaurando sección ${idx + 1}: ${sec.titulo}`);
         const { seccionGroup, fotos } = this.restaurarSeccionGuardada(sec);
         (obraForm.get('secciones') as FormArray).push(seccionGroup);
         fotosPorSeccionBase64.push(signal(fotos));
         seccionesColapsadas.push(false);
       });
+      console.log('[DEBUG-DEEP] Secciones restauradas con éxito.');
     } else {
-      console.log('Recuperando configuracion para:', nombreCentro);
+      console.log('[DEBUG-DEEP] No hay secciones guardadas. Buscando plantilla oficial...');
       const centroConfig = await this.servicioConfiguracionCentros.getByCentro(nombreCentro);
       
       if (centroConfig) {
-        centroConfig.secciones.forEach((template: any) => {
+        console.log('[DEBUG-DEEP] Plantilla encontrada. Creando secciones desde template...');
+        centroConfig.secciones.forEach((template: any, idx: number) => {
+          console.log(`[DEBUG-DEEP] Creando sección ${idx + 1} desde template: ${template.titulo}`);
           const seccionGroup = this.crearSeccionDesdeTemplate(template);
           (obraForm.get('secciones') as FormArray).push(seccionGroup);
           fotosPorSeccionBase64.push(signal([]));
           seccionesColapsadas.push(false);
         });
+        console.log('[DEBUG-DEEP] Formulario inicializado desde plantilla.');
       } else {
-        console.error('No hay configuracion para', nombreCentro);
+        console.error('[ERROR] No hay configuracion para', nombreCentro);
         return null;
       }
     }

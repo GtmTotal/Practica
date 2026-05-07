@@ -84,22 +84,25 @@ export class InformePageComponent implements OnDestroy {
 
     if (cuatriParam && centroParam) {
       try {
-        console.log(`Buscando informe para: ${cuatriParam} - ${centroParam}`);
+        console.log(`[DEBUG] Parámetros URL detectados: ${cuatriParam} - ${centroParam}`);
         
-        // CRÍTICO: Establecer el centro seleccionado para que los servicios sepan qué cargar
         this.navService.centroSeleccionado.set(centroParam);
         
+        console.log(`[DEBUG] Buscando en DB local...`);
         const informeExistente = await this.persistService.buscarPorCuatrimestreYCentro(cuatriParam, centroParam);
         
         if (informeExistente) {
-          console.log('Informe encontrado, editando...');
+          console.log('[DEBUG] Informe ENCONTRADO en DB. Abriendo para editar...', informeExistente);
           await this.editarInforme(informeExistente);
+          console.log('[DEBUG] Edición inicializada con éxito.');
         } else {
-          console.log('Informe no encontrado, creando nuevo...');
+          console.log('[DEBUG] Informe NO encontrado en DB. Creando uno nuevo desde plantilla...');
           await this.seleccionarCentro(centroParam, cuatriParam);
+          console.log('[DEBUG] Nuevo informe creado con éxito.');
         }
       } catch (error) {
-        console.error('Error al inicializar desde URL:', error);
+        console.error('[ERROR] Fallo crítico al inicializar desde URL:', error);
+        // Intentar al menos mostrar el formulario vacío para no bloquear la pantalla
         this.navService.centroSeleccionado.set(centroParam);
         await this.seleccionarCentro(centroParam, cuatriParam);
       }
