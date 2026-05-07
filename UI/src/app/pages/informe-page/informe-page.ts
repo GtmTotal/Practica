@@ -71,7 +71,7 @@ export class InformePageComponent implements OnDestroy {
     private fotoManager: ServicioGestionFotografias,
     private initService: ServicioInicializacionFormulario,
     private persistService: ServicioPersistenciaFormulario,
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.persistService.cargarHistorial().subscribe();
@@ -160,17 +160,6 @@ export class InformePageComponent implements OnDestroy {
   }
 
 
-  async generarPDF() {
-    this._guardando = true;
-    try {
-      await this.persistService.generarPDF(this.obraForm, this.fotosPorSeccionBase64);
-    } catch (error) {
-      console.error('Error al generar PDF:', error);
-      alert('Error al generar el PDF. Revisa la consola.');
-    } finally {
-      this._guardando = false;
-    }
-  }
 
   toggleSeccion(idx: number) {
     if (idx >= 0 && idx < this.seccionesColapsadas.length) {
