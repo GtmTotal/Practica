@@ -207,8 +207,8 @@ export class ServicioReporteDocumento {
         const by = y + (rowH / 2) - (badgeH / 2);
         
         let statusLabel = 'PENDIENTE';
-        let statusColor = [226, 232, 240]; // Gray
-        let textColor = [100, 116, 139];
+        let statusColor: [number, number, number] = [226, 232, 240]; // Gray tuple
+        let textColor: [number, number, number] = [100, 116, 139];   // Muted tuple
 
         if (punto.ok) {
           statusLabel = 'OK';
@@ -224,11 +224,11 @@ export class ServicioReporteDocumento {
           textColor = C.WHITE;
         }
 
-        doc.setFillColor(...(statusColor as any));
+        doc.setFillColor(...statusColor);
         doc.roundedRect(bx, by, badgeW, badgeH, 1, 1, 'F');
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(6);
-        doc.setTextColor(...(textColor as any));
+        doc.setTextColor(...textColor);
         doc.text(statusLabel, bx + badgeW/2, by + 3.5, { align: 'center' });
 
         // ID Manual (REF)
