@@ -11,22 +11,22 @@ import { CuatrimestreComponent } from './cuatrimestre/cuatrimestre';
   styleUrls: ['./lista-cuatrimestres.css'],
 })
 export class ListaCuatrimestresComponent {
-  private cuatrimestresColapsados = new Set<string>();
+  private cuatrimestresExpandidos = new Set<string>();
 
   grupos = input<GrupoCuatrimestre[]>([]);
   eliminarCuatrimestre = output<string>();
   editarInforme = output<InformeGuardado>();
 
   toggleCuatrimestre(clave: string) {
-    if (this.cuatrimestresColapsados.has(clave)) {
-      this.cuatrimestresColapsados.delete(clave);
+    if (this.cuatrimestresExpandidos.has(clave)) {
+      this.cuatrimestresExpandidos.delete(clave);
     } else {
-      this.cuatrimestresColapsados.add(clave);
+      this.cuatrimestresExpandidos.add(clave);
     }
   }
 
   estaColapsado(clave: string) {
-    return this.cuatrimestresColapsados.has(clave);
+    return !this.cuatrimestresExpandidos.has(clave);
   }
 
   onToggle(clave: string) {

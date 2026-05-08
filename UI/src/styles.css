@@ -105,30 +105,31 @@ body {
 }
 
 .progreso-container-mini {
-  background: var(--gray-100);
-  border-radius: 100px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 4px;
-  /* Más fina */
-  position: relative;
-  margin-top: 6px;
-  overflow: hidden;
+  background: var(--gray-100);
+  z-index: 100;
 }
-
 .progreso-bar-fill {
   background: linear-gradient(90deg, var(--success), #34d399);
   height: 100%;
   width: 0%;
-  border-radius: 100px;
-  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.3s ease;
 }
-
 .progreso-texto {
   position: absolute;
-  right: 0;
-  top: -22px;
-  font-size: 0.7rem;
-  font-weight: 600;
+  right: 16px;
+  top: 8px;
+  font-size: 0.65rem;
+  font-weight: 700;
   color: var(--success-dark);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 4px;
+  pointer-events: none;
 }
 
 .header-inputs-grid {
