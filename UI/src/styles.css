@@ -272,8 +272,10 @@ body {
 
 .inspeccion-controles {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .check-inspeccion {
@@ -731,7 +733,8 @@ h2 {
   }
 
   .inspeccion-controles {
-    justify-content: flex-end;
-    margin-top: 8px;
+    justify-content: center;
+    margin-top: 12px;
+    margin-bottom: 8px;
   }
 }
