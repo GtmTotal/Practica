@@ -36,16 +36,20 @@ export interface BombaPDF {
   porcentaje: string;
 }
 
-// Colores (azules para el resto, pero cabecera ahora serÃ¡ blanco/negro)
-const COLOR_VERDE   = [24, 95, 165]   as [number, number, number];   // Azul primario
-const COLOR_VERDE_L = [232, 240, 250] as [number, number, number];   // Azul muy claro
-const COLOR_AZUL_L  = [238, 246, 255] as [number, number, number];
-const COLOR_WARN    = [255, 246, 224] as [number, number, number];
-const COLOR_GRIS    = [92, 99, 96]    as [number, number, number];
-const COLOR_BORDE   = [216, 219, 217] as [number, number, number];
-const COLOR_TEXT    = [26, 28, 27]    as [number, number, number];
-const COLOR_BLANCO  = [255, 255, 255] as [number, number, number];
-const COLOR_NEGRO   = [0, 0, 0]       as [number, number, number];
+// --- CONFIGURACIÓN ESTÉTICA ---
+const C = {
+  PRIMARY:      [15, 78, 150]   as [number, number, number],   // Azul corporativo elegante
+  SUCCESS:      [22, 163, 74]   as [number, number, number],   // Verde éxito
+  DANGER:       [220, 38, 38]   as [number, number, number],   // Rojo peligro
+  WARN:         [217, 119, 6]   as [number, number, number],   // Ámbar
+  TEXT_MAIN:    [15, 23, 42]    as [number, number, number],   // Slate 900
+  TEXT_MUTED:   [100, 116, 139] as [number, number, number],   // Slate 500
+  BG_LIGHT:     [248, 250, 252] as [number, number, number],   // Slate 50
+  BG_ACCENT:    [239, 246, 255] as [number, number, number],   // Blue 50
+  BORDER:       [226, 232, 240] as [number, number, number],   // Slate 200
+  WHITE:        [255, 255, 255] as [number, number, number],
+  BLACK:        [0, 0, 0]       as [number, number, number],
+};
 
 @Injectable({ providedIn: 'root' })
 export class ServicioReporteDocumento {
@@ -53,303 +57,333 @@ export class ServicioReporteDocumento {
 
   async generarPDF(datos: DatosPDF): Promise<void> {
     const { jsPDF } = await import('jspdf');
+    
+    // Cargar logo local si no está cargado
     if (!this.logoBase64) {
-      const logoUrl = 'https://media.licdn.com/dms/image/v2/C560BAQFKEPrMIqxr6Q/company-logo_200_200/company-logo_200_200/0/1631380192679?e=2147483647&v=beta&t=Pai3UOPG2M_bOyZ2VHVEwS4Km4DGPJJFb_BJsqAatmY'
       try {
-        this.logoBase64 = await this.convertImageToBase64(logoUrl);
-        console.log('Logo cargado correctamente');
+        this.logoBase64 = await this.convertImageToBase64('/logo-gtm.png');
       } catch (err) {
-        console.warn('No se pudo cargar el logo:', err);
+        console.warn('No se pudo cargar el logo local:', err);
       }
     }
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const PW = 210;
-    const MX = 14;
+    const MX = 15;
     const CW = PW - MX * 2;
     let y = 0;
 
-    const nuevaPagina = () => {
-      doc.addPage();
-      y = 14;
-      this.dibujarEncabezadoMini(doc, datos, MX, PW);
-      y = 24;
-    };
-
-    const checkEspacio = (necesario: number) => {
-      if (y + necesario > 275) nuevaPagina();
-    };
-
     const X = (texto: string) => texto ?? '';
 
-    // â”€â”€ PORTADA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    // Fondo de cabecera: BLANCO (antes azul)
-    doc.setFillColor(...COLOR_BLANCO);
-    doc.rect(0, 0, PW, 55, 'F');
+    const drawHeader = (isFirstPage: boolean) => {
+      if (isFirstPage) {
+        // --- PORTADA MODERNA ---
+        doc.setFillColor(...C.BG_LIGHT);
+        doc.rect(0, 0, PW, 60, 'F');
+        
+        // Logo
+        if (this.logoBase64) {
+          doc.addImage(this.logoBase64, 'PNG', PW - MX - 40, 10, 40, 40, undefined, 'FAST');
+        }
 
-    if (this.logoBase64) {
-      const logoWidth = 35;
-      const logoHeight = 35;
-      const logoX = PW - MX - logoWidth;
-      const logoY = 5;
-      doc.addImage(this.logoBase64, 'PNG', logoX, logoY, logoWidth, logoHeight, undefined, 'FAST');
-    }
+        // Títulos
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...C.PRIMARY);
+        doc.setFontSize(24);
+        doc.text('INFORME TÉCNICO', MX, 25);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...C.TEXT_MUTED);
+        doc.setFontSize(11);
+        doc.text('MANTENIMIENTO PREVENTIVO DE INSTALACIONES', MX, 32);
 
-    // Texto de cabecera: NEGRO (antes blanco)
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...C.TEXT_MAIN);
+        doc.setFontSize(18);
+        doc.text(X(datos.nombreObra).toUpperCase(), MX, 45);
+
+        // Línea de acento
+        doc.setDrawColor(...C.PRIMARY);
+        doc.setLineWidth(1.5);
+        doc.line(MX, 52, MX + 20, 52);
+
+        y = 70;
+      } else {
+        // --- MINI ENCABEZADO PAGINAS SIGUIENTES ---
+        doc.setFillColor(...C.BG_LIGHT);
+        doc.rect(0, 0, PW, 15, 'F');
+        doc.setDrawColor(...C.BORDER);
+        doc.line(0, 15, PW, 15);
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(...C.PRIMARY);
+        doc.text(X(datos.nombreObra).toUpperCase(), MX, 10);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...C.TEXT_MUTED);
+        doc.text(`${datos.fecha} | ${datos.tecnico}`, PW - MX, 10, { align: 'right' });
+        y = 25;
+      }
+    };
+
+    const checkPage = (h: number) => {
+      if (y + h > 275) {
+        doc.addPage();
+        drawHeader(false);
+      }
+    };
+
+    // 1. Dibujar primera cabecera
+    drawHeader(true);
+
+    // 2. Metadata (Técnico y Fecha)
+    doc.setFillColor(...C.BG_ACCENT);
+    doc.roundedRect(MX, y, CW, 20, 2, 2, 'F');
+    
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(20);
-    doc.setTextColor(...COLOR_NEGRO);
-    doc.text('INFORME DE MANTENIMIENTO', MX, 18);
-    doc.setFontSize(13);
+    doc.setTextColor(...C.PRIMARY);
+    doc.text('TÉCNICO RESPONSABLE', MX + 6, y + 7);
+    doc.text('FECHA DEL INFORME', MX + CW/2 + 6, y + 7);
+
+    doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
-    doc.text('Servicio de Mantenimiento Preventivo', MX, 27);
-    doc.setFontSize(16);
-    doc.setFont('helvetica', 'bold');
-    doc.text(X(datos.nombreObra), MX, 37);
+    doc.setTextColor(...C.TEXT_MAIN);
+    doc.text(X(datos.tecnico) || 'No especificado', MX + 6, y + 14);
+    doc.text(X(datos.fecha) || 'No especificada', MX + CW/2 + 6, y + 14);
+    y += 30;
 
-    y = 62;
-    doc.setFillColor(...COLOR_VERDE_L);
-    doc.roundedRect(MX, y, CW, 22, 3, 3, 'F');
-    doc.setDrawColor(...COLOR_BORDE);
-    doc.roundedRect(MX, y, CW, 22, 3, 3, 'S');
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...COLOR_GRIS);
-    doc.text('TÉCNICO RESPONSABLE', MX + 4, y + 7);
-    doc.text('FECHA', MX + CW / 2 + 4, y + 7);
-    doc.setFontSize(12);
-    doc.setTextColor(...COLOR_TEXT);
-    doc.text(X(datos.tecnico) || '—', MX + 4, y + 16);
-    doc.text(X(datos.fecha) || '—', MX + CW / 2 + 4, y + 16);
-    y += 35;
-
-    // â”€â”€ SECCIONES (sin cambios) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // 3. Secciones
     for (const seccion of datos.secciones) {
-      checkEspacio(25);
-
-      doc.setFillColor(...COLOR_VERDE);
-      doc.rect(MX, y, CW, 8, 'F');
+      checkPage(20);
+      
+      // Título de Sección
+      doc.setDrawColor(...C.PRIMARY);
+      doc.setLineWidth(1);
+      doc.line(MX, y, MX + CW, y);
+      
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.setTextColor(...COLOR_BLANCO);
-      doc.text(X(seccion.tituloSeccion).toUpperCase(), MX + 3, y + 5.5);
-      y += 10;
+      doc.setFontSize(12);
+      doc.setTextColor(...C.PRIMARY);
+      doc.text(X(seccion.tituloSeccion).toUpperCase(), MX, y + 8);
+      y += 12;
 
-      doc.setFillColor(240, 242, 241);
-      doc.rect(MX, y, CW, 6, 'F');
-      doc.setFontSize(7.5);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...COLOR_GRIS);
-      doc.text('REV', MX + 2, y + 4.2);
-      doc.text('OK', MX + 11, y + 4.2);
-      doc.text('No Ok', MX + 19, y + 4.2);
-      doc.text('TAREA', MX + 32, y + 4.2);
+      // Encabezado de tabla
+      doc.setFillColor(...C.BG_LIGHT);
+      doc.rect(MX, y, CW, 7, 'F');
+      doc.setFontSize(7);
+      doc.setTextColor(...C.TEXT_MUTED);
+      doc.text('ESTADO', MX + 3, y + 4.5);
+      doc.text('REF', MX + 32, y + 4.5);
+      doc.text('DESCRIPCIÓN DE LA TAREA', MX + 45, y + 4.5);
       y += 7;
 
+      // Puntos/Tareas
+      let rowIdx = 0;
       for (const punto of seccion.puntos) {
-        const descLines = doc.splitTextToSize(X(punto.descripcionManual), CW - 38);
-        const noteLines = punto.notaPunto ? doc.splitTextToSize('Nota: ' + punto.notaPunto, CW - 38) : [];
+        const descLines = doc.splitTextToSize(X(punto.descripcionManual), CW - 50);
+        const noteLines = punto.notaPunto ? doc.splitTextToSize('Nota: ' + punto.notaPunto, CW - 50) : [];
+        
+        let contentH = descLines.length * 4.5 + 4;
+        if (punto.amperios || punto.hz || punto.bar || punto.porcentaje) contentH += 7;
+        if (punto.bombasQuimicas?.length) contentH += punto.bombasQuimicas.length * 5 + 4;
+        if (noteLines.length) contentH += noteLines.length * 4 + 2;
 
-        const campos: string[] = [];
-        if (punto.amperios)   campos.push(`${punto.amperios} A`);
-        if (punto.hz)         campos.push(`${punto.hz} HZ`);
-        if (punto.bar)        campos.push(`${punto.bar} Bar`);
-        if (punto.porcentaje) campos.push(`${punto.porcentaje} %`);
-        const medicionStr = campos.join('  /  ');
+        const rowH = Math.max(10, contentH);
+        checkPage(rowH + 5);
 
-        let contenidoH = 5;
-        contenidoH += descLines.length * 4.5;
-        if (medicionStr) contenidoH += 7;
-        if (punto.bombasQuimicas?.length) contenidoH += punto.bombasQuimicas.length * 6 + 4;
-        if (noteLines.length > 0) contenidoH += noteLines.length * 4.5 + 2;
+        // Zebra striping
+        if (rowIdx % 2 === 0) {
+          doc.setFillColor(252, 252, 252);
+          doc.rect(MX, y, CW, rowH, 'F');
+        }
+        
+        // Indicadores de estado (Círculos)
+        const iy = y + 3.5;
+        this.drawStatusCircle(doc, MX + 4, iy, 'REV', punto.revisado);
+        this.drawStatusCircle(doc, MX + 12, iy, 'OK', punto.ok);
+        this.drawStatusCircle(doc, MX + 20, iy, 'NO', punto.noOk);
 
-        const filaH = Math.max(12, contenidoH + 4);
-        checkEspacio(filaH + 2);
-
-        doc.setFillColor(punto.noOk ? 255 : 255, punto.noOk ? 245 : 255, punto.noOk ? 245 : 255);
-        doc.rect(MX, y, CW, filaH, 'F');
-        doc.setDrawColor(...COLOR_BORDE);
-        doc.line(MX, y + filaH, MX + CW, y + filaH);
-
-        const cy = y + 4;
-        this.dibujarCheck(doc, MX + 2, cy, punto.revisado, COLOR_VERDE);
-        this.dibujarCheck(doc, MX + 11, cy, punto.ok, COLOR_VERDE);
-        this.dibujarCheck(doc, MX + 20, cy, punto.noOk, [176, 28, 28]);
-
-        let currentY = y + 4.5;
+        // ID Manual
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(7.5);
-        doc.setTextColor(...COLOR_GRIS);
-        doc.text(X(punto.idManual), MX + 32, currentY);
+        doc.setFontSize(8);
+        doc.setTextColor(...C.TEXT_MUTED);
+        doc.text(X(punto.idManual), MX + 32, y + 5.5);
 
-        currentY += 4;
+        // Descripción
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
-        doc.setTextColor(...COLOR_TEXT);
-        doc.text(descLines, MX + 32, currentY);
-        currentY += descLines.length * 4.5 + 1;
+        doc.setFontSize(9);
+        doc.setTextColor(...C.TEXT_MAIN);
+        doc.text(descLines, MX + 45, y + 5.5);
+        let curY = y + 5.5 + (descLines.length * 4.5);
 
-        if (medicionStr) {
-          doc.setFillColor(...COLOR_AZUL_L);
-          doc.roundedRect(MX + 32, currentY, CW - 35, 5, 1, 1, 'F');
+        // Medidas (Badges)
+        const medValues: string[] = [];
+        if (punto.amperios) medValues.push(`${punto.amperios}A`);
+        if (punto.hz) medValues.push(`${punto.hz}Hz`);
+        if (punto.bar) medValues.push(`${punto.bar}Bar`);
+        if (punto.porcentaje) medValues.push(`${punto.porcentaje}%`);
+
+        if (medValues.length > 0) {
+          doc.setFillColor(...C.BG_ACCENT);
+          const badgeW = doc.getTextWidth(medValues.join('  •  ')) + 6;
+          doc.roundedRect(MX + 45, curY, badgeW, 5, 1, 1, 'F');
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(8);
-          doc.setTextColor(...COLOR_VERDE);
-          doc.text(medicionStr, MX + 34, currentY + 3.5);
-          currentY += 7;
+          doc.setFontSize(7.5);
+          doc.setTextColor(...C.PRIMARY);
+          doc.text(medValues.join('  •  '), MX + 48, curY + 3.5);
+          curY += 7;
         }
 
+        // Bombas Químicas
         if (punto.bombasQuimicas?.length) {
-          const bH = punto.bombasQuimicas.length * 6 + 2;
-          doc.setFillColor(...COLOR_WARN);
-          doc.roundedRect(MX + 32, currentY, CW - 35, bH, 1, 1, 'F');
-          let by = currentY + 4.5;
+          doc.setFont('helvetica', 'italic');
+          doc.setFontSize(7.5);
+          doc.setTextColor(...C.WARN);
           for (const b of punto.bombasQuimicas) {
-            const txt = `${b.nombre}: ${b.amperios || '—'} A / ${b.porcentaje || '—'} %`;
-            doc.setFontSize(7.5);
-            doc.setTextColor(154, 90, 0);
-            doc.text(txt, MX + 34, by);
-            by += 6;
+            doc.text(`â—‹ ${b.nombre}: ${b.amperios || '0'}A / ${b.porcentaje || '0'}%`, MX + 47, curY + 3);
+            curY += 5;
           }
-          currentY += bH + 2;
+          curY += 1;
         }
 
-        if (noteLines.length > 0) {
+        // Notas
+        if (noteLines.length) {
           doc.setFont('helvetica', 'italic');
           doc.setFontSize(8);
-          doc.setTextColor(80, 80, 80);
-          doc.text(noteLines, MX + 32, currentY + 1);
+          doc.setTextColor(100, 100, 100);
+          doc.text(noteLines, MX + 45, curY + 2);
+          curY += noteLines.length * 4 + 2;
         }
 
-        y += filaH;
+        // Separador fino
+        doc.setDrawColor(...C.BORDER);
+        doc.setLineWidth(0.1);
+        doc.line(MX, y + rowH, MX + CW, y + rowH);
+
+        y += rowH;
+        rowIdx++;
       }
 
+      // Observaciones de Sección
       if (seccion.observaciones?.trim()) {
         const obsLines = doc.splitTextToSize(seccion.observaciones, CW - 10);
-        const obsH = obsLines.length * 4.5 + 10;
-        checkEspacio(obsH + 5);
-        doc.setFillColor(248, 249, 248);
-        doc.rect(MX, y, CW, obsH, 'F');
-        doc.setDrawColor(...COLOR_BORDE);
-        doc.rect(MX, y, CW, obsH, 'S');
+        const obsH = obsLines.length * 4.5 + 8;
+        checkPage(obsH + 10);
+        
+        doc.setFillColor(...C.BG_LIGHT);
+        doc.roundedRect(MX, y + 2, CW, obsH, 1, 1, 'F');
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8);
-        doc.setTextColor(...COLOR_GRIS);
-        doc.text('OBSERVACIONES:', MX + 3, y + 5);
+        doc.setFontSize(7.5);
+        doc.setTextColor(...C.TEXT_MUTED);
+        doc.text('OBSERVACIONES DE SECCIÓN:', MX + 4, y + 7);
         doc.setFont('helvetica', 'normal');
-        doc.setTextColor(...COLOR_TEXT);
-        doc.text(obsLines, MX + 3, y + 10);
-        y += obsH + 5;
+        doc.setFontSize(8.5);
+        doc.setTextColor(...C.TEXT_MAIN);
+        doc.text(obsLines, MX + 4, y + 12);
+        y += obsH + 10;
       } else {
-        y += 5;
+        y += 8;
       }
 
+      // Fotos de Sección
       const fotos = seccion.fotosBase64?.filter(f => !!f) ?? [];
       if (fotos.length > 0) {
-        checkEspacio(55);
-        doc.setFillColor(240, 242, 241);
-        doc.rect(MX, y, CW, 6, 'F');
+        checkPage(60);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(8);
-        doc.setTextColor(...COLOR_GRIS);
-        doc.text('FOTOS DE LA SECCIÓN', MX + 3, y + 4.2);
-        y += 8;
+        doc.setTextColor(...C.TEXT_MUTED);
+        doc.text('REGISTRO FOTOGRÁFICO', MX, y);
+        y += 4;
 
-        const fotoCols = 3;
-        const fotoW = (CW - (fotoCols - 1) * 4) / fotoCols;
-        const fotoH = 45;
+        const cols = 3;
+        const gap = 4;
+        const fW = (CW - (gap * (cols - 1))) / cols;
+        const fH = 40;
 
-        for (let fi = 0; fi < fotos.length; fi++) {
-          const col = fi % fotoCols;
-          if (col === 0 && fi > 0) {
-            y += fotoH + 5;
-            checkEspacio(fotoH + 5);
+        for (let i = 0; i < fotos.length; i++) {
+          const col = i % cols;
+          if (col === 0 && i > 0) {
+            y += fH + gap;
+            checkPage(fH + gap);
           }
-          const posX = MX + col * (fotoW + 4);
-
+          const fx = MX + col * (fW + gap);
+          
           try {
-            const base64 = fotos[fi];
-            const formato = base64.startsWith('data:image/png') ? 'PNG' : 'JPEG';
-            doc.setDrawColor(...COLOR_BORDE);
-            doc.rect(posX, y, fotoW, fotoH, 'S');
-            doc.addImage(base64, formato, posX + 1, y + 1, fotoW - 2, fotoH - 2, undefined, 'FAST');
+            const b64 = fotos[i];
+            const fmt = b64.startsWith('data:image/png') ? 'PNG' : 'JPEG';
+            doc.setDrawColor(...C.BORDER);
+            doc.roundedRect(fx, y, fW, fH, 1, 1, 'S');
+            doc.addImage(b64, fmt, fx + 0.5, y + 0.5, fW - 1, fH - 1, undefined, 'FAST');
           } catch (e) {
-            console.warn('Error añadiendo foto al PDF:', e);
-            doc.setFillColor(220, 220, 220);
-            doc.rect(posX + 1, y + 1, fotoW - 2, fotoH - 2, 'F');
-            doc.setFontSize(7);
-            doc.setTextColor(150, 150, 150);
-            doc.text('Sin imagen', posX + fotoW / 2, y + fotoH / 2, { align: 'center' });
+            doc.setFillColor(240, 240, 240);
+            doc.rect(fx, y, fW, fH, 'F');
           }
         }
-        y += fotoH + 8;
+        y += fH + 15;
       }
     }
 
+    // 4. Conclusiones Finales
     if (datos.conclusiones?.trim()) {
-      const concLines = doc.splitTextToSize(datos.conclusiones, CW - 10);
-      const concH = concLines.length * 4.5 + 12;
-      checkEspacio(concH + 10);
-      doc.setFillColor(...COLOR_VERDE_L);
+      const concLines = doc.splitTextToSize(datos.conclusiones, CW - 12);
+      const concH = concLines.length * 5 + 15;
+      checkPage(concH + 10);
+      
+      doc.setFillColor(...C.PRIMARY);
       doc.roundedRect(MX, y, CW, concH, 2, 2, 'F');
-      doc.setDrawColor(...COLOR_VERDE);
-      doc.roundedRect(MX, y, CW, concH, 2, 2, 'S');
+      
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.setTextColor(...COLOR_VERDE);
-      doc.text('CONCLUSIONES GENERALES', MX + 4, y + 7);
+      doc.setFontSize(10);
+      doc.setTextColor(...C.WHITE);
+      doc.text('CONCLUSIONES GENERALES', MX + 6, y + 8);
+      
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8.5);
-      doc.setTextColor(...COLOR_TEXT);
-      doc.text(concLines, MX + 4, y + 13);
+      doc.setFontSize(9.5);
+      doc.text(concLines, MX + 6, y + 15);
       y += concH + 10;
     }
 
+    // 5. Pie de Página (Global)
     const totalPages = (doc as any).internal.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
-      doc.setFillColor(...COLOR_VERDE);
-      doc.rect(0, 289, PW, 8, 'F');
+      doc.setDrawColor(...C.BORDER);
+      doc.setLineWidth(0.5);
+      doc.line(MX, 285, PW - MX, 285);
+      
       doc.setFontSize(7);
       doc.setFont('helvetica', 'normal');
-      doc.setTextColor(255, 255, 255);
-      doc.text(`Mantenimiento Preventivo — ${datos.nombreObra}`, MX, 294);
-      doc.text(`Pág. ${i} / ${totalPages}`, PW - MX, 294, { align: 'right' });
+      doc.setTextColor(...C.TEXT_MUTED);
+      doc.text(`GTM Mantenimiento — ${datos.nombreObra}`, MX, 290);
+      doc.text(`Página ${i} de ${totalPages}`, PW - MX, 290, { align: 'right' });
     }
 
-    const nombreFichero = `Informe_${datos.nombreObra}_${datos.fecha}.pdf`.replace(/\s+/g, '_');
-    doc.save(nombreFichero);
+    const filename = `Informe_${datos.nombreObra}_${datos.fecha}`
+      .replace(/[^a-z0-9]/gi, '_')
+      .replace(/_+/g, '_') + '.pdf';
+    doc.save(filename);
   }
 
-  private dibujarEncabezadoMini(doc: any, datos: DatosPDF, mx: number, pw: number): void {
-    // Fondo del encabezado: BLANCO (antes azul)
-    doc.setFillColor(...COLOR_BLANCO);
-    doc.rect(0, 0, pw, 12, 'F');
-    if (this.logoBase64) {
-      const logoW = 12;
-      const logoH = 12;
-      doc.addImage(this.logoBase64, 'PNG', pw - mx - logoW, 2, logoW, logoH, undefined, 'FAST');
-    }
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
-    // Texto del encabezado: NEGRO (antes blanco)
-    doc.setTextColor(...COLOR_NEGRO);
-    doc.text(`INFORME — ${datos.nombreObra}`, mx, 8);
-    doc.text(`${datos.tecnico} | ${datos.fecha}`, pw - mx - (this.logoBase64 ? 24 : 0), 8, { align: 'right' });
-  }
-
-  private dibujarCheck(doc: any, x: number, y: number, marcado: boolean, color: [number, number, number]): void {
-    const S = 4;
-    if (marcado) {
+  private drawStatusCircle(doc: any, x: number, y: number, label: string, active: boolean) {
+    const size = 5;
+    const color = label === 'OK' ? C.SUCCESS : label === 'NO' ? C.DANGER : C.WARN;
+    
+    if (active) {
       doc.setFillColor(...color);
-      doc.roundedRect(x, y, S, S, 0.8, 0.8, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(6);
-      doc.text('✓', x + 0.8, y + 3.2);
+      doc.circle(x + size/2, y + size/2, size/2, 'F');
+      doc.setTextColor(...C.WHITE);
+      doc.setFontSize(4);
+      doc.setFont('helvetica', 'bold');
+      doc.text(label, x + size/2, y + size/2 + 1.2, { align: 'center' });
     } else {
-      doc.setDrawColor(...COLOR_BORDE);
-      doc.setFillColor(248, 249, 248);
-      doc.roundedRect(x, y, S, S, 0.8, 0.8, 'FD');
+      doc.setDrawColor(...C.BORDER);
+      doc.setLineWidth(0.1);
+      doc.circle(x + size/2, y + size/2, size/2, 'S');
+      doc.setTextColor(...C.BORDER);
+      doc.setFontSize(4);
+      doc.text(label, x + size/2, y + size/2 + 1.2, { align: 'center' });
     }
   }
 
@@ -369,4 +403,3 @@ export class ServicioReporteDocumento {
     });
   }
 }
-
