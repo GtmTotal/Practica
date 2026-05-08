@@ -1,7 +1,7 @@
 <div [formGroup]="seccionGroup()" class="seccion-card">
   <button type="button" class="seccion-titulo" (click)="onToggle()">
     <span>{{ seccionGroup().get('titulo')?.value }}</span>
-    <span class="icon-toggle">{{ colapsada() ? '▼' : '▲' }}</span>
+    <span class="icon-toggle" [class.is-open]="!colapsada()">{{ colapsada() ? '▶' : '◀' }}</span>
   </button>
 
   @if (!colapsada()) {

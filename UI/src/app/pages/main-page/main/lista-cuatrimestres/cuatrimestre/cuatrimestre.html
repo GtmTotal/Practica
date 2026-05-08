@@ -1,7 +1,7 @@
 <div class="grupo-cuatri">
   <div class="grupo-header">
     <button class="btn-toggle-cuatri" type="button" (click)="toggle.emit(grupo().clave)">
-      <span class="icon-toggle">{{ colapsado() ? '▼' : '▲' }}</span>
+      <span class="icon-toggle" [class.is-open]="!colapsado()">{{ colapsado() ? '▶' : '◀' }}</span>
       <h3>{{ grupo().label }} ({{ grupo().informes.length }})</h3>
     </button>
   </div>

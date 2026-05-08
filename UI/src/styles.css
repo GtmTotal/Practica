@@ -217,10 +217,16 @@ body {
 }
 
 .icon-toggle {
-  font-size: 0.8rem;
-  opacity: 0.6;
-  font-weight: 800;
-  transition: transform 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: #ffcc00; /* Amarillo GTM */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+}
+
+.icon-toggle.is-open {
+  color: var(--primary); /* Azul GTM */
+  transform: rotate(0deg); /* Ya cambiamos el caracter, no hace falta rotar */
 }
 
 .seccion-titulo:hover {

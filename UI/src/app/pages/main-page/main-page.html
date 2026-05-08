@@ -1,13 +1,14 @@
 <div class="historial-container">
   <!-- Botón Admin flotante o discreto -->
   <div class="admin-access">
-    <button class="btn-admin-gear" (click)="toggleAdmin()" [title]="isAdmin() ? 'Salir de modo Admin' : 'Modo Administrador'">
-    @if (isAdmin()) {
+    <button class="btn-admin-gear" (click)="toggleAdmin()"
+      [title]="isAdmin() ? 'Salir de modo Admin' : 'Modo Administrador'">
+      @if (isAdmin()) {
       <span class="icon-logout">🚪</span>
-    } @else {
+      } @else {
       <span class="icon-gear">⚙️</span>
-    }
-  </button>
+      }
+    </button>
   </div>
 
   <div class="inicio-logo-container">
@@ -16,32 +17,29 @@
 
   <h2>Informes de Mantenimiento de Mercadona</h2>
 
-  <!-- Panel Admin (solo visible si isAdmin) -->
+  <!-- Panel Admin (solo visible si isAdmin) MOVER DE AQUÍ A UNA PAGINA DIFERENTE.-->
   @if (isAdmin()) {
-    <div class="admin-panel animate-fade-in">
-      <div class="admin-header">
-        <h3>Panel de Administración</h3>
-        <span class="badge-admin">Modo Edición</span>
-      </div>
-      <div class="admin-actions">
-        <button class="btn-admin-action sync" (click)="sincronizarExcel()" [disabled]="isSyncing()">
-          {{ isSyncing() ? '⏳ Sincronizando...' : '🔄 Sincronizar Excel' }}
-        </button>
-        <button class="btn-admin-action create" (click)="crearCuatrimestre()">
-          📅 Crear Cuatrimestre
-        </button>
-      </div>
+  <div class="admin-panel animate-fade-in">
+    <div class="admin-header">
+      <h3>Panel de Administración</h3>
+      <span class="badge-admin">Modo Edición</span>
     </div>
+    <div class="admin-actions">
+      <button class="btn-admin-action sync" (click)="sincronizarExcel()" [disabled]="isSyncing()">
+        {{ isSyncing() ? '⏳ Sincronizando...' : '🔄 Sincronizar Excel' }}
+      </button>
+      <button class="btn-admin-action create" (click)="crearCuatrimestre()">
+        📅 Crear Cuatrimestre
+      </button>
+    </div>
+  </div>
   }
 
   @if (informesGuardados().length === 0) {
-    <div class="no-drafts">No hay borradores guardados.</div>
+  <div class="no-drafts">No hay borradores guardados.</div>
   } @else {
-    <app-lista-cuatrimestres 
-      [grupos]="informesPorCuatrimestre" 
-      [isAdmin]="isAdmin()"
-      (eliminarCuatrimestre)="eliminarCuatrimestre($event)"
-      (editarInforme)="editarInforme($event)">
-    </app-lista-cuatrimestres>
+  <app-lista-cuatrimestres [grupos]="informesPorCuatrimestre" [isAdmin]="isAdmin()"
+    (eliminarCuatrimestre)="eliminarCuatrimestre($event)" (editarInforme)="editarInforme($event)">
+  </app-lista-cuatrimestres>
   }
 </div>
