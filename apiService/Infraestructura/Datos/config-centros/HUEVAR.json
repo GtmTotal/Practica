@@ -49,6 +49,9 @@
                 },
                 {
                     "descripcion": "La limpieza del equipo. (Agua a presíon)"
+                },
+                {
+                    "descripcion": "Esta tarea es una prueba para ver si funciona el script"
                 }
             ]
         },
