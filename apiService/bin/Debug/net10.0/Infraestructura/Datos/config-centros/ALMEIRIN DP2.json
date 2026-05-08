@@ -1,4 +1,4 @@
-﻿{
+{
     "nombre":  "ALMEIRIN DP2",
     "secciones":  [
                       {
@@ -207,9 +207,9 @@
                                      ]
                        },
                        {
-                          "titulo":  "8 - CUADRO ELECTRICO",
+                          "titulo":  "6 - CUADRO ELECTRICO",
                           "tipo":  "simple",
-                          "prefijo":  8,
+                          "prefijo":  6,
                           "tareas":  [
                                          {
                                              "descripcion":  "Eliminar y consignar las fuentes de energia al cuadro para realizar su preventivo."

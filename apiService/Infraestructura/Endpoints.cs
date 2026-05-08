@@ -121,6 +121,7 @@ public static class Endpoints
                         fotos = s.Fotos.OrderBy(f => f.Orden).Select(f => new
                         {
                             url = f.UrlPublica,
+                            base64 = f.Base64,
                             nombre = f.Nombre
                         })
                     })
@@ -181,6 +182,7 @@ public static class Endpoints
                 Fotos = ObtenerArray(s, "fotos").Select((f, idxFoto) => new Foto
                 {
                     UrlPublica = ObtenerString(f, "url"),
+                    Base64 = ObtenerString(f, "base64"),
                     ObjectKey = ExtraerObjectKey(ObtenerString(f, "url")),
                     Nombre = ObtenerString(f, "nombre") ?? string.Empty,
                     Orden = idxFoto,
