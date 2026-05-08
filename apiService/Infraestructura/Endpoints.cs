@@ -285,12 +285,12 @@ public static class Endpoints
         {
             try
             {
-                // Intentar encontrar el script en la raíz del proyecto
-                var scriptPath = Path.GetFullPath(Path.Combine(env.ContentRootPath, "..", "sync_excel_to_json.py"));
+                // Ahora el script está en la misma carpeta que el servidor
+                var scriptPath = Path.GetFullPath(Path.Combine(env.ContentRootPath, "sync_excel_to_json.py"));
                 
-                // Si no está ahí, buscarlo en el ContentRoot (por si acaso está publicado)
                 if (!File.Exists(scriptPath)) {
-                    scriptPath = Path.Combine(env.ContentRootPath, "sync_excel_to_json.py");
+                    // Fallback para desarrollo local si env.ContentRootPath apunta a bin/Debug/...
+                    scriptPath = Path.GetFullPath(Path.Combine(env.ContentRootPath, "..", "sync_excel_to_json.py"));
                 }
 
                 if (!File.Exists(scriptPath)) {
@@ -298,7 +298,6 @@ public static class Endpoints
                 }
 
                 var pythonCmd = "python";
-                // En Linux/Docker a veces es python3
                 if (!System.OperatingSystem.IsWindows()) pythonCmd = "python3";
 
                 var startInfo = new System.Diagnostics.ProcessStartInfo
