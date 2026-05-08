@@ -83,7 +83,7 @@ export class ServicioReporteDocumento {
         
         // Logo
         if (this.logoBase64) {
-          doc.addImage(this.logoBase64, 'SVG', PW - MX - 40, 10, 40, 40, undefined, 'FAST');
+          doc.addImage(this.logoBase64, 'PNG', PW - MX - 40, 10, 40, 40, undefined, 'FAST');
         }
 
         // Títulos
@@ -389,17 +389,26 @@ export class ServicioReporteDocumento {
 
   private async convertImageToBase64(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.onload = function() {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(xhr.response);
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        // Usar un tamaño base decente para el logo
+        const scale = 2; 
+        canvas.width = (img.width || 400) * scale;
+        canvas.height = (img.height || 400) * scale;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = 'white'; // Fondo blanco por si el SVG tiene transparencias conflictivas
+          // ctx.fillRect(0, 0, canvas.width, canvas.height); // Opcional, mejor dejar transparente si el PNG lo soporta
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/png'));
+        } else {
+          reject(new Error('Error al crear canvas'));
+        }
       };
-      xhr.onerror = reject;
-      xhr.open('GET', url);
-      xhr.responseType = 'blob';
-      xhr.send();
+      img.onerror = reject;
+      img.src = url;
     });
   }
 }
