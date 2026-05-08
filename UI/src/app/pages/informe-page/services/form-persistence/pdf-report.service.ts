@@ -172,10 +172,11 @@ export class ServicioReporteDocumento {
       // Encabezado de tabla
       doc.setFillColor(...C.BG_LIGHT);
       doc.rect(MX, y, CW, 7, 'F');
-      doc.setFontSize(7);
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'bold');
       doc.setTextColor(...C.TEXT_MUTED);
-      doc.text('ESTADO', MX + 3, y + 4.5);
-      doc.text('REF', MX + 32, y + 4.5);
+      doc.text('ESTADO', MX + 15, y + 4.5, { align: 'center' });
+      doc.text('REF', MX + 35, y + 4.5, { align: 'center' });
       doc.text('DESCRIPCIÓN DE LA TAREA', MX + 45, y + 4.5);
       y += 7;
 
@@ -199,17 +200,42 @@ export class ServicioReporteDocumento {
           doc.rect(MX, y, CW, rowH, 'F');
         }
         
-        // Indicadores de estado (Círculos)
-        const iy = y + 3.5;
-        this.drawStatusCircle(doc, MX + 4, iy, 'REV', punto.revisado);
-        this.drawStatusCircle(doc, MX + 12, iy, 'OK', punto.ok);
-        this.drawStatusCircle(doc, MX + 20, iy, 'NO', punto.noOk);
+        // Indicadores de estado (Badge único y profesional)
+        const badgeW = 20;
+        const badgeH = 5;
+        const bx = MX + 15 - (badgeW / 2);
+        const by = y + (rowH / 2) - (badgeH / 2);
+        
+        let statusLabel = 'PENDIENTE';
+        let statusColor = [226, 232, 240]; // Gray
+        let textColor = [100, 116, 139];
 
-        // ID Manual
+        if (punto.ok) {
+          statusLabel = 'OK';
+          statusColor = C.SUCCESS;
+          textColor = C.WHITE;
+        } else if (punto.noOk) {
+          statusLabel = 'NO OK';
+          statusColor = C.DANGER;
+          textColor = C.WHITE;
+        } else if (punto.revisado) {
+          statusLabel = 'REVISIÓN';
+          statusColor = C.WARN;
+          textColor = C.WHITE;
+        }
+
+        doc.setFillColor(...statusColor);
+        doc.roundedRect(bx, by, badgeW, badgeH, 1, 1, 'F');
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8);
+        doc.setFontSize(6);
+        doc.setTextColor(...textColor);
+        doc.text(statusLabel, bx + badgeW/2, by + 3.5, { align: 'center' });
+
+        // ID Manual (REF)
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
         doc.setTextColor(...C.TEXT_MUTED);
-        doc.text(X(punto.idManual), MX + 32, y + 5.5);
+        doc.text(X(punto.idManual), MX + 35, y + (rowH / 2) + 1, { align: 'center' });
 
         // Descripción
         doc.setFont('helvetica', 'normal');

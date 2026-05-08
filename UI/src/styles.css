@@ -55,11 +55,27 @@ body {
   margin-bottom: 16px;
 }
 
-.logo-empresa { height: 48px; width: auto; border-radius: var(--radius-sm); }
-.header-info { flex: 1; }
-.header-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.logo-empresa { 
+  height: 42px; 
+  width: auto; 
+  display: block;
+}
+.header-info { 
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.header-title-row { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: baseline; /* Alinea por la base del texto */
+  margin-bottom: 0; 
+}
 .header-info h1 {
-  font-size: 1.4rem;
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1;
   font-weight: 700;
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
   background-clip: text;
@@ -80,16 +96,16 @@ body {
   transition: var(--transition);
   color: var(--gray-600);
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 .btn-back-minimal:hover { background: var(--gray-200); transform: scale(1.05); }
 
 .progreso-container-mini {
   background: var(--gray-100);
   border-radius: 100px;
-  height: 8px;
+  height: 6px;
   position: relative;
-  margin-top: 12px;
+  margin-top: 16px; /* Bajado un pelín más */
   overflow: hidden;
 }
 .progreso-bar-fill {
@@ -127,8 +143,8 @@ body {
 }
 .input-field input {
   width: 100%;
-  max-width: 100%;
-  padding: 10px 12px;
+  height: 42px; /* Altura fija para consistencia total */
+  padding: 0 12px;
   border: 1px solid var(--gray-300);
   border-radius: var(--radius-md);
   font-size: 0.9rem;
@@ -140,7 +156,8 @@ body {
 }
 .input-field input[type="date"] {
   font-family: inherit;
-  min-height: 42px; /* Consistent with text inputs */
+  display: flex;
+  align-items: center;
 }
 /* Fix for iOS date input alignment and height */
 .input-field input[type="date"]::-webkit-date-and-time-value {
