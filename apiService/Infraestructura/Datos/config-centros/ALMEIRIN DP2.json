@@ -1,232 +1,120 @@
 {
-    "nombre":  "ALMEIRIN DP2",
-    "secciones":  [
-                      {
-                          "titulo":  "1 - SISTEMA DE BOMBEO (ARQUETA BOMBEO A)",
-                          "tipo":  "bombeo",
-                          "prefijo":  1,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Comprobar intensidad de las bombas"
-                                         },
-                                         {
-                                             "descripcion":  "Limpiar sonda de nivel (boyas, piezometrico..)"
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar correcto funcionamiento bomba: sentido de giro y presion"
-                                         },
-                                         {
-                                             "descripcion":  "Caudal e intensidad Bomba 1",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Caudal e intensidad Bomba 2",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Vaciar arqueta al maximo y observar el estado de mangueras, acoples, solidos en el fondo... (FOTOS)"
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "2 - FILTRO DE SILEX 1",
-                          "tipo":  "simple",
-                          "prefijo":  2,
-                          "tareas":  [
-
-                                     ]
-                      },
-                      {
-                          "titulo":  "3 - FILTRO SILEX 2",
-                          "tipo":  "simple",
-                          "prefijo":  3,
-                          "tareas":  [
-
-                                     ]
-                      },
-                      {
-                          "titulo":  "4 - DEPOSITO RIEGO",
-                          "tipo":  "simple",
-                          "prefijo":  4,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar bomba grupo presion 1:",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar bomba grupo presion 2:",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         }
-                                     ]
-                       },
-                      {
-                          "titulo":  "5 - PRODUCTOS QUIMICOS",
-                          "tipo":  "simple",
-                          "prefijo":  5,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar bomba grupo presion 1:",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar bomba grupo presion 2:",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         }
-                                     ]
-                       },
-                       {
-                          "titulo":  "6 - CUADRO ELECTRICO",
-                          "tipo":  "simple",
-                          "prefijo":  6,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Eliminar y consignar las fuentes de energia al cuadro para realizar su preventivo."
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar, revisar todas las conexiones y cableados electricos."
-                                         },
-                                         {
-                                             "descripcion":  "Reapretar todos bornes y conexiones de los circuitos electricos."
-                                         },
-                                         {
-                                             "descripcion":  "Revisar el estado general del cuadro electrico (envolvente)."
-                                         },
-                                         {
-                                             "descripcion":  "Verificar seguridades (FOTOS del cuadro antes y despues)."
-                                         }
-                                     ]
-                       }
-                  ]
+    "nombre": "ALMEIRIN DP2",
+    "secciones": [
+        {
+            "titulo": "1 - SISTEMA DE BOMBEO (ARQUETA BOMBEO A)",
+            "tipo": "bombeo",
+            "prefijo": 1,
+            "tareas": [
+                {
+                    "descripcion": "Comprobar intensidad de las bombas"
+                },
+                {
+                    "descripcion": "Limpiar sonda de nivel (boyas, piezométrico..)"
+                },
+                {
+                    "descripcion": "Comprobar correcto funcionamiento bomba: sentido de giro y presión",
+                    "campos": [
+                        {
+                            "clave": "bar",
+                            "sufijo": "BAR"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Caudal e intensidad Bomba 1 A / Hz",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Caudal e intensidad Bomba 2 A / Hz",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Vaciar arqueta al máximo y obserbar el estado de mangueras, acoples, solidos en el fondo… (FOTOS)"
+                }
+            ]
+        },
+        {
+            "titulo": "2 - DEPOSITO RIEGO",
+            "tipo": "deposito",
+            "prefijo": 2,
+            "tareas": [
+                {
+                    "descripcion": "Comprobar bomba grupo presión 1: A Hz",
+                    "campos": [
+                        {
+                            "clave": "bar",
+                            "sufijo": "BAR"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Comprobar bomba grupo presión 2: A Hz",
+                    "campos": [
+                        {
+                            "clave": "bar",
+                            "sufijo": "BAR"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "titulo": "3 - PRODUCTOS QUIMICOS",
+            "tipo": "quimicos",
+            "prefijo": 3,
+            "tareas": [
+                {
+                    "descripcion": "Comprobar bomba grupo presión 1: A Hz",
+                    "campos": [
+                        {
+                            "clave": "bar",
+                            "sufijo": "BAR"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Comprobar bomba grupo presión 2: A Hz",
+                    "campos": [
+                        {
+                            "clave": "bar",
+                            "sufijo": "BAR"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "titulo": "4 - CUADRO ELÉCTRICO",
+            "tipo": "cuadro",
+            "prefijo": 4,
+            "tareas": [
+                {
+                    "descripcion": "Eliminar y consignar las fuentes de energía al cuadro para realizar su preventivo."
+                },
+                {
+                    "descripcion": "Comprobar, revisar todas las conexiones y cableados eléctricos."
+                },
+                {
+                    "descripcion": "Reapretar todos bornes y conexiones de los circuitos eléctricos."
+                },
+                {
+                    "descripcion": "Revisar el estado general del cuadro eléctrico (envolvente)."
+                },
+                {
+                    "descripcion": "Verificar seguridades (FOTOS del cuadro antes y después)."
+                }
+            ]
+        }
+    ]
 }

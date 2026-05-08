@@ -1,475 +1,516 @@
-{
-    "nombre":  "RIBAROJA",
-    "bombasQuimicas":  [
-                           "Bomba dosificadora ácido",
-                           "Bomba dosificadora sosa",
-                           "Bomba trasvase ácido",
-                           "Bomba trasvase sosa"
-                       ],
-    "secciones":  [
-                      {
-                          "titulo":  "1 - SINFÍN COMPACTADOR Y ROTOTAMIZ - DEPURADORA CAJAS",
-                          "tipo":  "simple",
-                          "prefijo":  1,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Revisar partes móviles expuestas a desgaste, cojinetes, sistema de limpieza, cepillos, juntas, etc."
-                                         },
-                                         {
-                                             "descripcion":  "Verificar estado de las uniones mediante tornillos, realizar un reapriete."
-                                         },
-                                         {
-                                             "descripcion":  "Verificar la presencia de sólidos en el cajón del rototamiz."
-                                         },
-                                         {
-                                             "descripcion":  "Comprobación sinfín compactador:",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Comprobación rototamiz:",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "La limpieza del equipo. (Agua a presión)"
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "2 - SISTEMA DE BOMBEO - DEPURADORA CAJAS",
-                          "tipo":  "bombeo",
-                          "prefijo":  2,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Comprobar intensidad de las bombas"
-                                         },
-                                         {
-                                             "descripcion":  "Limpiar sonda de nivel (boyas, piezométrico..)"
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar correcto funcionamiento bomba: sentido de giro y presión"
-                                         },
-                                         {
-                                             "descripcion":  "Caudal e intensidad Bomba 1",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Caudal e intensidad Bomba 2",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Vaciar arqueta al máximo y observar estado de mangueras, acoples, sólidos en el fondo... (FOTOS)"
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "3 - SOPLANTES - HOMOGENEIZADOR Y NEUTRALIZADOR",
-                          "tipo":  "soplantes",
-                          "prefijo":  3,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Comprobar que los difusores reparten el aire por igual y que no estén rotos."
-                                         },
-                                         {
-                                             "descripcion":  "Limpiar filtro aire soplante."
-                                         },
-                                         {
-                                             "descripcion":  "Comprobación soplante homogenizador:",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            },
-                                                            {
-                                                                "clave":  "porcentaje",
-                                                                "sufijo":  "%"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Comprobación soplante neutralizador:",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            },
-                                                            {
-                                                                "clave":  "porcentaje",
-                                                                "sufijo":  "%"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar estado de las mangueras de aire."
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "4 - PRODUCTOS QUÍMICOS - NEUTRALIZADOR",
-                          "tipo":  "quimicos",
-                          "prefijo":  4,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Comprobación de que las bombas dosifiquen producto. ANOTAR CAUDALES E INTENSIDAD:"
-                                         },
-                                         {
-                                             "descripcion":  "Revisión de sensores de niveles y recargar producto (FOTOS antes y después)."
-                                         },
-                                         {
-                                             "descripcion":  "Revisar que el nivel coincide con el representado en la pantalla HMI."
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "5 - HOMOGENEIZADOR - DEPURADORA CAJAS",
-                          "tipo":  "homogeneizador",
-                          "prefijo":  5,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Revisar que el nivel coincide con el representado en la pantalla HMI."
-                                         },
-                                         {
-                                             "descripcion":  "BOMBA TRASVASE",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar que el equipo funciona sin anomalías."
-                                         },
-                                         {
-                                             "descripcion":  "Vaciar homogeneizador completamente y observar el estado de mangueras, acoples, sólidos en el fondo."
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "6 - NEUTRALIZADOR - DEPURADORA CAJAS",
-                          "tipo":  "neutralizador",
-                          "prefijo":  6,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Revisar que el nivel coincide con el representado en la pantalla HMI."
-                                         },
-                                         {
-                                             "descripcion":  "Bomba recirculación",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar que el equipo funciona sin anomalías."
-                                         },
-                                         {
-                                             "descripcion":  "Vaciar neutralizador completamente y observar estado de mangueras, acoples, sólidos en el fondo."
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "7 - CONTROLADOR PH - NEUTRALIZADOR",
-                          "tipo":  "simple",
-                          "prefijo":  7,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Limpiar sonda"
-                                         },
-                                         {
-                                             "descripcion":  "Calibrar sonda"
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "8 - ROTOTAMIZ - LAVADERO CAMIONES",
-                          "tipo":  "simple",
-                          "prefijo":  8,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Revisar partes móviles expuestas a desgaste, cojinetes, sistema de limpieza, cepillos, juntas, etc."
-                                         },
-                                         {
-                                             "descripcion":  "Verificar la presencia de sólidos en el cajón del rototamiz."
-                                         },
-                                         {
-                                             "descripcion":  "Verificar estado de las uniones mediante tornillos, realizar un reapriete."
-                                         },
-                                         {
-                                             "descripcion":  "Comprobación rototamiz:",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "La limpieza del equipo. (Agua a presión)"
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "9 - HOMOGENEIZADOR - LAVADERO CAMIONES",
-                          "tipo":  "simple",
-                          "prefijo":  9,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Revisar que el nivel coincide con el representado en la pantalla HMI."
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar que el equipo funciona sin anomalías."
-                                         },
-                                         {
-                                             "descripcion":  "Vaciar homogeneizador completamente y observar estado de mangueras, acoples, sólidos en el fondoâ€¦"
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "10 - REACTOR - LAVADERO CAMIONES",
-                          "tipo":  "simple",
-                          "prefijo":  10,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Comprobar que las boyas funcionan correctamente y no presente anomalías. Al igual que realizar una limpieza para eliminar lodo seco que se haya quedado adherido en el reactor. (FOTOS antes y después) "
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar reacción (FOTOS del vaso desde arriba)."
-                                         },
-                                         {
-                                             "descripcion":  "Bomba trasvase a reactor: comprobar estado de las bolas y los asientos."
-                                         },
-                                         {
-                                             "descripcion":  "Agitador reactor",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "Hz"
-                                                            }
-                                                        ]
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "11 - PRODUCTOS QUÍMICOS - LAVADERO CAMIONES",
-                          "tipo":  "quimicos",
-                          "prefijo":  11,
-                          "bombasQuimicas":  [
-                                                 "Bomba coagulante",
-                                                 "Bomba floculante",
-                                                 "Bomba antiespumante"
-                                             ],
-                          "camposBombas":  [
-                                               {
-                                                   "clave":  "caudal",
-                                                   "sufijo":  "l/h"
-                                               },
-                                               {
-                                                   "clave":  "amperios",
-                                                   "sufijo":  "A"
-                                               }
-                                           ],
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Comprobación de que las bombas dosifiquen producto. ANOTAR CAUDALES E INTENSIDAD:"
-                                         },
-                                         {
-                                             "descripcion":  "Revisión de sensores de niveles y recargar producto"
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar que el estado del floculante preparado es el adecuado."
-                                         },
-                                         {
-                                             "descripcion":  "Revisar que el nivel coincide con el representado en la pantalla HMI."
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "12 - CINTA BANDA PAPEL FILTRANTE - LAVADERO CAMIONES",
-                          "tipo":  "simple",
-                          "prefijo":  12,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Comprobar que la malla metálica se encuentra alineada."
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar que la bobina de papel filtrante se encuentra alineada."
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar la tensión de la malla metálica."
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar que en la bandeja inferior no hay sólidos que haya podido colarse a través del papel filtrante. Limpiar bandeja (FOTOS)"
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar el correcto funcionamiento de los motores, que no hacen ruidos extraños y que el consumo se encuentra dentro de los límites del motor."
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar el nivel del aceite del reductor. En caso de ser necesario rellenar o reemplazar. "
-                                         },
-                                         {
-                                             "descripcion":  "Lubricar los rodamientos de la cinta."
-                                         },
-                                         {
-                                             "descripcion":  "Observar que las pletinas de apoyo no se encuentran deterioradas. En caso de ser necesario reemplazar por unas nuevas. "
-                                         },
-                                         {
-                                             "descripcion":  "Observar que los piñones engranan correctamente con la malla metálica. En caso contrario sustituirlos por unos nuevos."
-                                         },
-                                         {
-                                             "descripcion":  "Observar que el rodillo frontal gira libremente. En caso contrario sustituirlo por uno nuevo"
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "13 - CUADRO ELÉCTRICO - GENERAL",
-                          "tipo":  "simple",
-                          "prefijo":  13,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Eliminar y consignar las fuentes de energía al cuadro para realizar su preventivo."
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar, revisar todas las conexiones y cableados eléctricos."
-                                         },
-                                         {
-                                             "descripcion":  "Reapretar todos bornes y conexiones de los circuitos eléctricos."
-                                         },
-                                         {
-                                             "descripcion":  "Revisar el estado general del cuadro eléctrico (envolvente)."
-                                         },
-                                         {
-                                             "descripcion":  "Verificar seguridades."
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "14 - SISTEMA DE BOMBEO - LAVADERO CAJAS",
-                          "tipo":  "bombeo",
-                          "prefijo":  14,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Comprobar intensidad de las bombas"
-                                         },
-                                         {
-                                             "descripcion":  "Limpiar sonda de nivel (boyas, piezométrico..)"
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar correcto funcionamiento bomba: sentido de giro y presión"
-                                         },
-                                         {
-                                             "descripcion":  "Caudal e intensidad Bomba 1",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Caudal e intensidad Bomba 2",
-                                             "campos":  [
-                                                            {
-                                                                "clave":  "amperios",
-                                                                "sufijo":  "A"
-                                                            },
-                                                            {
-                                                                "clave":  "hz",
-                                                                "sufijo":  "HZ"
-                                                            }
-                                                        ]
-                                         },
-                                         {
-                                             "descripcion":  "Vaciar arqueta al máximo y observar estado de mangueras, acoples, sólidos en el fondoâ€¦ (FOTOS)"
-                                         }
-                                     ]
-                      },
-                      {
-                          "titulo":  "15 - CUADRO ELÉCTRICO - LAVADERO CAJAS",
-                          "tipo":  "simple",
-                          "prefijo":  15,
-                          "tareas":  [
-                                         {
-                                             "descripcion":  "Eliminar y consignar las fuentes de energía al cuadro para realizar su preventivo."
-                                         },
-                                         {
-                                             "descripcion":  "Comprobar, revisar todas las conexiones y cableados eléctricos."
-                                         },
-                                         {
-                                             "descripcion":  "Reapretar todos bornes y conexiones de los circuitos eléctricos."
-                                         },
-                                         {
-                                             "descripcion":  "Revisar el estado general del cuadro eléctrico (envolvente)."
-                                         },
-                                         {
-                                             "descripcion":  "Verificar seguridades."
-                                         }
-                                     ]
-                      }
-                  ]
-}
+{
+    "bombasQuimicas": [
+        "Bomba dosificadora ácido",
+        "Bomba dosificadora sosa",
+        "Bomba trasvase ácido",
+        "Bomba trasvase sosa"
+    ],
+    "nombre": "RIBAROJA",
+    "secciones": [
+        {
+            "titulo": "1. SINFÍN COMPACTADOR Y ROTOTAMIZ - DEPURADORA CAJAS",
+            "tipo": "simple",
+            "prefijo": 1,
+            "tareas": [
+                {
+                    "descripcion": "Revisar partes móviles que están expuestas a desgaste, cojinetes, sistema de limpieza, cepillos, juntas, etc."
+                },
+                {
+                    "descripcion": "Verificar estado de las uniones mediante tornillos, realizar un reapriete."
+                },
+                {
+                    "descripcion": "Verficar la presencia de sólidos en el cajón del rototamiz."
+                },
+                {
+                    "descripcion": "Comprobación sinfín compactador: 1,45 A / 50 Hz",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "hz",
+                            "sufijo": "HZ"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Comprobación rototamiz: 1,99 A / 50 Hz",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "hz",
+                            "sufijo": "HZ"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "La limpieza del equipo. (Agua a presíon)"
+                }
+            ]
+        },
+        {
+            "titulo": "2. SISTEMA DE BOMBEO - DEPURADORA CAJAS",
+            "tipo": "bombeo",
+            "prefijo": 2,
+            "tareas": [
+                {
+                    "descripcion": "Comprobar intensidad de las bombas"
+                },
+                {
+                    "descripcion": "Limpiar sonda de nivel (boyas, piezométrico..)"
+                },
+                {
+                    "descripcion": "Comprobar correcto funcionamiento bomba: sentido de giro y presión",
+                    "campos": [
+                        {
+                            "clave": "bar",
+                            "sufijo": "BAR"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Caudal e intensidad Bomba 1 7,5 A / 50 Hz",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "hz",
+                            "sufijo": "HZ"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Caudal e intensidad Bomba 2 7 A / 50 Hz",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "hz",
+                            "sufijo": "HZ"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Vaciar arqueta al máximo y obserbar el estado de mangueras, acoples, solidos en el fondo… (FOTOS)"
+                }
+            ]
+        },
+        {
+            "titulo": "3. SOPLANTES - HOMOGENEIZADOR Y NEUTRALIZADOR DEPURADORA CAJAS",
+            "tipo": "soplante",
+            "prefijo": 3,
+            "tareas": [
+                {
+                    "descripcion": "Comprobar que los difusores reparte el aire por igual y que no esten rotos."
+                },
+                {
+                    "descripcion": "Limpiar filtro aire soplante."
+                },
+                {
+                    "descripcion": "Comprobación soplante homogenizador: 6 A y 50HZ 10,7%",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "hz",
+                            "sufijo": "HZ"
+                        },
+                        {
+                            "clave": "porcentaje",
+                            "sufijo": "%"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Comprobación soplante neutralizador: 6,30 A y 50HZ 31%",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "hz",
+                            "sufijo": "HZ"
+                        },
+                        {
+                            "clave": "porcentaje",
+                            "sufijo": "%"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Comprobar estado de las mangueras de aire."
+                }
+            ]
+        },
+        {
+            "titulo": "4. PRODUCTOS QUÍMICOS - NEUTRALIZADOR DEPURADORA CAJAS",
+            "tipo": "quimicos",
+            "prefijo": 4,
+            "tareas": [
+                {
+                    "descripcion": "Comprobación de que las bombas dosifiquen producto. ANOTAR CAUDALES E INTENSIDAD: Bomba dosificadora ácido: A % Bomba dosificadora sosa: A % Bomba trasvase ácido: A % Bomba trasvase sosa: A %"
+                },
+                {
+                    "descripcion": "Revisión de sensores de niveles y recargar producto (FOTOS antes y después)."
+                },
+                {
+                    "descripcion": "Bomba dosificadora acido 0,81 A / 50 %",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "porcentaje",
+                            "sufijo": "%"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Bomba dosificadora sosa 0,82 A / 50 %",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "porcentaje",
+                            "sufijo": "%"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Bomba trasvase acido 0,82 A / 100%",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "porcentaje",
+                            "sufijo": "%"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "bomba trasvase sosa 0,85 A / 100%",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "porcentaje",
+                            "sufijo": "%"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Revisar que el nivel coincide con el representado en la pantalla HMI."
+                }
+            ]
+        },
+        {
+            "titulo": "5. HOMOGENEIZADOR DEPURADORA CAJAS",
+            "tipo": "simple",
+            "prefijo": 5,
+            "tareas": [
+                {
+                    "descripcion": "Revisar que el nivel coincide con el representado en la pantalla HMI."
+                },
+                {
+                    "descripcion": "BOMBA TRASVASE 3,93 A / 50HZ",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "hz",
+                            "sufijo": "HZ"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Comprobar que el equipo funciona sin anomalías."
+                },
+                {
+                    "descripcion": "Vaciar homogeneizador completamente y obserbar el estado de mangueras, acoples, solidos en el fondo."
+                }
+            ]
+        },
+        {
+            "titulo": "6. NEUTRALIZADOR DEPURADORA CAJAS",
+            "tipo": "simple",
+            "prefijo": 6,
+            "tareas": [
+                {
+                    "descripcion": "Revisar que el nivel coincide con el representado en la pantalla HMI."
+                },
+                {
+                    "descripcion": "6,2 Bomba recirculación 3,89 A / 50 HZ",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "hz",
+                            "sufijo": "HZ"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Comprobar que el equipo funciona sin anomalías."
+                },
+                {
+                    "descripcion": "Vaciar neutralizador completamente y obserbar el estado de mangueras, acoples, solidos en el fondo)"
+                }
+            ]
+        },
+        {
+            "titulo": "7. CONTROLADOR PH - NEUTRALIZADOR DEPURADORA CAJAS",
+            "tipo": "simple",
+            "prefijo": 7,
+            "tareas": [
+                {
+                    "descripcion": "Limpiar sonda"
+                },
+                {
+                    "descripcion": "Calibar sonda"
+                }
+            ]
+        },
+        {
+            "titulo": "8. ROTOTAMIZ - LAVADERO CAMIONES",
+            "tipo": "simple",
+            "prefijo": 8,
+            "tareas": [
+                {
+                    "descripcion": "Revisar partes móviles que están expuestas a desgaste, cojinetes, sistema de limpieza, cepillos, juntas, etc."
+                },
+                {
+                    "descripcion": "Verficar la presencia de sólidos en el cajón del rototamiz."
+                },
+                {
+                    "descripcion": "Verificar estado de las uniones mediante tornillos, realizar un reapriete."
+                },
+                {
+                    "descripcion": "Comprobación rototamiz: 2,19 A / 50 Hz",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "hz",
+                            "sufijo": "HZ"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "La limpieza del equipo. (Agua a presíon)"
+                }
+            ]
+        },
+        {
+            "titulo": "9. HOMOGENEIZADOR - LAVADERO CAMIONES",
+            "tipo": "simple",
+            "prefijo": 9,
+            "tareas": [
+                {
+                    "descripcion": "Revisar que el nivel coincide con el representado en la pantalla HMI."
+                },
+                {
+                    "descripcion": "Comprobar que el equipo funciona sin anomalías."
+                },
+                {
+                    "descripcion": "Vaciar homogeneizador completamente y obserbar el estado de mangueras, acoples, solidos en el fondo…"
+                }
+            ]
+        },
+        {
+            "titulo": "10. REACTOR - LAVADERO CAMIONES",
+            "tipo": "simple",
+            "prefijo": 10,
+            "tareas": [
+                {
+                    "descripcion": "Comprobar que las boyas funcionan correctamente y no presente anomalías. Al igual que realizar una limpieza para eliminar lodo seco que se haya quedado adherido en el reactor. (FOTOS antes y después)"
+                },
+                {
+                    "descripcion": "Comprobar reacción (FOTOS del vaso desde arriba)"
+                },
+                {
+                    "descripcion": "Bomba trasvase a reactor: comprobar estado de las bolas y los asientos."
+                },
+                {
+                    "descripcion": "Aguitador reactor 1,65A 25hz",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        },
+                        {
+                            "clave": "hz",
+                            "sufijo": "HZ"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "titulo": "11. PRODUCTOS QUÍMICOS - LAVADERO CAMIONES",
+            "tipo": "quimicos",
+            "prefijo": 11,
+            "tareas": [
+                {
+                    "descripcion": "Comprobación de que las bombas dosifiquen producto. ANATOR CAUDALES E INTENSIDAD: Bomba coagulante: l/h A Bomba floculante: l/h A Bomba antiespumante: l/h A"
+                },
+                {
+                    "descripcion": "Revisión de sensores de niveles y recargar producto"
+                },
+                {
+                    "descripcion": "Comprobar que el estado del floculante preparado es el adecuado. En caso de que no sea muy viscoso añadir agua manualmente, y en caso contrario añadir producto puro. En caso de presentar alguna de estas anomalías deberemos de chequear la preparación del mismo para encontrar el problema."
+                },
+                {
+                    "descripcion": "Revisar que el nivel coincide con el representado en la pantalla HMI."
+                }
+            ]
+        },
+        {
+            "titulo": "12. CINTA BANDA PAPEL FILTRANTE - LAVADERO CAMIONES",
+            "tipo": "simple",
+            "prefijo": 12,
+            "tareas": [
+                {
+                    "descripcion": "Comprobar que la malla metálica se encuentra alineada."
+                },
+                {
+                    "descripcion": "Comprobar que la bobina de papel filtrante se encuentra alineada."
+                },
+                {
+                    "descripcion": "Comprobar la tensión de la malla metálica."
+                },
+                {
+                    "descripcion": "Comprobar que en la bandeja inferior no hay sólidos que haya podido colarse a través del papel filtrante. Limpiar bandeja (FOTOS)"
+                },
+                {
+                    "descripcion": "Comprobar el correcto funcionamiento de los motores, que no hacen ruidos extraños y que el consumo se encuentra dentro de los límites del motor."
+                },
+                {
+                    "descripcion": "Comprobar el nivel del aceite del reductor. En caso de ser necesario rellenar o reemplazar."
+                },
+                {
+                    "descripcion": "Lubricar los rodamientos de la cinta."
+                },
+                {
+                    "descripcion": "Observar que las pletinas de apoyo no se encuentran deterioradas. En caso de ser necesario reemplazar por unas nuevas."
+                },
+                {
+                    "descripcion": "Observar que los piñones engranan correctamente con la malla metálica. En caso contrario sustituirlos por unos nuevos."
+                },
+                {
+                    "descripcion": "Observar que el rodillo frontal gira libremente. En caso contrario sustituirlo por uno nuevo"
+                }
+            ]
+        },
+        {
+            "titulo": "13. CUADRO ELÉCTRICO - GENERAL",
+            "tipo": "cuadro",
+            "prefijo": 13,
+            "tareas": [
+                {
+                    "descripcion": "Eliminar y consignar las fuentes de energía al cuadro para realizar su preventivo."
+                },
+                {
+                    "descripcion": "Comprobar, revisar todas las conexiones y cableados eléctricos."
+                },
+                {
+                    "descripcion": "Reapretar todos bornes y conexiones de los circuitos eléctricos"
+                },
+                {
+                    "descripcion": "Revisar el estado general del cuadro eléctrico (envolvente)"
+                },
+                {
+                    "descripcion": "Verificar seguridades"
+                }
+            ]
+        },
+        {
+            "titulo": "14. SISTEMA DE BOMBEO - LAVADERO CAJAS",
+            "tipo": "bombeo",
+            "prefijo": 14,
+            "tareas": [
+                {
+                    "descripcion": "Comprobar intensidad de las bombas"
+                },
+                {
+                    "descripcion": "Limpiar sonda de nivel (boyas, piezométrico..)"
+                },
+                {
+                    "descripcion": "Comprobar correcto funcionamiento bomba: sentido de giro y presión",
+                    "campos": [
+                        {
+                            "clave": "bar",
+                            "sufijo": "BAR"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Caudal e intensidad Bomba 1 A / Hz",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Caudal e intensidad Bomba 2 A / Hz",
+                    "campos": [
+                        {
+                            "clave": "amperios",
+                            "sufijo": "A"
+                        }
+                    ]
+                },
+                {
+                    "descripcion": "Vaciar arqueta al máximo y obserbar el estado de mangueras, acoples, solidos en el fondo… (FOTOS)"
+                }
+            ]
+        },
+        {
+            "titulo": "15. CUADRO ELÉCTRICO - LAVADERO CAJAS",
+            "tipo": "cuadro",
+            "prefijo": 15,
+            "tareas": [
+                {
+                    "descripcion": "Eliminar y consignar las fuentes de energía al cuadro para realizar su preventivo."
+                },
+                {
+                    "descripcion": "Comprobar, revisar todas las conexiones y cableados eléctricos."
+                },
+                {
+                    "descripcion": "Reapretar todos bornes y conexiones de los circuitos eléctricos"
+                },
+                {
+                    "descripcion": "Revisar el estado general del cuadro eléctrico (envolvente)"
+                },
+                {
+                    "descripcion": "Verificar seguridades"
+                }
+            ]
+        }
+    ]
+}

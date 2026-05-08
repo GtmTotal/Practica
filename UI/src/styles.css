@@ -113,12 +113,14 @@ body {
   background: var(--gray-100);
   z-index: 100;
 }
+
 .progreso-bar-fill {
   background: linear-gradient(90deg, var(--success), #34d399);
   height: 100%;
   width: 0%;
   transition: width 0.3s ease;
 }
+
 .progreso-texto {
   position: absolute;
   right: 16px;
@@ -667,7 +669,7 @@ h2 {
   }
 
   .progreso-container-mini {
-    margin-top: 4px;
+    height: 6px; /* Un poco más gruesa en móvil para que se vea bien */
   }
 
   .header-inputs-grid {
@@ -689,8 +691,8 @@ h2 {
   }
 
   .main-wrapper {
-    padding-top: 170px;
-    padding-bottom: 220px;
+    padding-top: 16px;
+    padding-bottom: 40px;
   }
 
   .form-footer {
