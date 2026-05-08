@@ -336,17 +336,33 @@ export class ServicioReporteDocumento {
               const b64 = fotos[i];
               const fmt = b64.startsWith('data:image/png') ? 'PNG' : 'JPEG';
               
-              // Para evitar deformaciones, jsPDF permite usar 'undefined' en uno de los ejes
-              // Pero para tener control total, calculamos un contenedor y centramos
+              // Obtenemos las dimensiones reales de la imagen
+              const props = doc.getImageProperties(b64);
+              const imgRatio = props.width / props.height;
+              const boxRatio = fW / fH_max;
+
+              let finalW = fW;
+              let finalH = fH_max;
+
+              if (imgRatio > boxRatio) {
+                // La imagen es más ancha que el hueco -> limitamos por ancho
+                finalH = fW / imgRatio;
+              } else {
+                // La imagen es más alta que el hueco -> limitamos por alto
+                finalW = fH_max * imgRatio;
+              }
+
+              // Centramos la imagen en el hueco de la columna
+              const offsetX = (fW - finalW) / 2;
+              const offsetY = (fH_max - finalH) / 2;
+
               doc.setDrawColor(...C.BORDER);
-              doc.setLineWidth(0.2);
+              doc.setLineWidth(0.1);
+              // Dibujamos el recuadro de fondo (opcional, ayuda a que se vea ordenado)
               doc.roundedRect(fx, y, fW, fH_max, 1, 1, 'S');
               
-              // El truco para no deformar es usar el alias 'center' o calcular proporciones.
-              // Usaremos el escalado automático de jsPDF pasando solo el ancho deseado
-              // y dejando que la altura se calcule sola (o viceversa) si fuera necesario.
-              // En este caso, forzamos a que quepa en el bloque pero respetando proporción.
-              doc.addImage(b64, fmt, fx + 1, y + 1, fW - 2, fH_max - 2, undefined, 'MEDIUM');
+              // Insertamos la imagen con sus proporciones reales calculadas
+              doc.addImage(b64, fmt, fx + offsetX, y + offsetY, finalW, finalH, undefined, 'MEDIUM');
             } catch (e) {
               doc.setFillColor(245, 245, 245);
               doc.rect(fx, y, fW, fH_max, 'F');
