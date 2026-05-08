@@ -84,6 +84,8 @@ export class InformePageComponent implements OnDestroy {
     const centroParam = this.route.snapshot.paramMap.get('centro');
 
     if (cuatriParam && centroParam) {
+      // Forzar scroll al principio al cargar un informe
+      window.scrollTo(0, 0);
       try {
         console.log(`[DEBUG] Parámetros URL detectados: ${cuatriParam} - ${centroParam}`);
         

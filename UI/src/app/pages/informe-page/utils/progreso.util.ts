@@ -13,7 +13,7 @@ export function calcularProgresoFormulario(obraForm: FormGroup | null | undefine
     tareas?.controls.forEach((tarea: any) => {
       total++;
       const valor = tarea.value;
-      if (valor.rev || valor.ok || valor.noOk) completadas++;
+      if (valor.ok || valor.noOk) completadas++;
     });
   });
 

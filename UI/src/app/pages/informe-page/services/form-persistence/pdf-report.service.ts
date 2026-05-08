@@ -218,10 +218,6 @@ export class ServicioReporteDocumento {
           statusLabel = 'NO OK';
           statusColor = C.DANGER;
           textColor = C.WHITE;
-        } else if (punto.revisado) {
-          statusLabel = 'REVISIÓN';
-          statusColor = C.WARN;
-          textColor = C.WHITE;
         }
 
         doc.setFillColor(...statusColor);

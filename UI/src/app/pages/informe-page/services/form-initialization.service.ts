@@ -94,14 +94,14 @@ export class ServicioInicializacionFormulario {
         );
         tareaGroup = this.fb.group({
           descripcion: [tareaTemplate.descripcion],
-          rev: [false], ok: [false], noOk: [false], notaTarea: [''],
+          ok: [false], noOk: [false], notaTarea: [''],
           campos: this.fb.array((tareaTemplate.campos || []).map((c: any) => this.crearCampo(c))),
           bombasQuimicas: bombasFormArray
         });
       } else {
         tareaGroup = this.fb.group({
           descripcion: [tareaTemplate.descripcion],
-          rev: [false], ok: [false], noOk: [false], notaTarea: [''],
+          ok: [false], noOk: [false], notaTarea: [''],
           campos: this.fb.array((tareaTemplate.campos || []).map((c: any) => this.crearCampo(c)))
         });
       }

@@ -3,10 +3,6 @@
     <span class="tarea-indice">{{ prefijo() }}.{{ idxTarea() + 1 }}</span>
     <p class="tarea-texto">{{ tareaGroup().get('descripcion')?.value }}</p>
     <div class="inspeccion-controles">
-      <label class="check-inspeccion">
-        <input type="checkbox" formControlName="rev">
-        <span class="box-label">REV</span>
-      </label>
       <label class="check-inspeccion ok">
         <input type="checkbox" formControlName="ok" (change)="toggleOk()">
         <span class="box-label">OK</span>
