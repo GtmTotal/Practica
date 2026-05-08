@@ -47,7 +47,7 @@ export class ServicioInicializacionFormulario {
           (form.get('secciones') as FormArray).push(seccionGroup);
         }
         this.fotosPorSeccionBase64.push(signal(seccionTemplate.fotos || []));
-        this.seccionesColapsadas.push(false);
+        this.seccionesColapsadas.push(true);
       });
     }
   }

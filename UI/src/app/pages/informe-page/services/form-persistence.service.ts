@@ -139,7 +139,7 @@ export class ServicioPersistenciaFormulario {
         const { seccionGroup, fotos } = this.restaurarSeccionGuardada(sec);
         (obraForm.get('secciones') as FormArray).push(seccionGroup);
         fotosPorSeccionBase64.push(signal(fotos));
-        seccionesColapsadas.push(false);
+        seccionesColapsadas.push(true);
       });
       console.log('[DEBUG-DEEP] Secciones restauradas con éxito.');
     } else {
@@ -153,7 +153,7 @@ export class ServicioPersistenciaFormulario {
           const seccionGroup = this.crearSeccionDesdeTemplate(template);
           (obraForm.get('secciones') as FormArray).push(seccionGroup);
           fotosPorSeccionBase64.push(signal([]));
-          seccionesColapsadas.push(false);
+          seccionesColapsadas.push(true);
         });
         console.log('[DEBUG-DEEP] Formulario inicializado desde plantilla.');
       } else {
