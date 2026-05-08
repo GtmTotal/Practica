@@ -281,6 +281,16 @@ public static class Endpoints
             return Results.Ok(result);
         });
 
+        app.MapPost("/api/admin/login", (string password, IConfiguration config) =>
+        {
+            var adminPass = config["Admin:Password"];
+            if (password == adminPass)
+            {
+                return Results.Ok(new { success = true });
+            }
+            return Results.Json(new { success = false }, statusCode: 401);
+        });
+
         app.MapPost("/api/admin/sync", async (IHostEnvironment env) =>
         {
             try

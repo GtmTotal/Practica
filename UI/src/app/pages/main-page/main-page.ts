@@ -1,4 +1,4 @@
-import { Component, OnDestroy, signal } from '@angular/core';
+import { Component, OnDestroy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -20,7 +20,13 @@ import { InformeGuardado } from '../informe.interface';
 export class MainPageComponent implements OnDestroy {
   private autoSaveSub?: Subscription;
 
-  isAdmin = signal(false);
+  private cuatriService = inject(ServicioCuatrimestre);
+  private persistService = inject(ServicioPersistenciaFormulario);
+  private initService = inject(ServicioInicializacionFormulario);
+  private navService = inject(ServicioNavegacion);
+  private adminService = inject(ServicioAdmin);
+
+  isAdmin = this.adminService.isAdmin;
   isSyncing = signal(false);
 
   get informesGuardados() {
@@ -31,27 +37,20 @@ export class MainPageComponent implements OnDestroy {
     return this.cuatriService.getInformesPorCuatrimestre(this.informesGuardados());
   }
 
-  constructor(
-    private cuatriService: ServicioCuatrimestre,
-    private persistService: ServicioPersistenciaFormulario,
-    private initService: ServicioInicializacionFormulario,
-    private navService: ServicioNavegacion,
-    private adminService: ServicioAdmin,
-  ) { }
+  constructor() {}
 
   async ngOnInit() {
     this.persistService.cargarHistorial().subscribe();
   }
 
-  toggleAdmin() {
+  async toggleAdmin() {
     if (this.isAdmin()) {
-      this.isAdmin.set(false);
+      this.adminService.setAdmin(false);
     } else {
       const pass = window.prompt('Contraseña de administrador:');
-      if (pass === 'gtm2026') { // Contraseña sencilla
-        this.isAdmin.set(true);
-      } else {
-        alert('Contraseña incorrecta');
+      if (pass) {
+        const ok = await this.adminService.login(pass);
+        if (!ok) alert('Contraseña incorrecta');
       }
     }
   }
