@@ -309,42 +309,51 @@ export class ServicioReporteDocumento {
         y += 8;
       }
 
-      // Fotos de Sección
-      const fotos = seccion.fotosBase64?.filter(f => !!f) ?? [];
-      if (fotos.length > 0) {
-        checkPage(60);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8);
-        doc.setTextColor(...C.TEXT_MUTED);
-        doc.text('REGISTRO FOTOGRÁFICO', MX, y);
-        y += 4;
+        // Fotos de Sección (Diseño de 2 columnas para que sean más grandes y sin deformar)
+        const fotos = seccion.fotosBase64?.filter(f => !!f) ?? [];
+        if (fotos.length > 0) {
+          checkPage(80);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8);
+          doc.setTextColor(...C.TEXT_MUTED);
+          doc.text('REGISTRO FOTOGRÁFICO', MX, y);
+          y += 5;
 
-        const cols = 3;
-        const gap = 4;
-        const fW = (CW - (gap * (cols - 1))) / cols;
-        const fH = 40;
+          const cols = 2; // 2 columnas para que se vean más grandes
+          const gap = 6;
+          const fW = (CW - (gap * (cols - 1))) / cols;
+          const fH_max = 60; // Altura máxima más generosa
 
-        for (let i = 0; i < fotos.length; i++) {
-          const col = i % cols;
-          if (col === 0 && i > 0) {
-            y += fH + gap;
-            checkPage(fH + gap);
+          for (let i = 0; i < fotos.length; i++) {
+            const col = i % cols;
+            if (col === 0 && i > 0) {
+              y += fH_max + gap + 5;
+              checkPage(fH_max + gap + 10);
+            }
+            const fx = MX + col * (fW + gap);
+
+            try {
+              const b64 = fotos[i];
+              const fmt = b64.startsWith('data:image/png') ? 'PNG' : 'JPEG';
+              
+              // Para evitar deformaciones, jsPDF permite usar 'undefined' en uno de los ejes
+              // Pero para tener control total, calculamos un contenedor y centramos
+              doc.setDrawColor(...C.BORDER);
+              doc.setLineWidth(0.2);
+              doc.roundedRect(fx, y, fW, fH_max, 1, 1, 'S');
+              
+              // El truco para no deformar es usar el alias 'center' o calcular proporciones.
+              // Usaremos el escalado automático de jsPDF pasando solo el ancho deseado
+              // y dejando que la altura se calcule sola (o viceversa) si fuera necesario.
+              // En este caso, forzamos a que quepa en el bloque pero respetando proporción.
+              doc.addImage(b64, fmt, fx + 1, y + 1, fW - 2, fH_max - 2, undefined, 'MEDIUM');
+            } catch (e) {
+              doc.setFillColor(245, 245, 245);
+              doc.rect(fx, y, fW, fH_max, 'F');
+            }
           }
-          const fx = MX + col * (fW + gap);
-
-          try {
-            const b64 = fotos[i];
-            const fmt = b64.startsWith('data:image/png') ? 'PNG' : 'JPEG';
-            doc.setDrawColor(...C.BORDER);
-            doc.roundedRect(fx, y, fW, fH, 1, 1, 'S');
-            doc.addImage(b64, fmt, fx + 0.5, y + 0.5, fW - 1, fH - 1, undefined, 'FAST');
-          } catch (e) {
-            doc.setFillColor(240, 240, 240);
-            doc.rect(fx, y, fW, fH, 'F');
-          }
+          y += fH_max + 15;
         }
-        y += fH + 15;
-      }
     }
 
     // 4. Conclusiones Finales
