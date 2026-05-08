@@ -423,11 +423,18 @@ body {
 
 .foto-thumb {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 140px;
+  height: 140px;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   background: var(--gray-100);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.foto-thumb:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
 }
 
 .foto-thumb img {
