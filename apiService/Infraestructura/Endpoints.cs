@@ -281,6 +281,41 @@ public static class Endpoints
             return Results.Ok(result);
         });
 
+        app.MapPost("/api/admin/sync", async (IHostEnvironment env) =>
+        {
+            try
+            {
+                var scriptPath = Path.Combine(env.ContentRootPath, "..", "sync_excel_to_json.py");
+                var startInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "python",
+                    Arguments = scriptPath,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                };
+
+                using var process = System.Diagnostics.Process.Start(startInfo);
+                if (process == null) return Results.Problem("Could not start sync process.");
+
+                var output = await process.StandardOutput.ReadToEndAsync();
+                var error = await process.StandardError.ReadToEndAsync();
+                await process.WaitForExitAsync();
+
+                if (process.ExitCode != 0)
+                {
+                    return Results.Problem($"Sync failed: {error}");
+                }
+
+                return Results.Ok(new { message = "Sincronización completada con éxito", log = output });
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem(ex.Message);
+            }
+        });
+
         app.MapGet("/api/main-page/config-centros/{centro}", async (string centro, IHostEnvironment env) =>
         {
             var folderPath = Path.Combine(env.ContentRootPath, "Infraestructura", "Datos", "config-centros");

@@ -1,14 +1,43 @@
 <div class="historial-container">
+  <!-- Botón Admin flotante o discreto -->
+  <div class="admin-access">
+    <button class="btn-admin-gear" (click)="toggleAdmin()">
+      {{ isAdmin() ? '🔓 Admin On' : '⚙️' }}
+    </button>
+  </div>
+
   <div class="inicio-logo-container">
     <img src="/logoNoOficial.svg" alt="Logo" style="height: 120px" />
   </div>
+
   <h2>Informes Guardados</h2>
-  <button class="btn-crear-cuatri" (click)="crearCuatrimestre()">📅 CREAR CUATRIMESTRE</button>
+
+  <!-- Panel Admin (solo visible si isAdmin) -->
+  @if (isAdmin()) {
+    <div class="admin-panel animate-fade-in">
+      <div class="admin-header">
+        <h3>Panel de Administración</h3>
+        <span class="badge-admin">Modo Edición</span>
+      </div>
+      <div class="admin-actions">
+        <button class="btn-admin-action sync" (click)="sincronizarExcel()" [disabled]="isSyncing()">
+          {{ isSyncing() ? '⏳ Sincronizando...' : '🔄 Sincronizar Excel' }}
+        </button>
+        <button class="btn-admin-action create" (click)="crearCuatrimestre()">
+          📅 Crear Cuatrimestre
+        </button>
+      </div>
+    </div>
+  }
+
   @if (informesGuardados().length === 0) {
-  <div>No hay borradores guardados.</div>
+    <div class="no-drafts">No hay borradores guardados.</div>
   } @else {
-  <app-lista-cuatrimestres [grupos]="informesPorCuatrimestre" (eliminarCuatrimestre)="eliminarCuatrimestre($event)"
-    (editarInforme)="editarInforme($event)">
-  </app-lista-cuatrimestres>
+    <app-lista-cuatrimestres 
+      [grupos]="informesPorCuatrimestre" 
+      [isAdmin]="isAdmin()"
+      (eliminarCuatrimestre)="eliminarCuatrimestre($event)"
+      (editarInforme)="editarInforme($event)">
+    </app-lista-cuatrimestres>
   }
 </div>

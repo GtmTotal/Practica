@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { ServicioCuatrimestre } from './services/cuatrimestre.service';
 import { ServicioPersistenciaFormulario } from '../informe-page/services/form-persistence.service';
 import { ServicioInicializacionFormulario } from '../informe-page/services/form-initialization.service';
 import { ServicioNavegacion } from './services/navigation.service';
+import { ServicioAdmin } from '../services/admin.service';
 import { InformeGuardado } from '../informe.interface';
 
 @Component({
@@ -18,6 +19,9 @@ import { InformeGuardado } from '../informe.interface';
 })
 export class MainPageComponent implements OnDestroy {
   private autoSaveSub?: Subscription;
+
+  isAdmin = signal(false);
+  isSyncing = signal(false);
 
   get informesGuardados() {
     return this.persistService.informesGuardados;
@@ -32,10 +36,37 @@ export class MainPageComponent implements OnDestroy {
     private persistService: ServicioPersistenciaFormulario,
     private initService: ServicioInicializacionFormulario,
     private navService: ServicioNavegacion,
+    private adminService: ServicioAdmin,
   ) {}
 
   async ngOnInit() {
     this.persistService.cargarHistorial().subscribe();
+  }
+
+  toggleAdmin() {
+    if (this.isAdmin()) {
+      this.isAdmin.set(false);
+    } else {
+      const pass = window.prompt('Contraseña de administrador:');
+      if (pass === 'gtm2024') { // Contraseña sencilla
+        this.isAdmin.set(true);
+      } else {
+        alert('Contraseña incorrecta');
+      }
+    }
+  }
+
+  async sincronizarExcel() {
+    if (this.isSyncing()) return;
+    this.isSyncing.set(true);
+    try {
+      const res = await this.adminService.sincronizarExcel();
+      alert(res.message || 'Sincronización completada');
+    } catch (err: any) {
+      alert('Error sincronizando: ' + (err.error?.detail || err.message));
+    } finally {
+      this.isSyncing.set(false);
+    }
   }
 
   async editarInforme(inf: InformeGuardado) {

@@ -3,6 +3,7 @@
     <app-cuatrimestre
       [grupo]="grupo"
       [colapsado]="estaColapsado(grupo.clave)"
+      [isAdmin]="isAdmin()"
       (toggle)="onToggle($event)"
       (eliminarCuatrimestre)="eliminarCuatrimestre.emit($event)"
       (editarInforme)="editarInforme.emit($event)">

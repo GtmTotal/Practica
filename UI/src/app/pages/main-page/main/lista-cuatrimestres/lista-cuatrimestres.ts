@@ -14,6 +14,7 @@ export class ListaCuatrimestresComponent {
   private cuatrimestresExpandidos = new Set<string>();
 
   grupos = input<GrupoCuatrimestre[]>([]);
+  isAdmin = input(false);
   eliminarCuatrimestre = output<string>();
   editarInforme = output<InformeGuardado>();
 

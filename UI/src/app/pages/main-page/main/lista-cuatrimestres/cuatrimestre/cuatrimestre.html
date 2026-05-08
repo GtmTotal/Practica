@@ -9,7 +9,7 @@
   @if (!colapsado()) {
     <app-lista-informes [informes]="grupo().informes" (editar)="editarInforme.emit($event)"></app-lista-informes>
     
-    @if (grupo().clave !== 'sin-cuatri') {
+    @if (grupo().clave !== 'sin-cuatri' && isAdmin()) {
       <div class="footer-cuatri">
         <button class="btn-eliminar-cuatri" (click)="eliminarCuatrimestre.emit(grupo().clave)">
           🗑️ Eliminar cuatrimestre

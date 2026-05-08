@@ -13,6 +13,7 @@ import { ListaInformesComponent } from './lista-informes/lista-informes';
 export class CuatrimestreComponent {
   grupo = input.required<GrupoCuatrimestre>();
   colapsado = input(false);
+  isAdmin = input(false);
   toggle = output<string>();
   eliminarCuatrimestre = output<string>();
   editarInforme = output<InformeGuardado>();
