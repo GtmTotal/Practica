@@ -17,51 +17,27 @@
 
 .grupo-header h3 {
   margin: 0;
-  color: #0f4ea1;
-  font-size: 1.85rem;
-  font-weight: 800;
-}
-
-.btn-toggle-cuatri {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-}
-
-.btn-toggle-cuatri span {
-  color: #0f4ea1;
-  font-size: 0.95rem;
-}
-
-.footer-cuatri {
-  display: flex;
-  justify-content: center;
-  padding: 15px 0;
-  margin-top: 10px;
-  border-top: 1px dashed #cbd5e1;
+  color: #1e293b;
+  font-size: 1.4rem;
+  font-weight: 700;
 }
 
 .btn-eliminar-cuatri {
-  border: none;
-  border-radius: 8px;
-  background: #dc2626;
-  color: #fff;
-  padding: 10px 20px;
-  font-size: 1.15rem;
-  font-weight: 700;
+  border: 1px solid #fee2e2;
+  border-radius: 6px;
+  background: #fef2f2;
+  color: #991b1b;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   transition: all 0.2s;
 }
 
 .btn-eliminar-cuatri:hover {
-  background: #b91c1c;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+  background: #fee2e2;
+  color: #7f1d1d;
+  border-color: #fecaca;
 }
 
 @media (max-width: 700px) {

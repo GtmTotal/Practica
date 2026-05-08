@@ -61,7 +61,7 @@ export class ServicioReporteDocumento {
     // Cargar logo local si no está cargado
     if (!this.logoBase64) {
       try {
-        this.logoBase64 = await this.convertImageToBase64('/logo-gtm.png');
+        this.logoBase64 = await this.convertImageToBase64('/logoNoOficial.svg');
       } catch (err) {
         console.warn('No se pudo cargar el logo local:', err);
       }
@@ -83,7 +83,7 @@ export class ServicioReporteDocumento {
         
         // Logo
         if (this.logoBase64) {
-          doc.addImage(this.logoBase64, 'PNG', PW - MX - 40, 10, 40, 40, undefined, 'FAST');
+          doc.addImage(this.logoBase64, 'SVG', PW - MX - 40, 10, 40, 40, undefined, 'FAST');
         }
 
         // Títulos

@@ -1,36 +1,44 @@
 .card-informe {
   background: #fff;
   border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 10px;
-  border-left: 4px solid #1ab55e;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border: 1px solid #e2e8f0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  transition: all 0.2s;
 }
 
-.card-informe strong {
-  font-size: 1.9rem;
-  color: #0f172a;
+.card-informe:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
 }
 
-.card-informe small {
+.market-name {
   font-size: 1.2rem;
-  color: #475569;
+  font-weight: 600;
+  color: #1e293b;
+  text-transform: capitalize;
 }
 
 .btn-editar {
-  border: none;
-  border-radius: 5px;
-  background: #1d63ac;
-  color: #fff;
-  padding: 8px 16px;
-  font-size: 1.15rem;
-  font-weight: 700;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #64748b;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  min-width: 72px;
+  transition: all 0.2s;
+}
+
+.btn-editar:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+  border-color: #cbd5e1;
 }
 
 @media (max-width: 700px) {
@@ -41,34 +49,25 @@
 }
 
 .mini-progreso-container {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: block;
   background: #f1f5f9;
   border-radius: 100px;
-  height: 20px;
-  width: 250px;
+  height: 4px;
+  width: 100%;
+  max-width: 200px;
   position: relative;
   overflow: hidden;
-  margin-left: 12px;
-  vertical-align: middle;
-  border: 1px solid #e2e8f0;
+  margin-top: 8px;
+  border: none;
 }
 
 .mini-progreso-bar {
-  background: linear-gradient(90deg, #10b981, #34d399);
+  background: #10b981;
   height: 100%;
   border-radius: 100px;
   transition: width 0.3s ease;
 }
 
 .mini-progreso-texto {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.75rem;
-  font-weight: 900;
-  color: #065f46;
-  pointer-events: none;
+  display: none;
 }
