@@ -18,8 +18,31 @@
 .grupo-header h3 {
   margin: 0;
   color: #1e293b;
-  font-size: 1.4rem;
+  font-size: 1.15rem;
   font-weight: 700;
+}
+
+.btn-toggle-cuatri {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 100px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #475569;
+}
+
+.btn-toggle-cuatri:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.btn-toggle-cuatri span {
+  font-size: 0.7rem;
+  color: #94a3b8;
 }
 
 .footer-cuatri {

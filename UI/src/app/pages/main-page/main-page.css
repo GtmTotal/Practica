@@ -55,19 +55,11 @@ h2 {
 
 @media (max-width: 700px) {
   h2 {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   .btn-crear-cuatri {
-    font-size: 1.1rem;
-  }
-
-  .grupo-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .grupo-header h3 {
-    font-size: 1.25rem;
+    font-size: 1rem;
+    padding: 14px 20px;
   }
 }
