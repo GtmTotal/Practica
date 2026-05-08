@@ -12,4 +12,5 @@ export class InformeFooterComponent {
   formGroup = input.required<FormGroup>();
   guardando = input(false);
   generarPDF = output<void>();
+  guardarYSalir = output<void>();
 }

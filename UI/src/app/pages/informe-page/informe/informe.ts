@@ -29,6 +29,7 @@ export class InformeComponent {
   onCerrar = input<() => void>();
 
   generarPDF = output<void>();
+  guardarYSalir = output<void>();
   toggleSeccion = output<number>();
   agregarFoto = output<{ event: Event; secIdx: number }>();
   eliminarFoto = output<{ secIdx: number; fotoIdx: number }>();

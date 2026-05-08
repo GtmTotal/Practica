@@ -12,7 +12,8 @@
     (agregarFoto)="agregarFotos($event.event, $event.secIdx)"
     (eliminarFoto)="eliminarFoto($event.secIdx, $event.fotoIdx)"
     (descargarFoto)="descargarFoto($event)"
-    (generarPDF)="generarPDF()">
+    (generarPDF)="generarPDF()"
+    (guardarYSalir)="guardarYSalir()">
   </app-informe>
 } @else {
   <div class="loading-container">

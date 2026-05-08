@@ -210,6 +210,14 @@ export class InformePageComponent implements OnDestroy {
     }
   }
 
+  async guardarYSalir() {
+    const form = this.obraForm;
+    if (form) {
+      await this.persistService.soloGuardar(form, this.fotosPorSeccionBase64);
+      this.volver();
+    }
+  }
+
   toggleSeccion(idx: number) {
     if (idx >= 0 && idx < this.seccionesColapsadas.length) {
       this.seccionesColapsadas[idx] = !this.seccionesColapsadas[idx];

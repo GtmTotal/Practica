@@ -20,6 +20,7 @@
     <app-informe-footer
       [formGroup]="formGroup()!"
       [guardando]="guardando()"
+      (guardarYSalir)="guardarYSalir.emit()"
       (generarPDF)="generarPDF.emit()">
     </app-informe-footer>
   </form>
