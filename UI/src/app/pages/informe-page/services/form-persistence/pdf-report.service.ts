@@ -38,17 +38,17 @@ export interface BombaPDF {
 
 // --- CONFIGURACIÓN ESTÉTICA ---
 const C = {
-  PRIMARY:      [15, 78, 150]   as [number, number, number],   // Azul corporativo elegante
-  SUCCESS:      [22, 163, 74]   as [number, number, number],   // Verde éxito
-  DANGER:       [220, 38, 38]   as [number, number, number],   // Rojo peligro
-  WARN:         [217, 119, 6]   as [number, number, number],   // Ámbar
-  TEXT_MAIN:    [15, 23, 42]    as [number, number, number],   // Slate 900
-  TEXT_MUTED:   [100, 116, 139] as [number, number, number],   // Slate 500
-  BG_LIGHT:     [248, 250, 252] as [number, number, number],   // Slate 50
-  BG_ACCENT:    [239, 246, 255] as [number, number, number],   // Blue 50
-  BORDER:       [226, 232, 240] as [number, number, number],   // Slate 200
-  WHITE:        [255, 255, 255] as [number, number, number],
-  BLACK:        [0, 0, 0]       as [number, number, number],
+  PRIMARY: [15, 78, 150] as [number, number, number],   // Azul corporativo
+  SUCCESS: [22, 163, 74] as [number, number, number],   // Verde éxito
+  DANGER: [220, 38, 38] as [number, number, number],   // Rojo peligro
+  WARN: [217, 119, 6] as [number, number, number],   // Ámbar
+  TEXT_MAIN: [15, 23, 42] as [number, number, number],   // Slate 900
+  TEXT_MUTED: [100, 116, 139] as [number, number, number],   // Slate 500
+  BG_LIGHT: [248, 250, 252] as [number, number, number],   // Slate 50
+  BG_ACCENT: [239, 246, 255] as [number, number, number],   // Blue 50
+  BORDER: [226, 232, 240] as [number, number, number],   // Slate 200
+  WHITE: [255, 255, 255] as [number, number, number],
+  BLACK: [0, 0, 0] as [number, number, number],
 };
 
 @Injectable({ providedIn: 'root' })
@@ -57,7 +57,7 @@ export class ServicioReporteDocumento {
 
   async generarPDF(datos: DatosPDF): Promise<void> {
     const { jsPDF } = await import('jspdf');
-    
+
     // Cargar logo local si no está cargado
     if (!this.logoBase64) {
       try {
@@ -80,7 +80,7 @@ export class ServicioReporteDocumento {
         // --- PORTADA MODERNA ---
         doc.setFillColor(...C.BG_LIGHT);
         doc.rect(0, 0, PW, 60, 'F');
-        
+
         // Logo
         if (this.logoBase64) {
           doc.addImage(this.logoBase64, 'PNG', PW - MX - 40, 10, 40, 40, undefined, 'FAST');
@@ -91,7 +91,7 @@ export class ServicioReporteDocumento {
         doc.setTextColor(...C.PRIMARY);
         doc.setFontSize(24);
         doc.text('INFORME TÉCNICO', MX, 25);
-        
+
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(...C.TEXT_MUTED);
         doc.setFontSize(11);
@@ -140,29 +140,29 @@ export class ServicioReporteDocumento {
     // 2. Metadata (Técnico y Fecha)
     doc.setFillColor(...C.BG_ACCENT);
     doc.roundedRect(MX, y, CW, 20, 2, 2, 'F');
-    
+
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...C.PRIMARY);
     doc.text('TÉCNICO RESPONSABLE', MX + 6, y + 7);
-    doc.text('FECHA DEL INFORME', MX + CW/2 + 6, y + 7);
+    doc.text('FECHA DEL INFORME', MX + CW / 2 + 6, y + 7);
 
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(...C.TEXT_MAIN);
     doc.text(X(datos.tecnico) || 'No especificado', MX + 6, y + 14);
-    doc.text(X(datos.fecha) || 'No especificada', MX + CW/2 + 6, y + 14);
+    doc.text(X(datos.fecha) || 'No especificada', MX + CW / 2 + 6, y + 14);
     y += 30;
 
     // 3. Secciones
     for (const seccion of datos.secciones) {
       checkPage(20);
-      
+
       // Título de Sección
       doc.setDrawColor(...C.PRIMARY);
       doc.setLineWidth(1);
       doc.line(MX, y, MX + CW, y);
-      
+
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(12);
       doc.setTextColor(...C.PRIMARY);
@@ -185,7 +185,7 @@ export class ServicioReporteDocumento {
       for (const punto of seccion.puntos) {
         const descLines = doc.splitTextToSize(X(punto.descripcionManual), CW - 50);
         const noteLines = punto.notaPunto ? doc.splitTextToSize('Nota: ' + punto.notaPunto, CW - 50) : [];
-        
+
         let contentH = descLines.length * 4.5 + 4;
         if (punto.amperios || punto.hz || punto.bar || punto.porcentaje) contentH += 7;
         if (punto.bombasQuimicas?.length) contentH += punto.bombasQuimicas.length * 5 + 4;
@@ -199,13 +199,13 @@ export class ServicioReporteDocumento {
           doc.setFillColor(252, 252, 252);
           doc.rect(MX, y, CW, rowH, 'F');
         }
-        
+
         // Indicadores de estado (Badge único y profesional)
         const badgeW = 20;
         const badgeH = 5;
         const bx = MX + 15 - (badgeW / 2);
         const by = y + (rowH / 2) - (badgeH / 2);
-        
+
         let statusLabel = 'PENDIENTE';
         let statusColor: [number, number, number] = [226, 232, 240]; // Gray tuple
         let textColor: [number, number, number] = [100, 116, 139];   // Muted tuple
@@ -229,7 +229,7 @@ export class ServicioReporteDocumento {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(6);
         doc.setTextColor(...textColor);
-        doc.text(statusLabel, bx + badgeW/2, by + 3.5, { align: 'center' });
+        doc.text(statusLabel, bx + badgeW / 2, by + 3.5, { align: 'center' });
 
         // ID Manual (REF)
         doc.setFont('helvetica', 'bold');
@@ -297,7 +297,7 @@ export class ServicioReporteDocumento {
         const obsLines = doc.splitTextToSize(seccion.observaciones, CW - 10);
         const obsH = obsLines.length * 4.5 + 8;
         checkPage(obsH + 10);
-        
+
         doc.setFillColor(...C.BG_LIGHT);
         doc.roundedRect(MX, y + 2, CW, obsH, 1, 1, 'F');
         doc.setFont('helvetica', 'bold');
@@ -335,7 +335,7 @@ export class ServicioReporteDocumento {
             checkPage(fH + gap);
           }
           const fx = MX + col * (fW + gap);
-          
+
           try {
             const b64 = fotos[i];
             const fmt = b64.startsWith('data:image/png') ? 'PNG' : 'JPEG';
@@ -356,15 +356,15 @@ export class ServicioReporteDocumento {
       const concLines = doc.splitTextToSize(datos.conclusiones, CW - 12);
       const concH = concLines.length * 5 + 15;
       checkPage(concH + 10);
-      
+
       doc.setFillColor(...C.PRIMARY);
       doc.roundedRect(MX, y, CW, concH, 2, 2, 'F');
-      
+
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(10);
       doc.setTextColor(...C.WHITE);
       doc.text('CONCLUSIONES GENERALES', MX + 6, y + 8);
-      
+
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9.5);
       doc.text(concLines, MX + 6, y + 15);
@@ -378,7 +378,7 @@ export class ServicioReporteDocumento {
       doc.setDrawColor(...C.BORDER);
       doc.setLineWidth(0.5);
       doc.line(MX, 285, PW - MX, 285);
-      
+
       doc.setFontSize(7);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(...C.TEXT_MUTED);
@@ -395,21 +395,21 @@ export class ServicioReporteDocumento {
   private drawStatusCircle(doc: any, x: number, y: number, label: string, active: boolean) {
     const size = 5;
     const color = label === 'OK' ? C.SUCCESS : label === 'NO' ? C.DANGER : C.WARN;
-    
+
     if (active) {
       doc.setFillColor(...color);
-      doc.circle(x + size/2, y + size/2, size/2, 'F');
+      doc.circle(x + size / 2, y + size / 2, size / 2, 'F');
       doc.setTextColor(...C.WHITE);
       doc.setFontSize(4);
       doc.setFont('helvetica', 'bold');
-      doc.text(label, x + size/2, y + size/2 + 1.2, { align: 'center' });
+      doc.text(label, x + size / 2, y + size / 2 + 1.2, { align: 'center' });
     } else {
       doc.setDrawColor(...C.BORDER);
       doc.setLineWidth(0.1);
-      doc.circle(x + size/2, y + size/2, size/2, 'S');
+      doc.circle(x + size / 2, y + size / 2, size / 2, 'S');
       doc.setTextColor(...C.BORDER);
       doc.setFontSize(4);
-      doc.text(label, x + size/2, y + size/2 + 1.2, { align: 'center' });
+      doc.text(label, x + size / 2, y + size / 2 + 1.2, { align: 'center' });
     }
   }
 
@@ -420,7 +420,7 @@ export class ServicioReporteDocumento {
       img.onload = () => {
         const canvas = document.createElement('canvas');
         // Usar un tamaño base decente para el logo
-        const scale = 2; 
+        const scale = 2;
         canvas.width = (img.width || 400) * scale;
         canvas.height = (img.height || 400) * scale;
         const ctx = canvas.getContext('2d');
