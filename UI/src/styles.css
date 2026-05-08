@@ -216,6 +216,13 @@ body {
   text-align: left;
 }
 
+.icon-toggle {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  font-weight: 800;
+  transition: transform 0.2s ease;
+}
+
 .seccion-titulo:hover {
   background: var(--gray-100);
 }
