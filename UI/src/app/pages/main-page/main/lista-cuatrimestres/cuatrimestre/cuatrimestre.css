@@ -1,13 +1,18 @@
 .grupo-cuatri {
-  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-bottom: 24px;
+  width: 100%;
 }
 
 .grupo-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   gap: 12px;
+  width: 100%;
 }
 
 .grupo-header h3 {

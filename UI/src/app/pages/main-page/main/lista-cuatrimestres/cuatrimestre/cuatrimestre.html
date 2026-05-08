@@ -4,6 +4,8 @@
       <span>{{ colapsado() ? '▶' : '▼' }}</span>
       <h3>{{ grupo().label }} ({{ grupo().informes.length }})</h3>
     </button>
+  </div>
+
   @if (!colapsado()) {
     <app-lista-informes [informes]="grupo().informes" (editar)="editarInforme.emit($event)"></app-lista-informes>
     
