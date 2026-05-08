@@ -23,7 +23,7 @@ import openpyxl
 # Configuración por defecto
 # ──────────────────────────────────────────────
 DEFAULT_EXCEL = "Plantilla-modelo.xlsx"
-DEFAULT_OUT   = r"apiService\Infraestructura\Datos\config-centros"
+DEFAULT_OUT   = os.path.join("apiService", "Infraestructura", "Datos", "config-centros")
 
 # Palabras clave → tipo de sección
 TIPO_KEYWORDS = {

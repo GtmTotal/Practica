@@ -285,11 +285,26 @@ public static class Endpoints
         {
             try
             {
-                var scriptPath = Path.Combine(env.ContentRootPath, "..", "sync_excel_to_json.py");
+                // Intentar encontrar el script en la raíz del proyecto
+                var scriptPath = Path.GetFullPath(Path.Combine(env.ContentRootPath, "..", "sync_excel_to_json.py"));
+                
+                // Si no está ahí, buscarlo en el ContentRoot (por si acaso está publicado)
+                if (!File.Exists(scriptPath)) {
+                    scriptPath = Path.Combine(env.ContentRootPath, "sync_excel_to_json.py");
+                }
+
+                if (!File.Exists(scriptPath)) {
+                    return Results.Problem($"No se encuentra el script en: {scriptPath}");
+                }
+
+                var pythonCmd = "python";
+                // En Linux/Docker a veces es python3
+                if (!System.OperatingSystem.IsWindows()) pythonCmd = "python3";
+
                 var startInfo = new System.Diagnostics.ProcessStartInfo
                 {
-                    FileName = "python",
-                    Arguments = scriptPath,
+                    FileName = pythonCmd,
+                    Arguments = $"\"{scriptPath}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -297,7 +312,7 @@ public static class Endpoints
                 };
 
                 using var process = System.Diagnostics.Process.Start(startInfo);
-                if (process == null) return Results.Problem("Could not start sync process.");
+                if (process == null) return Results.Problem("No se pudo iniciar el proceso de Python.");
 
                 var output = await process.StandardOutput.ReadToEndAsync();
                 var error = await process.StandardError.ReadToEndAsync();
@@ -305,14 +320,14 @@ public static class Endpoints
 
                 if (process.ExitCode != 0)
                 {
-                    return Results.Problem($"Sync failed: {error}");
+                    return Results.Problem($"Error en script: {error}");
                 }
 
                 return Results.Ok(new { message = "Sincronización completada con éxito", log = output });
             }
             catch (Exception ex)
             {
-                return Results.Problem(ex.Message);
+                return Results.Problem($"Excepción: {ex.Message}");
             }
         });
 

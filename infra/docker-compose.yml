@@ -32,8 +32,8 @@ services:
 
   api:
     build:
-      context: ../apiService
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: apiService/Dockerfile
     container_name: reporte_api
     restart: unless-stopped
     ports:

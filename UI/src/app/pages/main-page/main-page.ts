@@ -37,7 +37,7 @@ export class MainPageComponent implements OnDestroy {
     private initService: ServicioInicializacionFormulario,
     private navService: ServicioNavegacion,
     private adminService: ServicioAdmin,
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.persistService.cargarHistorial().subscribe();
@@ -48,7 +48,7 @@ export class MainPageComponent implements OnDestroy {
       this.isAdmin.set(false);
     } else {
       const pass = window.prompt('Contraseña de administrador:');
-      if (pass === 'gtm2024') { // Contraseña sencilla
+      if (pass === 'gtm2026') { // Contraseña sencilla
         this.isAdmin.set(true);
       } else {
         alert('Contraseña incorrecta');
