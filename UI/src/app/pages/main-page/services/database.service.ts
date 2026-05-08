@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, Observable, map } from 'rxjs';
 import { InformeGuardado } from '../../informe.interface';
@@ -30,6 +30,7 @@ export class ServicioBaseDeDatos {
       fecha: item.fecha,
       cuatrimestre: item.cuatrimestre,
       protegido: item.datos?.protegido === true,
+      progreso: item.datos?.progreso ?? 0,
       ultimaModificacion: item.modificado,
     }));
   }
@@ -42,6 +43,7 @@ export class ServicioBaseDeDatos {
         fecha: item.fecha,
         cuatrimestre: item.cuatrimestre,
         protegido: item.datos?.protegido === true,
+        progreso: item.datos?.progreso ?? 0,
         ultimaModificacion: item.modificado,
       })))
     );

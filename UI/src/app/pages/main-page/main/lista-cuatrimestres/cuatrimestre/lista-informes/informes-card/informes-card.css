@@ -39,3 +39,35 @@
     align-items: flex-start;
   }
 }
+
+.mini-progreso-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f5f9;
+  border-radius: 100px;
+  height: 10px;
+  width: 120px;
+  position: relative;
+  overflow: hidden;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.mini-progreso-bar {
+  background: linear-gradient(90deg, #10b981, #34d399);
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.3s ease;
+}
+
+.mini-progreso-texto {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #065f46;
+  pointer-events: none;
+}

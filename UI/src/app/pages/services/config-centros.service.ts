@@ -1,10 +1,11 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ConfigCentro } from '../config.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioConfiguracionCentros {
+  private readonly apiBase = `http://${window.location.hostname}:5000/api`;
   private cache: Record<string, ConfigCentro> | null = null;
   private centroCache = new Map<string, ConfigCentro>();
 
@@ -14,7 +15,7 @@ export class ServicioConfiguracionCentros {
     if (this.cache) return this.cache;
 
     this.cache = await firstValueFrom(
-      this.http.get<Record<string, ConfigCentro>>('http://192.168.1.135:5000/api/main-page/config-centros')
+      this.http.get<Record<string, ConfigCentro>>(`${this.apiBase}/main-page/config-centros`)
     );
 
     for (const [nombre, config] of Object.entries(this.cache)) {
@@ -31,7 +32,7 @@ export class ServicioConfiguracionCentros {
 
     try {
       const config = await firstValueFrom(
-        this.http.get<ConfigCentro>(`http://192.168.1.135:5000/api/main-page/config-centros/${encodeURIComponent(nombre)}`)
+        this.http.get<ConfigCentro>(`${this.apiBase}/main-page/config-centros/${encodeURIComponent(nombre)}`)
       );
       this.centroCache.set(nombre, config);
       return config;

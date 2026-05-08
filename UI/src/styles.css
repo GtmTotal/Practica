@@ -135,6 +135,17 @@ body {
   transition: var(--transition);
   background: white;
   box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.input-field input[type="date"] {
+  font-family: inherit;
+  min-height: 42px; /* Consistent with text inputs */
+}
+/* Fix for iOS date input alignment and height */
+.input-field input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+  min-height: 1.2em;
 }
 .input-field input:focus {
   outline: none;
@@ -481,8 +492,9 @@ h2 {
   }
   .input-field { min-width: 0; }
   .input-field input { 
-    padding: 8px 10px; 
-    font-size: 16px; 
+    padding: 12px; 
+    font-size: 16px;
+    min-height: 48px;
   }
   .tarea-main-row { flex-direction: column; }
   .inspeccion-controles { justify-content: flex-start; }

@@ -2,8 +2,11 @@
   <div>
     <strong>
       {{ informe().nombreObra }}
-      @if (informe().protegido) {
-        <span>🔒</span>
+      @if ((informe().progreso ?? 0) > 0) {
+        <div class="mini-progreso-container">
+          <div class="mini-progreso-bar" [style.width.%]="informe().progreso"></div>
+          <span class="mini-progreso-texto">{{ informe().progreso }}%</span>
+        </div>
       }
     </strong>
     <br />
