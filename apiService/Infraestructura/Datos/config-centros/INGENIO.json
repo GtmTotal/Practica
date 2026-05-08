@@ -22,30 +22,10 @@
                     "descripcion": "Verificar la presencia de sólidos en el cajón del rototamiz."
                 },
                 {
-                    "descripcion": "Comprobación sinfín compactador: 1,36 A / 35 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Comprobación sinfín compactador:"
                 },
                 {
-                    "descripcion": "Comprobación rototamiz: 1,70 A / 25 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Comprobación rototamiz:"
                 },
                 {
                     "descripcion": "La limpieza del equipo. (Agua a presíon)"
@@ -73,30 +53,10 @@
                     ]
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 1 7,6 A / 50 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 1"
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 2 7,6 A / 50 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 2"
                 },
                 {
                     "descripcion": "Vaciar arqueta al máximo y obserbar el estado de mangueras, acoples, solidos en el fondo… (FOTOS)"
@@ -124,30 +84,10 @@
                     ]
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 1 7,9 A / 50 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 1"
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 2 8,1 A / 50 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 2"
                 },
                 {
                     "descripcion": "Vaciar arqueta al máximo y obserbar el estado de mangueras, acoples, solidos en el fondo… (FOTOS)"
@@ -166,30 +106,10 @@
                     "descripcion": "Limpiar filtro aire soplante"
                 },
                 {
-                    "descripcion": "Comprobación soplante homogenizador: 2,5 A / Bar / Nivel 23 %",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "porcentaje",
-                            "sufijo": "%"
-                        }
-                    ]
+                    "descripcion": "Comprobación soplante homogenizador:"
                 },
                 {
-                    "descripcion": "Comprobación soplante neutralizador: 2,46 A / Bar / Nivel 18 %",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "porcentaje",
-                            "sufijo": "%"
-                        }
-                    ]
+                    "descripcion": "Comprobación soplante neutralizador:"
                 },
                 {
                     "descripcion": "Comprobar estado de las mangueras de aire."
@@ -211,17 +131,7 @@
                     "descripcion": "Revisar que el nivel coincide con el representado en la pantalla HMI."
                 },
                 {
-                    "descripcion": "Bomba dosificadora acido 0,85 A 50%",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "porcentaje",
-                            "sufijo": "%"
-                        }
-                    ]
+                    "descripcion": "Bomba dosificadora acido"
                 },
                 {
                     "descripcion": "Bomba dosificadora sosa 0,65A 50%",
@@ -237,30 +147,10 @@
                     ]
                 },
                 {
-                    "descripcion": "bomba trasvase acido 0,80A 100%",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "porcentaje",
-                            "sufijo": "%"
-                        }
-                    ]
+                    "descripcion": "bomba trasvase acido"
                 },
                 {
-                    "descripcion": "Bomba trasvase sosa 0,85A 100%",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "porcentaje",
-                            "sufijo": "%"
-                        }
-                    ]
+                    "descripcion": "Bomba trasvase sosa"
                 }
             ]
         },
@@ -273,17 +163,7 @@
                     "descripcion": "Revisar que el nivel coincide con el representado en la pantalla HMI."
                 },
                 {
-                    "descripcion": "Comprobación consumo bomba trasvase 3,8 A / 50 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Comprobación consumo bomba trasvase"
                 },
                 {
                     "descripcion": "Comprobar que el equipo funciona sin anomalías."
@@ -302,17 +182,7 @@
                     "descripcion": "Revisar que el nivel coincide con el representado en la pantalla HMI."
                 },
                 {
-                    "descripcion": "Comprobación consumo bomba recirculación: 4,15 A / 50 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Comprobación consumo bomba recirculación:"
                 },
                 {
                     "descripcion": "Comprobar que el equipo funciona sin anomalías."

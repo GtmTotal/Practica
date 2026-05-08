@@ -16,10 +16,10 @@
                     "descripcion": "Verificar la presencia de sólidos en el cajón del rototamiz."
                 },
                 {
-                    "descripcion": "Comprobación sinfín compactador: A / Hz"
+                    "descripcion": "Comprobación sinfín compactador:"
                 },
                 {
-                    "descripcion": "Comprobación rototamiz: A / Hz"
+                    "descripcion": "Comprobación rototamiz:"
                 },
                 {
                     "descripcion": "La limpieza del equipo. (Agua a presíon)"
@@ -47,22 +47,10 @@
                     ]
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 1 A / Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 1"
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 2 A / Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 2"
                 },
                 {
                     "descripcion": "Comprobar sentido de giro y estado de las aspas del agitador submarino."
@@ -93,22 +81,10 @@
                     ]
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 1 A / Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 1"
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 2 A / Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 2"
                 },
                 {
                     "descripcion": "Comprobar sentido de giro y estado de las aspas del agitador submarino."
@@ -139,22 +115,10 @@
                     ]
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 1 A / Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 1"
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 2 A / Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 2"
                 },
                 {
                     "descripcion": "Vaciar arqueta al máximo y obserbar el estado de mangueras, acoples, solidos en el fondo… (FOTOS)"
@@ -173,7 +137,7 @@
                     "descripcion": "Limpiar filtro aire soplante"
                 },
                 {
-                    "descripcion": "Comprobación soplante homogenizador: A / Bar / Nivel %"
+                    "descripcion": "Comprobación soplante homogenizador:"
                 },
                 {
                     "descripcion": "Comprobar estado de las mangueras de aire."
@@ -192,10 +156,10 @@
                     "descripcion": "Comprobar que el equipo funciona sin anomalías."
                 },
                 {
-                    "descripcion": "Comprobar bomba 1 homogenizador a agua a tratar: A Hz"
+                    "descripcion": "Comprobar bomba 1 homogenizador a agua a tratar:"
                 },
                 {
-                    "descripcion": "Comprobar bomba 2 homogenizador a agua a tratar: A Hz"
+                    "descripcion": "Comprobar bomba 2 homogenizador a agua a tratar:"
                 },
                 {
                     "descripcion": "Vaciar neutralizador completamente y obserbar el estado de mangueras, acoples, solidos en el fondo… (FOTOS)"

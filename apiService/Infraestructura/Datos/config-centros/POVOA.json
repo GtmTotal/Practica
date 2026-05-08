@@ -22,22 +22,10 @@
                     ]
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 1 A / Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 1"
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 2 A / Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 2"
                 },
                 {
                     "descripcion": "Vaciar arqueta al máximo y obserbar el estado de mangueras, acoples, solidos en el fondo… (FOTOS)"
@@ -50,7 +38,7 @@
             "prefijo": 2,
             "tareas": [
                 {
-                    "descripcion": "Comprobar bomba grupo presión 1: A Hz",
+                    "descripcion": "Comprobar bomba grupo presión 1:",
                     "campos": [
                         {
                             "clave": "bar",
@@ -59,7 +47,7 @@
                     ]
                 },
                 {
-                    "descripcion": "Comprobar bomba grupo presión 2: A Hz",
+                    "descripcion": "Comprobar bomba grupo presión 2:",
                     "campos": [
                         {
                             "clave": "bar",
@@ -75,7 +63,7 @@
             "prefijo": 3,
             "tareas": [
                 {
-                    "descripcion": "Comprobar bomba grupo presión 1: A Hz",
+                    "descripcion": "Comprobar bomba grupo presión 1:",
                     "campos": [
                         {
                             "clave": "bar",
@@ -84,7 +72,7 @@
                     ]
                 },
                 {
-                    "descripcion": "Comprobar bomba grupo presión 2: A Hz",
+                    "descripcion": "Comprobar bomba grupo presión 2:",
                     "campos": [
                         {
                             "clave": "bar",
@@ -113,6 +101,9 @@
                 },
                 {
                     "descripcion": "Verificar seguridades (FOTOS del cuadro antes y después)."
+                },
+                {
+                    "descripcion": "Verificar seguridades (FOTOS del cuadro antes y después) prueba"
                 }
             ]
         }

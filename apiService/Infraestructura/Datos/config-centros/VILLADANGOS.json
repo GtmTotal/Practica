@@ -22,30 +22,10 @@
                     "descripcion": "Verificar la presencia de sólidos en el cajón del rototamiz."
                 },
                 {
-                    "descripcion": "Comprobación sinfín compactador: 2,10 A / 35 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Comprobación sinfín compactador:"
                 },
                 {
-                    "descripcion": "Comprobación rototamiz: 2,30 A / 35 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Comprobación rototamiz:"
                 },
                 {
                     "descripcion": "La limpieza del equipo. (Agua a presíon)"
@@ -76,30 +56,10 @@
                     ]
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 1 5,50 A / 48,9 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 1"
                 },
                 {
-                    "descripcion": "Caudal e intensidad Bomba 2 5,6 A / 50 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Caudal e intensidad Bomba 2"
                 },
                 {
                     "descripcion": "Vaciar arqueta al máximo y obserbar el estado de mangueras, acoples, solidos en el fondo… (FOTOS)"
@@ -118,30 +78,10 @@
                     "descripcion": "Limpiar filtro aire soplante"
                 },
                 {
-                    "descripcion": "Comprobación soplante homogenizador: 2,10 A / 20%",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "porcentaje",
-                            "sufijo": "%"
-                        }
-                    ]
+                    "descripcion": "Comprobación soplante homogenizador:"
                 },
                 {
-                    "descripcion": "Comprobación soplante neutralizador: 2,05 A / 15%",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "porcentaje",
-                            "sufijo": "%"
-                        }
-                    ]
+                    "descripcion": "Comprobación soplante neutralizador:"
                 },
                 {
                     "descripcion": "Comprobar estado de las mangueras de aire."
@@ -154,17 +94,7 @@
             "prefijo": 4,
             "tareas": [
                 {
-                    "descripcion": "Comprobación de que las bombas dosifiquen producto. ANOTAR CAUDALES E INTENSIDAD: Bomba dosificadora ácido: 0,78 A / 50 % Bomba dosificadora sosa: 0,71 A / 50 % Bomba trasvase ácido: 0,67 A / 100 % Bomba trasvase sosa: 0,66 A / 100 %",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "porcentaje",
-                            "sufijo": "%"
-                        }
-                    ]
+                    "descripcion": "Comprobación de que las bombas dosifiquen producto. ANOTAR CAUDALES E INTENSIDAD: Bomba dosificadora ácido: Bomba dosificadora sosa: Bomba trasvase ácido: Bomba trasvase sosa:"
                 },
                 {
                     "descripcion": "Revisión de sensores de niveles y recargar producto (FOTOS antes y después)"
@@ -199,17 +129,7 @@
                     "descripcion": "Revisar que el nivel coincide con el representado en la pantalla HMI."
                 },
                 {
-                    "descripcion": "Comprobación consumo bomba recirculación: 2,1 A / 50 Hz",
-                    "campos": [
-                        {
-                            "clave": "amperios",
-                            "sufijo": "A"
-                        },
-                        {
-                            "clave": "hz",
-                            "sufijo": "HZ"
-                        }
-                    ]
+                    "descripcion": "Comprobación consumo bomba recirculación:"
                 },
                 {
                     "descripcion": "Comprobar que el equipo funciona sin anomalías."
