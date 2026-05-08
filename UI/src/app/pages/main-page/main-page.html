@@ -1,9 +1,13 @@
 <div class="historial-container">
   <!-- Botón Admin flotante o discreto -->
   <div class="admin-access">
-    <button class="btn-admin-gear" (click)="toggleAdmin()">
-      {{ isAdmin() ? '🔓 Admin On' : '⚙️' }}
-    </button>
+    <button class="btn-admin-gear" (click)="toggleAdmin()" [title]="isAdmin() ? 'Salir de modo Admin' : 'Modo Administrador'">
+    @if (isAdmin()) {
+      <span class="icon-logout">🚪</span>
+    } @else {
+      <span class="icon-gear">⚙️</span>
+    }
+  </button>
   </div>
 
   <div class="inicio-logo-container">
