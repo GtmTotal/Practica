@@ -70,7 +70,13 @@ public static class Endpoints
                     protegido = x.Protegido,
                     conclusiones = x.Conclusiones,
                     modificado = x.Modificado,
-                    datos = new { protegido = x.Protegido }
+                    datos = new
+                    {
+                        protegido = x.Protegido,
+                        progreso = x.Sistemas.SelectMany(s => s.Tareas).Any()
+                            ? (int)((double)x.Sistemas.SelectMany(s => s.Tareas).Count(t => t.Ok || t.NoOk) / x.Sistemas.SelectMany(s => s.Tareas).Count() * 100)
+                            : 0
+                    }
                 })
                 .ToListAsync();
 
