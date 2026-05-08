@@ -224,11 +224,11 @@ export class ServicioReporteDocumento {
           textColor = C.WHITE;
         }
 
-        doc.setFillColor(...statusColor);
+        doc.setFillColor(...(statusColor as any));
         doc.roundedRect(bx, by, badgeW, badgeH, 1, 1, 'F');
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(6);
-        doc.setTextColor(...textColor);
+        doc.setTextColor(...(textColor as any));
         doc.text(statusLabel, bx + badgeW/2, by + 3.5, { align: 'center' });
 
         // ID Manual (REF)
