@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 
 export type DialogType = 'info' | 'success' | 'warning' | 'error' | 'confirm' | 'prompt';
+export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
 export interface DialogOptions {
   title: string;
@@ -12,11 +13,20 @@ export interface DialogOptions {
   resolve?: (value: boolean | string | null) => void;
 }
 
+export interface ToastOptions {
+  id: number;
+  message: string;
+  type: ToastType;
+  duration?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class UIService {
   dialogState = signal<DialogOptions | null>(null);
+  toastState = signal<ToastOptions[]>([]);
+  private toastIdCounter = 0;
 
   alert(title: string, message: string, type: DialogType = 'info'): Promise<boolean> {
     return new Promise((resolve) => {
@@ -65,5 +75,35 @@ export class UIService {
         }
       });
     });
+  }
+
+  // Sistema de Toasts
+  toast(message: string, type: ToastType = 'info', duration = 4000): void {
+    const id = ++this.toastIdCounter;
+    const toast: ToastOptions = { id, message, type, duration };
+    
+    this.toastState.update(toasts => [...toasts, toast]);
+    
+    // Auto-dismiss
+    setTimeout(() => {
+      this.dismissToast(id);
+    }, duration);
+  }
+
+  dismissToast(id: number): void {
+    this.toastState.update(toasts => toasts.filter(t => t.id !== id));
+  }
+
+  // Helper methods para toasts comunes
+  success(message: string, duration?: number): void {
+    this.toast(message, 'success', duration);
+  }
+
+  error(message: string, duration?: number): void {
+    this.toast(message, 'error', duration);
+  }
+
+  warning(message: string, duration?: number): void {
+    this.toast(message, 'warning', duration);
   }
 }
