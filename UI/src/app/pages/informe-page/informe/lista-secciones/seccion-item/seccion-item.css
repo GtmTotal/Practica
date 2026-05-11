@@ -61,3 +61,26 @@
   resize: vertical;
   background: white;
 }
+
+.btn-foto,
+.btn-foto-add {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-foto:hover,
+.btn-foto-add:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-md);
+}

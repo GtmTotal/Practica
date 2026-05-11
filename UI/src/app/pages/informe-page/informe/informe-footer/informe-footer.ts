@@ -7,6 +7,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './informe-footer.html',
+  styleUrls: ['./informe-footer.css']
 })
 export class InformeFooterComponent {
   formGroup = input.required<FormGroup>();

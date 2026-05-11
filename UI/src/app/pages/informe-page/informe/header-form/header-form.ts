@@ -6,7 +6,8 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
   selector: 'app-header-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './header-form.html',   // nota: sin .component
+  templateUrl: './header-form.html',
+  styleUrls: ['./header-form.css']
 })
 export class HeaderFormComponent {
   centro = input('');
