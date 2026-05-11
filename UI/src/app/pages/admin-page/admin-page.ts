@@ -47,11 +47,12 @@ export class AdminPageComponent {
   async sincronizarExcel() {
     if (this.isSyncing()) return;
     this.isSyncing.set(true);
+    this.ui.toast('Sincronizando con Excel...', 'info');
     try {
       const res = await this.adminService.sincronizarExcel();
-      await this.ui.alert('Sincronización', res.message || 'Sincronización completada', 'success');
+      this.ui.success(res.message || 'Sincronización completada');
     } catch (err: any) {
-      await this.ui.alert('Error', 'Error sincronizando: ' + (err.error?.detail || err.message), 'error');
+      this.ui.error('Error sincronizando: ' + (err.error?.detail || err.message));
     } finally {
       this.isSyncing.set(false);
     }

@@ -83,6 +83,7 @@ export class ServicioGestionFotografias {
     fotosSignal.set([...fotosSignal(), ...nuevas]);
     input.value = '';
     if (onGuardar) onGuardar();
+    this.ui.success(`${nuevas.length} foto(s) añadida(s)`);
   }
 
   async eliminarFoto(
@@ -98,6 +99,7 @@ export class ServicioGestionFotografias {
     actuales.splice(index, 1);
     fotosSignal.set(actuales);
     if (onGuardar) onGuardar();
+    this.ui.success('Foto eliminada');
   }
 
   async descargarFoto(foto: any): Promise<void> {
@@ -116,7 +118,7 @@ export class ServicioGestionFotografias {
       URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error('Error al descargar la foto:', error);
-      await this.ui.alert('Error', 'No se pudo descargar. Intenta mantener pulsada la imagen y elegir "Guardar imagen".', 'warning');
+      this.ui.error('No se pudo descargar. Intenta mantener pulsada la imagen');
     }
   }
 }

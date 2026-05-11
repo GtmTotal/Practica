@@ -100,6 +100,7 @@ export class ServicioPersistenciaFormulario {
     
     await this.dbService.guardar(informeCompleto);
     await firstValueFrom(this.cargarHistorial());
+    this.ui.success('Informe guardado');
   }
 
   async editarInforme(inf: InformeGuardado): Promise<{
@@ -174,7 +175,7 @@ export class ServicioPersistenciaFormulario {
     const datos = await this.pdfDataBuilder.buildDatosPDF(obraForm, fotosPorSeccion);
     await this.pdfService.generarPDF(datos);
     await this.navService.reset();
-    await this.ui.alert('PDF Generado', 'El informe ha sido guardado y el PDF generado correctamente.', 'success');
+    this.ui.success('PDF generado correctamente');
   }
 
   async buscarPorCuatrimestreYCentro(cuatrimestre: string, centro: string): Promise<InformeGuardado | null> {

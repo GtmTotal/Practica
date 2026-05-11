@@ -104,7 +104,7 @@ export class ServicioCuatrimestre {
       await this.dbService.guardar(informe);
       await new Promise(r => setTimeout(r, 20));
     }
-    await this.ui.alert('Éxito', `Cuatrimestre ${claveCuatri} creado con todos los informes.`, 'success');
+    this.ui.success(`Cuatrimestre ${claveCuatri} creado con todos los informes`);
   }
 
   // Elimina un cuatrimestre completo (con confirmacion UI)
@@ -113,12 +113,13 @@ export class ServicioCuatrimestre {
     if (!ok) return false;
     
     try {
+      this.ui.toast('Eliminando cuatrimestre...', 'warning');
       await this.dbService.eliminarCuatrimestre(cuatrimestre);
-      await this.ui.alert('Eliminado', 'El cuatrimestre ha sido eliminado correctamente.', 'success');
+      this.ui.success('Cuatrimestre eliminado');
       return true;
     } catch (error) {
       console.error(error);
-      await this.ui.alert('Error', 'No se pudo eliminar el cuatrimestre.', 'error');
+      this.ui.error('No se pudo eliminar el cuatrimestre');
       return false;
     }
   }
