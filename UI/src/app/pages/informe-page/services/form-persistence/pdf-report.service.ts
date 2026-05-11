@@ -134,6 +134,25 @@ export class ServicioReporteDocumento {
       }
     };
 
+    // Separación inteligente: evita cortar secciones o tareas
+    const checkPageForSection = () => {
+      // Si quedan menos de 40mm en la página, salta a nueva página
+      // Esto evita que un título de sección quede solo al final
+      if (y > 230) {
+        doc.addPage();
+        drawHeader(false);
+      }
+    };
+
+    const checkPageForTask = (taskHeight: number) => {
+      // Si la tarea no cabe completa en la página, salta a nueva página
+      // Esto evita cortar tareas a mitad
+      if (y + taskHeight > 270) {
+        doc.addPage();
+        drawHeader(false);
+      }
+    };
+
     // 1. Dibujar primera cabecera
     drawHeader(true);
 
@@ -156,7 +175,7 @@ export class ServicioReporteDocumento {
 
     // 3. Secciones
     for (const seccion of datos.secciones) {
-      checkPage(25); // Aumentado para acomodar mejor espaciado
+      checkPageForSection(); // Separación inteligente: evita títulos solos al final
 
       // Título de Sección
       doc.setDrawColor(...C.PRIMARY);
@@ -192,7 +211,7 @@ export class ServicioReporteDocumento {
         if (noteLines.length) contentH += noteLines.length * 4.5 + 3; // Aumentado ligeramente
 
         const rowH = Math.max(12, contentH); // Aumentado de 10 a 12 para más aire
-        checkPage(rowH + 8); // Aumentado de 5 a 8
+        checkPageForTask(rowH + 8); // Separación inteligente: evita cortar tareas
 
         // Zebra striping
         if (rowIdx % 2 === 0) {
