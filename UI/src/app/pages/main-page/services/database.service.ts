@@ -65,5 +65,14 @@ export class ServicioBaseDeDatos {
   async eliminar(id: number) {
     return firstValueFrom(this.http.delete(`${this.apiBase}/informes/${id}`));
   }
+
+  async existeCuatrimestre(cuatrimestre: string): Promise<boolean> {
+    try {
+      const informes = await this.obtenerTodos();
+      return informes.some(i => i.cuatrimestre === cuatrimestre);
+    } catch {
+      return false;
+    }
+  }
 }
 

@@ -33,78 +33,109 @@ export class ServicioCuatrimestre {
 
     const { fechaBase, claveCuatri } = datos;
 
-    const existe = informesGuardados.some(i => i.cuatrimestre === claveCuatri);
-    if (existe) {
-      await this.ui.alert('Error', `El cuatrimestre ${claveCuatri} ya existe. No se puede duplicar.`, 'error');
+    // Validación más robusta: consultar BD directamente
+    const existeEnBD = await this.dbService.existeCuatrimestre(claveCuatri);
+    const existeEnMemoria = informesGuardados.some(i => i.cuatrimestre === claveCuatri);
+    
+    if (existeEnBD || existeEnMemoria) {
+      this.ui.error(`El cuatrimestre ${claveCuatri} ya existe. No se puede duplicar.`);
       return;
     }
 
     const configsPorCentro = await this.servicioConfiguracionCentros.getAll();
     const nombresCentros = Object.keys(configsPorCentro);
+    const totalCentros = nombresCentros.length;
 
-    for (const centro of nombresCentros) {
-      const id = Date.now() + Math.floor(Math.random() * 1000);
+    if (totalCentros === 0) {
+      this.ui.warning('No hay centros configurados para crear informes');
+      return;
+    }
+
+    this.ui.toast(`Creando cuatrimestre con ${totalCentros} informes...`, 'info');
+
+    let creados = 0;
+    const baseTimestamp = Date.now();
+
+    for (let i = 0; i < nombresCentros.length; i++) {
+      const centro = nombresCentros[i];
+      // ID único: timestamp base + índice del loop
+      const id = baseTimestamp + i;
       const config = configsPorCentro[centro];
       if (!config) continue;
 
-      const seccionesVacias = config.secciones.map((secTemplate: any) => {
-        const bombasUsar = (secTemplate.bombasQuimicas && secTemplate.bombasQuimicas.length)
-          ? secTemplate.bombasQuimicas
-          : (config.bombasQuimicas || []);
-        const camposDefecto = [{ clave: 'amperios', sufijo: 'A' }, { clave: 'porcentaje', sufijo: '%' }];
-        const camposUsar = (secTemplate.camposBombas && secTemplate.camposBombas.length)
-          ? secTemplate.camposBombas
-          : camposDefecto;
+      try {
+        const seccionesVacias = config.secciones.map((secTemplate: any) => {
+          const bombasUsar = (secTemplate.bombasQuimicas && secTemplate.bombasQuimicas.length)
+            ? secTemplate.bombasQuimicas
+            : (config.bombasQuimicas || []);
+          const camposDefecto = [{ clave: 'amperios', sufijo: 'A' }, { clave: 'porcentaje', sufijo: '%' }];
+          const camposUsar = (secTemplate.camposBombas && secTemplate.camposBombas.length)
+            ? secTemplate.camposBombas
+            : camposDefecto;
 
-        const tareasConBombas = secTemplate.tareas.map((tareaTemplate: any, tareaIdx: number) => {
-          const baseTarea = {
-            descripcion: tareaTemplate.descripcion,
-            rev: false,
-            ok: false,
-            noOk: false,
-            notaTarea: '',
-            campos: (tareaTemplate.campos || []).map((campo: any) => ({
-              clave: campo.clave,
-              valor: null,
-              sufijo: campo.sufijo
-            }))
+          const tareasConBombas = secTemplate.tareas.map((tareaTemplate: any, tareaIdx: number) => {
+            const baseTarea = {
+              descripcion: tareaTemplate.descripcion,
+              rev: false,
+              ok: false,
+              noOk: false,
+              notaTarea: '',
+              campos: (tareaTemplate.campos || []).map((campo: any) => ({
+                clave: campo.clave,
+                valor: null,
+                sufijo: campo.sufijo
+              }))
+            };
+            if (secTemplate.tipo === 'quimicos' && tareaIdx === 0 && bombasUsar.length) {
+              const bombasVacias = bombasUsar.map((nombre: string) => {
+                const bomba: any = { nombre };
+                camposUsar.forEach((campo: any) => (bomba[campo.clave] = null));
+                return bomba;
+              });
+              return { ...baseTarea, bombasQuimicas: bombasVacias };
+            }
+            return baseTarea;
+          });
+
+          return {
+            titulo: secTemplate.titulo,
+            tipo: secTemplate.tipo,
+            prefijo: secTemplate.prefijo,
+            observaciones: '',
+            fotos: [],
+            tareas: tareasConBombas
           };
-          if (secTemplate.tipo === 'quimicos' && tareaIdx === 0 && bombasUsar.length) {
-            const bombasVacias = bombasUsar.map((nombre: string) => {
-              const bomba: any = { nombre };
-              camposUsar.forEach((campo: any) => (bomba[campo.clave] = null));
-              return bomba;
-            });
-            return { ...baseTarea, bombasQuimicas: bombasVacias };
-          }
-          return baseTarea;
         });
 
-        return {
-          titulo: secTemplate.titulo,
-          tipo: secTemplate.tipo,
-          prefijo: secTemplate.prefijo,
-          observaciones: '',
-          fotos: [],
-          tareas: tareasConBombas
+        const informe = {
+          id,
+          nombreObra: centro,
+          tecnico: '',
+          fecha: fechaBase,
+          cuatrimestre: claveCuatri,
+          protegido: true,
+          secciones: seccionesVacias,
+          conclusiones: '',
+          ultimaModificacion: new Date().toLocaleString()
         };
-      });
-
-      const informe = {
-        id,
-        nombreObra: centro,
-        tecnico: '',
-        fecha: fechaBase,
-        cuatrimestre: claveCuatri,
-        protegido: true,
-        secciones: seccionesVacias,
-        conclusiones: '',
-        ultimaModificacion: new Date().toLocaleString()
-      };
-      await this.dbService.guardar(informe);
-      await new Promise(r => setTimeout(r, 20));
+        await this.dbService.guardar(informe);
+        creados++;
+        
+        // Delay más largo para evitar sobrecargar el backend
+        await new Promise(r => setTimeout(r, 50));
+      } catch (error) {
+        console.error(`Error creando informe para ${centro}:`, error);
+        this.ui.error(`Error creando informe para ${centro}`);
+      }
     }
-    this.ui.success(`Cuatrimestre ${claveCuatri} creado con todos los informes`);
+
+    if (creados === totalCentros) {
+      this.ui.success(`Cuatrimestre ${claveCuatri} creado con ${creados} informes`);
+    } else if (creados > 0) {
+      this.ui.warning(`Cuatrimestre creado parcialmente: ${creados} de ${totalCentros} informes`);
+    } else {
+      this.ui.error('No se pudo crear el cuatrimestre');
+    }
   }
 
   // Elimina un cuatrimestre completo (con confirmacion UI)
