@@ -69,7 +69,7 @@ export class ServicioReporteDocumento {
 
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const PW = 210;
-    const MX = 15;
+    const MX = 20; // Aumentado de 15 a 20mm para más aire
     const CW = PW - MX * 2;
     let y = 0;
 
@@ -128,7 +128,7 @@ export class ServicioReporteDocumento {
     };
 
     const checkPage = (h: number) => {
-      if (y + h > 275) {
+      if (y + h > 270) { // Ajustado de 275 a 270 para acomodar márgenes mayores
         doc.addPage();
         drawHeader(false);
       }
@@ -156,29 +156,29 @@ export class ServicioReporteDocumento {
 
     // 3. Secciones
     for (const seccion of datos.secciones) {
-      checkPage(20);
+      checkPage(25); // Aumentado para acomodar mejor espaciado
 
       // Título de Sección
       doc.setDrawColor(...C.PRIMARY);
-      doc.setLineWidth(1);
+      doc.setLineWidth(1.2); // Línea un poco más gruesa para más definición
       doc.line(MX, y, MX + CW, y);
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
+      doc.setFontSize(13); // Aumentado de 12 a 13 para mejor jerarquía
       doc.setTextColor(...C.PRIMARY);
       doc.text(X(seccion.tituloSeccion).toUpperCase(), MX, y + 8);
-      y += 12;
+      y += 15; // Aumentado de 12 a 15 para más espacio después del título
 
       // Encabezado de tabla
       doc.setFillColor(...C.BG_LIGHT);
-      doc.rect(MX, y, CW, 7, 'F');
-      doc.setFontSize(7.5);
+      doc.rect(MX, y, CW, 8, 'F'); // Aumentado de 7 a 8
+      doc.setFontSize(8); // Aumentado de 7.5 a 8
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...C.TEXT_MUTED);
-      doc.text('ESTADO', MX + 15, y + 4.5, { align: 'center' });
-      doc.text('REF', MX + 35, y + 4.5, { align: 'center' });
-      doc.text('DESCRIPCIÓN DE LA TAREA', MX + 45, y + 4.5);
-      y += 7;
+      doc.text('ESTADO', MX + 15, y + 5, { align: 'center' });
+      doc.text('REF', MX + 35, y + 5, { align: 'center' });
+      doc.text('DESCRIPCIÓN DE LA TAREA', MX + 45, y + 5);
+      y += 8;
 
       // Puntos/Tareas
       let rowIdx = 0;
@@ -186,13 +186,13 @@ export class ServicioReporteDocumento {
         const descLines = doc.splitTextToSize(X(punto.descripcionManual), CW - 50);
         const noteLines = punto.notaPunto ? doc.splitTextToSize('Nota: ' + punto.notaPunto, CW - 50) : [];
 
-        let contentH = descLines.length * 4.5 + 4;
-        if (punto.amperios || punto.hz || punto.bar || punto.porcentaje) contentH += 7;
-        if (punto.bombasQuimicas?.length) contentH += punto.bombasQuimicas.length * 5 + 4;
-        if (noteLines.length) contentH += noteLines.length * 4 + 2;
+        let contentH = descLines.length * 5 + 5; // Aumentado de 4.5 a 5
+        if (punto.amperios || punto.hz || punto.bar || punto.porcentaje) contentH += 8; // Aumentado de 7 a 8
+        if (punto.bombasQuimicas?.length) contentH += punto.bombasQuimicas.length * 6 + 5; // Aumentado espaciado
+        if (noteLines.length) contentH += noteLines.length * 4.5 + 3; // Aumentado ligeramente
 
-        const rowH = Math.max(10, contentH);
-        checkPage(rowH + 5);
+        const rowH = Math.max(12, contentH); // Aumentado de 10 a 12 para más aire
+        checkPage(rowH + 8); // Aumentado de 5 a 8
 
         // Zebra striping
         if (rowIdx % 2 === 0) {
@@ -235,10 +235,10 @@ export class ServicioReporteDocumento {
 
         // Descripción
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
+        doc.setFontSize(9.5); // Aumentado de 9 a 9.5 para mejor legibilidad
         doc.setTextColor(...C.TEXT_MAIN);
-        doc.text(descLines, MX + 45, y + 5.5);
-        let curY = y + 5.5 + (descLines.length * 4.5);
+        doc.text(descLines, MX + 45, y + 6);
+        let curY = y + 6 + (descLines.length * 5);
 
         // Medidas (Badges)
         const medValues: string[] = [];
@@ -249,34 +249,34 @@ export class ServicioReporteDocumento {
 
         if (medValues.length > 0) {
           doc.setFillColor(...C.BG_ACCENT);
-          const badgeW = doc.getTextWidth(medValues.join('  •  ')) + 6;
-          doc.roundedRect(MX + 45, curY, badgeW, 5, 1, 1, 'F');
+          const badgeW = doc.getTextWidth(medValues.join('  •  ')) + 8; // Aumentado padding de 6 a 8
+          doc.roundedRect(MX + 45, curY, badgeW, 6, 1, 1, 'F'); // Aumentado altura de 5 a 6
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(7.5);
+          doc.setFontSize(8); // Aumentado de 7.5 a 8
           doc.setTextColor(...C.PRIMARY);
-          doc.text(medValues.join('  •  '), MX + 48, curY + 3.5);
-          curY += 7;
+          doc.text(medValues.join('  •  '), MX + 48, curY + 4);
+          curY += 9; // Aumentado de 7 a 9
         }
 
         // Bombas Químicas
         if (punto.bombasQuimicas?.length) {
           doc.setFont('helvetica', 'italic');
-          doc.setFontSize(7.5);
+          doc.setFontSize(8); // Aumentado de 7.5 a 8
           doc.setTextColor(...C.WARN);
           for (const b of punto.bombasQuimicas) {
             doc.text(`â—‹ ${b.nombre}: ${b.amperios || '0'}A / ${b.porcentaje || '0'}%`, MX + 47, curY + 3);
-            curY += 5;
+            curY += 6; // Aumentado de 5 a 6
           }
-          curY += 1;
+          curY += 2; // Aumentado de 1 a 2
         }
 
         // Notas
         if (noteLines.length) {
           doc.setFont('helvetica', 'italic');
-          doc.setFontSize(8);
+          doc.setFontSize(8.5); // Aumentado de 8 a 8.5
           doc.setTextColor(100, 100, 100);
           doc.text(noteLines, MX + 45, curY + 2);
-          curY += noteLines.length * 4 + 2;
+          curY += noteLines.length * 4.5 + 3; // Aumentado de 4 a 4.5 y de 2 a 3
         }
 
         // Separador fino
@@ -290,52 +290,52 @@ export class ServicioReporteDocumento {
 
       // Observaciones de Sección
       if (seccion.observaciones?.trim()) {
-        const obsLines = doc.splitTextToSize(seccion.observaciones, CW - 10);
-        const obsH = obsLines.length * 4.5 + 8;
-        checkPage(obsH + 10);
+        const obsLines = doc.splitTextToSize(seccion.observaciones, CW - 12);
+        const obsH = obsLines.length * 5 + 12; // Aumentado de 4.5 a 5 y de 8 a 12
+        checkPage(obsH + 15); // Aumentado de 10 a 15
 
         doc.setFillColor(...C.BG_LIGHT);
-        doc.roundedRect(MX, y + 2, CW, obsH, 1, 1, 'F');
+        doc.roundedRect(MX, y + 3, CW, obsH, 2, 2, 'F'); // Aumentado radio de 1 a 2
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(7.5);
+        doc.setFontSize(8); // Aumentado de 7.5 a 8
         doc.setTextColor(...C.TEXT_MUTED);
-        doc.text('OBSERVACIONES DE SECCIÓN:', MX + 4, y + 7);
+        doc.text('OBSERVACIONES DE SECCIÓN:', MX + 5, y + 8); // Ajustado espaciado
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
+        doc.setFontSize(9); // Aumentado de 8.5 a 9
         doc.setTextColor(...C.TEXT_MAIN);
-        doc.text(obsLines, MX + 4, y + 12);
-        y += obsH + 10;
+        doc.text(obsLines, MX + 5, y + 14);
+        y += obsH + 12; // Aumentado de 10 a 12
       } else {
-        y += 8;
+        y += 10; // Aumentado de 8 a 10
       }
 
         // Fotos de Sección (Diseño de 2 columnas para que sean más grandes y sin deformar)
         const fotos = seccion.fotosBase64?.filter(f => !!f) ?? [];
         if (fotos.length > 0) {
-          checkPage(80);
+          checkPage(85); // Aumentado de 80 a 85
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(8);
+          doc.setFontSize(9); // Aumentado de 8 a 9
           doc.setTextColor(...C.TEXT_MUTED);
           doc.text('REGISTRO FOTOGRÁFICO', MX, y);
-          y += 5;
+          y += 7; // Aumentado de 5 a 7
 
           const cols = 2; // 2 columnas para que se vean más grandes
-          const gap = 6;
+          const gap = 8; // Aumentado de 6 a 8
           const fW = (CW - (gap * (cols - 1))) / cols;
-          const fH_max = 60; // Altura máxima más generosa
+          const fH_max = 65; // Aumentado de 60 a 65 para fotos más grandes
 
           for (let i = 0; i < fotos.length; i++) {
             const col = i % cols;
             if (col === 0 && i > 0) {
-              y += fH_max + gap + 5;
-              checkPage(fH_max + gap + 10);
+              y += fH_max + gap + 7; // Aumentado de 5 a 7
+              checkPage(fH_max + gap + 12); // Aumentado de 10 a 12
             }
             const fx = MX + col * (fW + gap);
 
             try {
               const b64 = fotos[i];
               const fmt = b64.startsWith('data:image/png') ? 'PNG' : 'JPEG';
-              
+
               // Obtenemos las dimensiones reales de la imagen
               const props = doc.getImageProperties(b64);
               const imgRatio = props.width / props.height;
@@ -357,10 +357,10 @@ export class ServicioReporteDocumento {
               const offsetY = (fH_max - finalH) / 2;
 
               doc.setDrawColor(...C.BORDER);
-              doc.setLineWidth(0.1);
+              doc.setLineWidth(0.15); // Aumentado de 0.1 a 0.15 para más definición
               // Dibujamos el recuadro de fondo (opcional, ayuda a que se vea ordenado)
-              doc.roundedRect(fx, y, fW, fH_max, 1, 1, 'S');
-              
+              doc.roundedRect(fx, y, fW, fH_max, 2, 2, 'S'); // Aumentado radio de 1 a 2
+
               // Insertamos la imagen con sus proporciones reales calculadas
               doc.addImage(b64, fmt, fx + offsetX, y + offsetY, finalW, finalH, undefined, 'MEDIUM');
             } catch (e) {
@@ -368,28 +368,28 @@ export class ServicioReporteDocumento {
               doc.rect(fx, y, fW, fH_max, 'F');
             }
           }
-          y += fH_max + 15;
+          y += fH_max + 18; // Aumentado de 15 a 18
         }
     }
 
     // 4. Conclusiones Finales
     if (datos.conclusiones?.trim()) {
-      const concLines = doc.splitTextToSize(datos.conclusiones, CW - 12);
-      const concH = concLines.length * 5 + 15;
-      checkPage(concH + 10);
+      const concLines = doc.splitTextToSize(datos.conclusiones, CW - 14);
+      const concH = concLines.length * 5.5 + 18; // Aumentado de 5 a 5.5 y de 15 a 18
+      checkPage(concH + 15); // Aumentado de 10 a 15
 
       doc.setFillColor(...C.PRIMARY);
-      doc.roundedRect(MX, y, CW, concH, 2, 2, 'F');
+      doc.roundedRect(MX, y, CW, concH, 3, 3, 'F'); // Aumentado radio de 2 a 3
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
+      doc.setFontSize(11); // Aumentado de 10 a 11
       doc.setTextColor(...C.WHITE);
-      doc.text('CONCLUSIONES GENERALES', MX + 6, y + 8);
+      doc.text('CONCLUSIONES GENERALES', MX + 7, y + 9); // Ajustado espaciado
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9.5);
-      doc.text(concLines, MX + 6, y + 15);
-      y += concH + 10;
+      doc.setFontSize(10); // Aumentado de 9.5 a 10
+      doc.text(concLines, MX + 7, y + 17);
+      y += concH + 15; // Aumentado de 10 a 15
     }
 
     // 5. Pie de Página (Global)
@@ -397,10 +397,10 @@ export class ServicioReporteDocumento {
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
       doc.setDrawColor(...C.BORDER);
-      doc.setLineWidth(0.5);
+      doc.setLineWidth(0.6); // Aumentado de 0.5 a 0.6 para más definición
       doc.line(MX, 285, PW - MX, 285);
 
-      doc.setFontSize(7);
+      doc.setFontSize(8); // Aumentado de 7 a 8
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(...C.TEXT_MUTED);
       doc.text(`GTM Mantenimiento — ${datos.nombreObra}`, MX, 290);
