@@ -70,7 +70,7 @@ export class AdminPageComponent {
     if (ok) this.persistService.cargarHistorial().subscribe();
   }
 
-  async limpiarInformesHuérfanos() {
+  async limpiarInformesHuerfanos() {
     if (this.isCleaning()) return;
     this.isCleaning.set(true);
 
