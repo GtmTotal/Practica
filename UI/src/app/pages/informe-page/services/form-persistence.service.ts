@@ -70,6 +70,10 @@ export class ServicioPersistenciaFormulario {
     if (!obraForm) return;
 
     const rawData = obraForm.value;
+    if (!rawData.cuatrimestre || !rawData.cuatrimestre.trim()) {
+      this.ui.error('El informe debe tener un cuatrimestre asignado');
+      return;
+    }
     const informeCompleto: any = {
       ...rawData,
       secciones: rawData.secciones.map((sec: any, idx: number) => ({
@@ -88,6 +92,10 @@ export class ServicioPersistenciaFormulario {
     if (!obraForm) return;
 
     const rawData = obraForm.value;
+    if (!rawData.cuatrimestre || !rawData.cuatrimestre.trim()) {
+      this.ui.error('El informe debe tener un cuatrimestre asignado');
+      return;
+    }
     const informeCompleto: any = {
       ...rawData,
       secciones: rawData.secciones.map((sec: any, idx: number) => ({

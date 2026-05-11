@@ -10,11 +10,15 @@ export class ServicioBaseDeDatos {
   constructor(private http: HttpClient) {}
 
   async guardar(informe: any) {
+    if (!informe.cuatrimestre || !informe.cuatrimestre.trim()) {
+      throw new Error('El informe debe tener un cuatrimestre asignado');
+    }
+
     const payload = {
       id: informe.id,
       nombreObra: informe.nombreObra || 'Sin nombre',
       fecha: informe.fecha || null,
-      cuatrimestre: informe.cuatrimestre || null,
+      cuatrimestre: informe.cuatrimestre.trim(),
       ultimaModificacion: informe.ultimaModificacion || new Date().toLocaleString(),
       datos: informe,
     };
@@ -50,7 +54,19 @@ export class ServicioBaseDeDatos {
   }
 
   async eliminarCuatrimestre(cuatrimestre: string) {
+    if (!cuatrimestre || cuatrimestre === 'sin-cuatri') {
+      throw new Error('Cuatrimestre inválido para eliminación');
+    }
     return firstValueFrom(this.http.delete(`${this.apiBase}/informes/cuatrimestre/${encodeURIComponent(cuatrimestre)}`));
+  }
+
+  async obtenerSinCuatrimestre(): Promise<InformeGuardado[]> {
+    try {
+      const informes = await this.obtenerTodos();
+      return informes.filter(i => !i.cuatrimestre || i.cuatrimestre === 'sin-cuatri');
+    } catch {
+      return [];
+    }
   }
 
   async obtenerPorId(id: number): Promise<any | null> {

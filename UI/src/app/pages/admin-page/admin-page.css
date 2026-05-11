@@ -75,7 +75,7 @@
 
 .admin-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
 
@@ -132,6 +132,16 @@
 
 .btn-admin-action.create:hover {
   background: #1e293b;
+}
+
+.btn-admin-action.danger {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fee2e2;
+}
+
+.btn-admin-action.danger:hover {
+  background: #fee2e2;
 }
 
 .animate-fade-in {

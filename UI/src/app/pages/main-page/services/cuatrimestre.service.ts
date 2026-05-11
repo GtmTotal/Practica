@@ -140,16 +140,34 @@ export class ServicioCuatrimestre {
 
   // Elimina un cuatrimestre completo (con confirmacion UI)
   async eliminarCuatrimestreConUI(cuatrimestre: string): Promise<boolean> {
-    const ok = await this.ui.confirm('Eliminar Cuatrimestre', `¿Estás seguro de que deseas eliminar TODO el cuatrimestre ${cuatrimestre}?`, 'Eliminar', 'Cancelar');
+    const esHuerfano = cuatrimestre === 'sin-cuatri';
+    const mensaje = esHuerfano
+      ? '¿Estás seguro de que deseas eliminar TODOS los informes sin cuatrimestre?'
+      : `¿Estás seguro de que deseas eliminar TODO el cuatrimestre ${cuatrimestre}?`;
+
+    const ok = await this.ui.confirm(
+      esHuerfano ? 'Eliminar Informes Huérfanos' : 'Eliminar Cuatrimestre',
+      mensaje,
+      'Eliminar',
+      'Cancelar'
+    );
     if (!ok) return false;
-    
+
     try {
-      await this.dbService.eliminarCuatrimestre(cuatrimestre);
-      this.ui.success('Cuatrimestre eliminado');
+      if (esHuerfano) {
+        // Para informes huérfanos, eliminar uno por uno
+        const huerfanos = await this.dbService.obtenerSinCuatrimestre();
+        for (const inf of huerfanos) {
+          await this.dbService.eliminar(inf.id);
+        }
+      } else {
+        await this.dbService.eliminarCuatrimestre(cuatrimestre);
+      }
+      this.ui.success(esHuerfano ? 'Informes huérfanos eliminados' : 'Cuatrimestre eliminado');
       return true;
     } catch (error) {
       console.error(error);
-      this.ui.error('No se pudo eliminar el cuatrimestre');
+      this.ui.error(esHuerfano ? 'No se pudieron eliminar los informes huérfanos' : 'No se pudo eliminar el cuatrimestre');
       return false;
     }
   }
