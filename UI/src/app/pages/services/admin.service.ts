@@ -5,23 +5,30 @@ import { firstValueFrom } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class ServicioAdmin {
   private readonly apiBase = `http://${window.location.hostname}:5000/api/admin`;
+  private readonly tokenKey = 'gtm_admin_token';
   
   // Estado persistente en la sesión
-  isAdmin = signal(sessionStorage.getItem('gtm_admin') === 'true');
+  isAdmin = signal(!!sessionStorage.getItem(this.tokenKey));
 
   constructor(private http: HttpClient) {}
 
   setAdmin(val: boolean) {
     this.isAdmin.set(val);
-    sessionStorage.setItem('gtm_admin', val.toString());
+    if (!val) sessionStorage.removeItem(this.tokenKey);
+  }
+
+  getAuthHeaders(): Record<string, string> {
+    const token = sessionStorage.getItem(this.tokenKey);
+    return token ? { Authorization: `Bearer ${token}` } : {};
   }
 
   async login(password: string): Promise<boolean> {
     try {
       const res: any = await firstValueFrom(
-        this.http.post(`${this.apiBase}/login?password=${password}`, {})
+        this.http.post(`${this.apiBase}/login`, { password })
       );
-      if (res.success) {
+      if (res.success && res.token) {
+        sessionStorage.setItem(this.tokenKey, res.token);
         this.setAdmin(true);
         return true;
       }
@@ -32,6 +39,6 @@ export class ServicioAdmin {
   }
 
   async sincronizarExcel(): Promise<any> {
-    return firstValueFrom(this.http.post(`${this.apiBase}/sync`, {}));
+    return firstValueFrom(this.http.post(`${this.apiBase}/sync`, {}, { headers: this.getAuthHeaders() }));
   }
 }

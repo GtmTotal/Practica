@@ -2,12 +2,13 @@
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, Observable, map } from 'rxjs';
 import { InformeGuardado } from '../../informe.interface';
+import { ServicioAdmin } from '../../services/admin.service';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioBaseDeDatos {
   private readonly apiBase = `http://${window.location.hostname}:5000/api`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private adminService: ServicioAdmin) {}
 
   async guardar(informe: any) {
     if (!informe.cuatrimestre || !informe.cuatrimestre.trim()) {
@@ -22,7 +23,7 @@ export class ServicioBaseDeDatos {
       ultimaModificacion: informe.ultimaModificacion || new Date().toLocaleString(),
       datos: informe,
     };
-    return firstValueFrom(this.http.post(`${this.apiBase}/informes`, payload));
+    return firstValueFrom(this.http.post(`${this.apiBase}/informes`, payload, { headers: this.adminService.getAuthHeaders() }));
   }
 
   async obtenerTodos(): Promise<InformeGuardado[]> {
@@ -57,7 +58,7 @@ export class ServicioBaseDeDatos {
     if (!cuatrimestre || cuatrimestre === 'sin-cuatri') {
       throw new Error('Cuatrimestre inválido para eliminación');
     }
-    return firstValueFrom(this.http.delete(`${this.apiBase}/informes/cuatrimestre/${encodeURIComponent(cuatrimestre)}`));
+    return firstValueFrom(this.http.delete(`${this.apiBase}/informes/cuatrimestre/${encodeURIComponent(cuatrimestre)}`, { headers: this.adminService.getAuthHeaders() }));
   }
 
   async obtenerSinCuatrimestre(): Promise<InformeGuardado[]> {
@@ -79,7 +80,7 @@ export class ServicioBaseDeDatos {
   }
 
   async eliminar(id: number) {
-    return firstValueFrom(this.http.delete(`${this.apiBase}/informes/${id}`));
+    return firstValueFrom(this.http.delete(`${this.apiBase}/informes/${id}`, { headers: this.adminService.getAuthHeaders() }));
   }
 
   async existeCuatrimestre(cuatrimestre: string): Promise<boolean> {

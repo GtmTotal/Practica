@@ -33,6 +33,7 @@ builder.Services.AddSingleton<IAmazonS3>(_ =>
 
 builder.Services.AddScoped<IServicioAlmacenamientoArchivos, ServicioAlmacenamientoMinio>();
 builder.Services.AddScoped<ServicioSincronizacionExcel>();
+builder.Services.AddSingleton<ServicioAutenticacionAdmin>();
 
 builder.Services.AddCors(options =>
 {

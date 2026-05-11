@@ -4,11 +4,13 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
 import { UIService } from '../../../shared/services/ui.service';
+import { ServicioAdmin } from '../../services/admin.service';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioGestionFotografias {
   private http = inject(HttpClient);
   private ui = inject(UIService);
+  private adminService = inject(ServicioAdmin);
   private readonly apiBase = `http://${window.location.hostname}:5000/api`;
 
   async comprimirImagen(file: File, maxPx = 600, calidad = 0.45): Promise<string> {
@@ -41,7 +43,7 @@ export class ServicioGestionFotografias {
     const formData = new FormData();
     formData.append('file', file, nombre);
     const response = await firstValueFrom(
-      this.http.post<{ url: string }>(`${this.apiBase}/files/upload`, formData)
+      this.http.post<{ url: string }>(`${this.apiBase}/files/upload`, formData, { headers: this.adminService.getAuthHeaders() })
     ) as { url: string };
     return response.url;
   }
@@ -50,6 +52,7 @@ export class ServicioGestionFotografias {
     const objectKey = this.extraerObjectKey(url);
     if (!objectKey) return;
     await firstValueFrom(this.http.delete(`${this.apiBase}/files`, {
+      headers: this.adminService.getAuthHeaders(),
       params: { objectKey }
     }));
   }

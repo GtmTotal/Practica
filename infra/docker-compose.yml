@@ -47,6 +47,8 @@ services:
       - Storage__SecretKey=${STORAGE_SECRET_KEY:-minioadmin}
       - Storage__BucketName=${STORAGE_BUCKET:-obras}
       - Admin__Password=${ADMIN_PASSWORD:-1234}
+      - Admin__TokenSecret=${ADMIN_TOKEN_SECRET}
+      - Admin__TokenExpirationHours=${ADMIN_TOKEN_EXPIRATION_HOURS:-8}
     depends_on:
       - postgres
       - minio

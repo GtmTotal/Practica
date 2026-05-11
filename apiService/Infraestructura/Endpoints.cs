@@ -54,6 +54,11 @@ public static class Endpoints
 {
     public static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder app)
     {
+        static bool EsAdmin(HttpRequest request, ServicioAutenticacionAdmin auth)
+        {
+            return auth.ValidarToken(request.Headers.Authorization.FirstOrDefault());
+        }
+
         var groupInformes = app.MapGroup("/api/informes");
 
         groupInformes.MapGet("/", async (ContextoBaseDatos db) =>
@@ -130,8 +135,10 @@ public static class Endpoints
             return Results.Ok(new { datos });
         });
 
-        groupInformes.MapPost("/", async (SolicitudGuardarInforme req, ContextoBaseDatos db) =>
+        groupInformes.MapPost("/", async (SolicitudGuardarInforme req, ContextoBaseDatos db, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
         {
+            if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();
+
             var id = req.Id ?? DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             var entity = await db.Informes
                 .Include(x => x.Sistemas)
@@ -151,6 +158,10 @@ public static class Endpoints
             entity.NombreObra = ObtenerString(datos, "nombreObra") ?? req.NombreObra ?? "Sin nombre";
             entity.Tecnico = ObtenerString(datos, "tecnico") ?? req.Tecnico;
             entity.Cuatrimestre = ObtenerString(datos, "cuatrimestre") ?? req.Cuatrimestre;
+            if (string.IsNullOrWhiteSpace(entity.Cuatrimestre))
+            {
+                return Results.BadRequest(new { message = "El informe debe tener un cuatrimestre asignado." });
+            }
             entity.Protegido = ObtenerBool(datos, "protegido") ?? req.Protegido;
             entity.Conclusiones = ObtenerString(datos, "conclusiones") ?? req.Conclusiones;
             entity.Modificado = req.UltimaModificacion ?? DateTime.Now.ToString("s");
@@ -207,8 +218,10 @@ public static class Endpoints
             return Results.Ok(new { id = entity.Id });
         });
 
-        groupInformes.MapDelete("/{id:long}", async (long id, ContextoBaseDatos db) =>
+        groupInformes.MapDelete("/{id:long}", async (long id, ContextoBaseDatos db, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
         {
+            if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();
+
             var entity = await db.Informes.FirstOrDefaultAsync(x => x.Id == id);
             if (entity is null) return Results.NotFound();
 
@@ -217,8 +230,10 @@ public static class Endpoints
             return Results.NoContent();
         });
 
-        groupInformes.MapDelete("/cuatrimestre/{cuatrimestre}", async (string cuatrimestre, ContextoBaseDatos db) =>
+        groupInformes.MapDelete("/cuatrimestre/{cuatrimestre}", async (string cuatrimestre, ContextoBaseDatos db, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
         {
+            if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();
+
             var rows = await db.Informes.Where(x => x.Cuatrimestre == cuatrimestre).ExecuteDeleteAsync();
             await db.Cuatrimestres.Where(x => x.Clave == cuatrimestre).ExecuteDeleteAsync();
             return Results.Ok(new { deleted = rows });
@@ -242,8 +257,10 @@ public static class Endpoints
 
         var groupArchivos = app.MapGroup("/api/files");
 
-        groupArchivos.MapPost("/upload", async (IFormFile file, IServicioAlmacenamientoArchivos storage, CancellationToken ct) =>
+        groupArchivos.MapPost("/upload", async (IFormFile file, IServicioAlmacenamientoArchivos storage, HttpRequest httpRequest, ServicioAutenticacionAdmin auth, CancellationToken ct) =>
         {
+            if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();
+
             if (file.Length == 0) return Results.BadRequest("File is empty.");
 
             await using var stream = file.OpenReadStream();
@@ -252,8 +269,10 @@ public static class Endpoints
             return Results.Ok(new { url, nombre = file.FileName });
         });
 
-        groupArchivos.MapDelete("/", async (string objectKey, IServicioAlmacenamientoArchivos storage, CancellationToken ct) =>
+        groupArchivos.MapDelete("/", async (string objectKey, IServicioAlmacenamientoArchivos storage, HttpRequest httpRequest, ServicioAutenticacionAdmin auth, CancellationToken ct) =>
         {
+            if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();
+
             if (string.IsNullOrWhiteSpace(objectKey)) return Results.BadRequest("objectKey is required.");
             await storage.DeleteAsync(objectKey, ct);
             return Results.NoContent();
@@ -281,18 +300,20 @@ public static class Endpoints
             return Results.Ok(result);
         });
 
-        app.MapPost("/api/admin/login", (string password, IConfiguration config) =>
+        app.MapPost("/api/admin/login", (SolicitudLoginAdmin req, IConfiguration config, ServicioAutenticacionAdmin auth) =>
         {
             var adminPass = config["Admin:Password"];
-            if (password == adminPass)
+            if (!string.IsNullOrWhiteSpace(adminPass) && req.Password == adminPass)
             {
-                return Results.Ok(new { success = true });
+                return Results.Ok(new { success = true, token = auth.CrearToken() });
             }
             return Results.Json(new { success = false }, statusCode: 401);
         });
 
-        app.MapPost("/api/admin/sync", async (ServicioSincronizacionExcel syncService) =>
+        app.MapPost("/api/admin/sync", async (ServicioSincronizacionExcel syncService, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
         {
+            if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();
+
             try
             {
                 var log = await syncService.SincronizarAsync();
