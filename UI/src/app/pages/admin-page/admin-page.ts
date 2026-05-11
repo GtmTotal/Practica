@@ -8,6 +8,7 @@ import { ListaCuatrimestresComponent } from '../main-page/main/lista-cuatrimestr
 import { InformeGuardado } from '../informe.interface';
 import { ServicioInicializacionFormulario } from '../informe-page/services/form-initialization.service';
 import { ServicioNavegacion } from '../main-page/services/navigation.service';
+import { UIService } from '../../shared/services/ui.service';
 
 @Component({
   selector: 'app-admin-page',
@@ -22,6 +23,7 @@ export class AdminPageComponent {
   private persistService = inject(ServicioPersistenciaFormulario);
   private initService = inject(ServicioInicializacionFormulario);
   private navService = inject(ServicioNavegacion);
+  private ui = inject(UIService);
   private router = inject(Router);
 
   isAdmin = this.adminService.isAdmin;
@@ -47,9 +49,9 @@ export class AdminPageComponent {
     this.isSyncing.set(true);
     try {
       const res = await this.adminService.sincronizarExcel();
-      alert(res.message || 'Sincronización completada');
+      await this.ui.alert('Sincronización', res.message || 'Sincronización completada', 'success');
     } catch (err: any) {
-      alert('Error sincronizando: ' + (err.error?.detail || err.message));
+      await this.ui.alert('Error', 'Error sincronizando: ' + (err.error?.detail || err.message), 'error');
     } finally {
       this.isSyncing.set(false);
     }

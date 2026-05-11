@@ -1,16 +1,15 @@
-﻿import { Injectable, WritableSignal } from '@angular/core';
+import { Injectable, WritableSignal } from '@angular/core';
 import { Foto } from '../../informe-page/foto.interface'; 
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
+import { UIService } from '../../../shared/services/ui.service';
+
 @Injectable({ providedIn: 'root' })
 export class ServicioGestionFotografias {
-
+  private http = inject(HttpClient);
+  private ui = inject(UIService);
   private readonly apiBase = `http://${window.location.hostname}:5000/api`;
-
-  constructor(
-    private http: HttpClient,
-  ) {}
 
   async comprimirImagen(file: File, maxPx = 800, calidad = 0.6): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -117,7 +116,7 @@ export class ServicioGestionFotografias {
       URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error('Error al descargar la foto:', error);
-      alert('No se pudo descargar. Intenta mantener pulsada la imagen y elegir "Guardar imagen".');
+      await this.ui.alert('Error', 'No se pudo descargar. Intenta mantener pulsada la imagen y elegir "Guardar imagen".', 'warning');
     }
   }
 }

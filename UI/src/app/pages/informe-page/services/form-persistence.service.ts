@@ -45,7 +45,8 @@ export class ServicioPersistenciaFormulario {
     private navService: ServicioNavegacion,
     private servicioConfiguracionCentros: ServicioConfiguracionCentros,
     private pdfDataBuilder: ServicioConstruccionDatosDocumento,
-    private pdfService: ServicioReporteDocumento
+    private pdfService: ServicioReporteDocumento,
+    private ui: UIService
   ) {}
 
   get informesGuardados() {
@@ -174,7 +175,7 @@ export class ServicioPersistenciaFormulario {
     const datos = await this.pdfDataBuilder.buildDatosPDF(obraForm, fotosPorSeccion);
     await this.pdfService.generarPDF(datos);
     await this.navService.reset();
-    alert('PDF generado y guardado correctamente');
+    await this.ui.alert('PDF Generado', 'El informe ha sido guardado y el PDF generado correctamente.', 'success');
   }
 
   async buscarPorCuatrimestreYCentro(cuatrimestre: string, centro: string): Promise<InformeGuardado | null> {
