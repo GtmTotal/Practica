@@ -7,6 +7,7 @@ using DotNetEnv;
 
 // Cargar variables de entorno desde archivo .env
 DotNetEnv.Env.Load();
+DotNetEnv.Env.Load(Path.Combine("..", ".env"));
 
 var builder = WebApplication.CreateBuilder(args);
 
