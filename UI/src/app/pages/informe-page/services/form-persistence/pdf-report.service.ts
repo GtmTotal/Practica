@@ -176,28 +176,29 @@ export class ServicioReporteDocumento {
     // 3. Secciones
     for (const seccion of datos.secciones) {
       checkPageForSection(); // Separación inteligente: evita títulos solos al final
+      y += 5; // Espacio extra antes de cada sección
 
       // Título de Sección
       doc.setDrawColor(...C.PRIMARY);
-      doc.setLineWidth(1.2); // Línea un poco más gruesa para más definición
+      doc.setLineWidth(1.5); // Línea más gruesa para más impacto
       doc.line(MX, y, MX + CW, y);
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(13); // Aumentado de 12 a 13 para mejor jerarquía
+      doc.setFontSize(15); // Aumentado de 13 a 15 para más impacto
       doc.setTextColor(...C.PRIMARY);
-      doc.text(X(seccion.tituloSeccion).toUpperCase(), MX, y + 8);
-      y += 15; // Aumentado de 12 a 15 para más espacio después del título
+      doc.text(X(seccion.tituloSeccion).toUpperCase(), MX, y + 10);
+      y += 18; // Aumentado de 15 a 18 para más espacio después del título
 
       // Encabezado de tabla
       doc.setFillColor(...C.BG_LIGHT);
-      doc.rect(MX, y, CW, 8, 'F'); // Aumentado de 7 a 8
-      doc.setFontSize(8); // Aumentado de 7.5 a 8
+      doc.rect(MX, y, CW, 10, 'F'); // Aumentado de 8 a 10
+      doc.setFontSize(9); // Aumentado de 8 a 9
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...C.TEXT_MUTED);
-      doc.text('ESTADO', MX + 15, y + 5, { align: 'center' });
-      doc.text('REF', MX + 35, y + 5, { align: 'center' });
-      doc.text('DESCRIPCIÓN DE LA TAREA', MX + 45, y + 5);
-      y += 8;
+      doc.text('ESTADO', MX + 15, y + 6, { align: 'center' });
+      doc.text('REF', MX + 35, y + 6, { align: 'center' });
+      doc.text('DESCRIPCIÓN DE LA TAREA', MX + 45, y + 6);
+      y += 10;
 
       // Puntos/Tareas
       let rowIdx = 0;
@@ -205,13 +206,13 @@ export class ServicioReporteDocumento {
         const descLines = doc.splitTextToSize(X(punto.descripcionManual), CW - 50);
         const noteLines = punto.notaPunto ? doc.splitTextToSize('Nota: ' + punto.notaPunto, CW - 50) : [];
 
-        let contentH = descLines.length * 5 + 5; // Aumentado de 4.5 a 5
-        if (punto.amperios || punto.hz || punto.bar || punto.porcentaje) contentH += 8; // Aumentado de 7 a 8
-        if (punto.bombasQuimicas?.length) contentH += punto.bombasQuimicas.length * 6 + 5; // Aumentado espaciado
-        if (noteLines.length) contentH += noteLines.length * 4.5 + 3; // Aumentado ligeramente
+        let contentH = descLines.length * 5.5 + 6; // Aumentado más espaciado
+        if (punto.amperios || punto.hz || punto.bar || punto.porcentaje) contentH += 10; // Aumentado más
+        if (punto.bombasQuimicas?.length) contentH += punto.bombasQuimicas.length * 7 + 6; // Aumentado más
+        if (noteLines.length) contentH += noteLines.length * 5 + 4; // Aumentado más
 
-        const rowH = Math.max(12, contentH); // Aumentado de 10 a 12 para más aire
-        checkPageForTask(rowH + 8); // Separación inteligente: evita cortar tareas
+        const rowH = Math.max(14, contentH); // Aumentado de 12 a 14 para más aire
+        checkPageForTask(rowH + 10); // Aumentado espaciado entre filas
 
         // Zebra striping
         if (rowIdx % 2 === 0) {
@@ -219,9 +220,9 @@ export class ServicioReporteDocumento {
           doc.rect(MX, y, CW, rowH, 'F');
         }
 
-        // Indicadores de estado (Badge único y profesional)
-        const badgeW = 20;
-        const badgeH = 5;
+        // Indicadores de estado (Badge más compacto)
+        const badgeW = 14; // Reducido de 20 a 14
+        const badgeH = 4;  // Reducido de 5 a 4
         const bx = MX + 15 - (badgeW / 2);
         const by = y + (rowH / 2) - (badgeH / 2);
 
@@ -234,17 +235,17 @@ export class ServicioReporteDocumento {
           statusColor = C.SUCCESS;
           textColor = C.WHITE;
         } else if (punto.noOk) {
-          statusLabel = 'NO OK';
+          statusLabel = 'NO';
           statusColor = C.DANGER;
           textColor = C.WHITE;
         }
 
         doc.setFillColor(...statusColor);
-        doc.roundedRect(bx, by, badgeW, badgeH, 1, 1, 'F');
+        doc.roundedRect(bx, by, badgeW, badgeH, 0.5, 0.5, 'F');
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(6);
+        doc.setFontSize(5); // Reducido de 6 a 5
         doc.setTextColor(...textColor);
-        doc.text(statusLabel, bx + badgeW / 2, by + 3.5, { align: 'center' });
+        doc.text(statusLabel, bx + badgeW / 2, by + 2.8, { align: 'center' });
 
         // ID Manual (REF)
         doc.setFont('helvetica', 'bold');
@@ -254,10 +255,10 @@ export class ServicioReporteDocumento {
 
         // Descripción
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9.5); // Aumentado de 9 a 9.5 para mejor legibilidad
+        doc.setFontSize(10.5); // Aumentado de 9.5 a 10.5 para mejor legibilidad
         doc.setTextColor(...C.TEXT_MAIN);
         doc.text(descLines, MX + 45, y + 6);
-        let curY = y + 6 + (descLines.length * 5);
+        let curY = y + 6 + (descLines.length * 5.5); // Aumentado espaciado entre líneas
 
         // Medidas (Badges)
         const medValues: string[] = [];
@@ -280,22 +281,22 @@ export class ServicioReporteDocumento {
         // Bombas Químicas
         if (punto.bombasQuimicas?.length) {
           doc.setFont('helvetica', 'italic');
-          doc.setFontSize(8); // Aumentado de 7.5 a 8
+          doc.setFontSize(8); 
           doc.setTextColor(...C.WARN);
           for (const b of punto.bombasQuimicas) {
             doc.text(`â—‹ ${b.nombre}: ${b.amperios || '0'}A / ${b.porcentaje || '0'}%`, MX + 47, curY + 3);
-            curY += 6; // Aumentado de 5 a 6
+            curY += 6; 
           }
-          curY += 2; // Aumentado de 1 a 2
+          curY += 2; 
         }
 
         // Notas
         if (noteLines.length) {
           doc.setFont('helvetica', 'italic');
-          doc.setFontSize(8.5); // Aumentado de 8 a 8.5
+          doc.setFontSize(8.5); 
           doc.setTextColor(100, 100, 100);
           doc.text(noteLines, MX + 45, curY + 2);
-          curY += noteLines.length * 4.5 + 3; // Aumentado de 4 a 4.5 y de 2 a 3
+          curY += noteLines.length * 4.5 + 3; 
         }
 
         // Separador fino
@@ -310,44 +311,44 @@ export class ServicioReporteDocumento {
       // Observaciones de Sección
       if (seccion.observaciones?.trim()) {
         const obsLines = doc.splitTextToSize(seccion.observaciones, CW - 12);
-        const obsH = obsLines.length * 5 + 12; // Aumentado de 4.5 a 5 y de 8 a 12
-        checkPage(obsH + 15); // Aumentado de 10 a 15
+        const obsH = obsLines.length * 6 + 15; // Aumentado más
+        checkPage(obsH + 20); // Aumentado más
 
         doc.setFillColor(...C.BG_LIGHT);
-        doc.roundedRect(MX, y + 3, CW, obsH, 2, 2, 'F'); // Aumentado radio de 1 a 2
+        doc.roundedRect(MX, y + 3, CW, obsH, 2, 2, 'F');
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8); // Aumentado de 7.5 a 8
+        doc.setFontSize(9); // Aumentado de 8 a 9
         doc.setTextColor(...C.TEXT_MUTED);
-        doc.text('OBSERVACIONES DE SECCIÓN:', MX + 5, y + 8); // Ajustado espaciado
+        doc.text('OBSERVACIONES DE SECCIÓN:', MX + 5, y + 9);
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9); // Aumentado de 8.5 a 9
+        doc.setFontSize(10); // Aumentado de 9 a 10
         doc.setTextColor(...C.TEXT_MAIN);
-        doc.text(obsLines, MX + 5, y + 14);
-        y += obsH + 12; // Aumentado de 10 a 12
+        doc.text(obsLines, MX + 5, y + 16);
+        y += obsH + 15; // Aumentado más
       } else {
-        y += 10; // Aumentado de 8 a 10
+        y += 12; // Aumentado de 10 a 12
       }
 
         // Fotos de Sección (Diseño de 2 columnas para que sean más grandes y sin deformar)
         const fotos = seccion.fotosBase64?.filter(f => !!f) ?? [];
         if (fotos.length > 0) {
-          checkPage(85); // Aumentado de 80 a 85
+          checkPage(90); // Aumentado más
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(9); // Aumentado de 8 a 9
+          doc.setFontSize(10); // Aumentado de 9 a 10
           doc.setTextColor(...C.TEXT_MUTED);
           doc.text('REGISTRO FOTOGRÁFICO', MX, y);
-          y += 7; // Aumentado de 5 a 7
+          y += 8; // Aumentado más
 
           const cols = 2; // 2 columnas para que se vean más grandes
-          const gap = 8; // Aumentado de 6 a 8
+          const gap = 10; // Aumentado de 8 a 10
           const fW = (CW - (gap * (cols - 1))) / cols;
-          const fH_max = 65; // Aumentado de 60 a 65 para fotos más grandes
+          const fH_max = 70; // Aumentado de 65 a 70 para fotos más grandes
 
           for (let i = 0; i < fotos.length; i++) {
             const col = i % cols;
             if (col === 0 && i > 0) {
-              y += fH_max + gap + 7; // Aumentado de 5 a 7
-              checkPage(fH_max + gap + 12); // Aumentado de 10 a 12
+              y += fH_max + gap + 10; // Aumentado más
+              checkPage(fH_max + gap + 15); // Aumentado más
             }
             const fx = MX + col * (fW + gap);
 
@@ -376,9 +377,9 @@ export class ServicioReporteDocumento {
               const offsetY = (fH_max - finalH) / 2;
 
               doc.setDrawColor(...C.BORDER);
-              doc.setLineWidth(0.15); // Aumentado de 0.1 a 0.15 para más definición
+              doc.setLineWidth(0.2); // Aumentado de 0.15 a 0.2 para más definición
               // Dibujamos el recuadro de fondo (opcional, ayuda a que se vea ordenado)
-              doc.roundedRect(fx, y, fW, fH_max, 2, 2, 'S'); // Aumentado radio de 1 a 2
+              doc.roundedRect(fx, y, fW, fH_max, 3, 3, 'S'); // Aumentado radio de 2 a 3
 
               // Insertamos la imagen con sus proporciones reales calculadas
               doc.addImage(b64, fmt, fx + offsetX, y + offsetY, finalW, finalH, undefined, 'MEDIUM');
@@ -387,28 +388,28 @@ export class ServicioReporteDocumento {
               doc.rect(fx, y, fW, fH_max, 'F');
             }
           }
-          y += fH_max + 18; // Aumentado de 15 a 18
+          y += fH_max + 20; // Aumentado de 18 a 20
         }
     }
 
     // 4. Conclusiones Finales
     if (datos.conclusiones?.trim()) {
       const concLines = doc.splitTextToSize(datos.conclusiones, CW - 14);
-      const concH = concLines.length * 5.5 + 18; // Aumentado de 5 a 5.5 y de 15 a 18
-      checkPage(concH + 15); // Aumentado de 10 a 15
+      const concH = concLines.length * 6 + 22; // Aumentado más drásticamente
+      checkPage(concH + 25); // Aumentado más
 
       doc.setFillColor(...C.PRIMARY);
-      doc.roundedRect(MX, y, CW, concH, 3, 3, 'F'); // Aumentado radio de 2 a 3
+      doc.roundedRect(MX, y, CW, concH, 4, 4, 'F'); // Aumentado radio de 3 a 4
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(11); // Aumentado de 10 a 11
+      doc.setFontSize(12); // Aumentado de 11 a 12
       doc.setTextColor(...C.WHITE);
-      doc.text('CONCLUSIONES GENERALES', MX + 7, y + 9); // Ajustado espaciado
+      doc.text('CONCLUSIONES GENERALES', MX + 8, y + 10);
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(10); // Aumentado de 9.5 a 10
-      doc.text(concLines, MX + 7, y + 17);
-      y += concH + 15; // Aumentado de 10 a 15
+      doc.setFontSize(11); // Aumentado de 10 a 11
+      doc.text(concLines, MX + 8, y + 19);
+      y += concH + 20; // Aumentado más
     }
 
     // 5. Pie de Página (Global)
@@ -416,10 +417,10 @@ export class ServicioReporteDocumento {
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
       doc.setDrawColor(...C.BORDER);
-      doc.setLineWidth(0.6); // Aumentado de 0.5 a 0.6 para más definición
+      doc.setLineWidth(0.8); // Aumentado de 0.6 a 0.8 para más definición
       doc.line(MX, 285, PW - MX, 285);
 
-      doc.setFontSize(8); // Aumentado de 7 a 8
+      doc.setFontSize(9); // Aumentado de 8 a 9
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(...C.TEXT_MUTED);
       doc.text(`GTM Mantenimiento — ${datos.nombreObra}`, MX, 290);
