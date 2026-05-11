@@ -136,3 +136,11 @@ C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\Infraestr
 C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\Infraestructura\Datos\config-centros\VITORIA.json
 C:\desarrollo-software\reporte-obras-main\apiService\obj\Debug\net10.0\InformeObras.sourcelink.json
 C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\Infraestructura\Datos\config-centros\POVOA.json
+C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\ClosedXML.dll
+C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\ClosedXML.Parser.dll
+C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\DocumentFormat.OpenXml.dll
+C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\DocumentFormat.OpenXml.Framework.dll
+C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\ExcelNumberFormat.dll
+C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\RBush.dll
+C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\SixLabors.Fonts.dll
+C:\desarrollo-software\reporte-obras-main\apiService\bin\Debug\net10.0\System.IO.Packaging.dll

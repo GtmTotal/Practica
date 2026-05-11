@@ -291,52 +291,16 @@ public static class Endpoints
             return Results.Json(new { success = false }, statusCode: 401);
         });
 
-        app.MapPost("/api/admin/sync", async (IHostEnvironment env) =>
+        app.MapPost("/api/admin/sync", async (ServicioSincronizacionExcel syncService) =>
         {
             try
             {
-                // Ahora el script está en la misma carpeta que el servidor
-                var scriptPath = Path.GetFullPath(Path.Combine(env.ContentRootPath, "sync_excel_to_json.py"));
-                
-                if (!File.Exists(scriptPath)) {
-                    // Fallback para desarrollo local si env.ContentRootPath apunta a bin/Debug/...
-                    scriptPath = Path.GetFullPath(Path.Combine(env.ContentRootPath, "..", "sync_excel_to_json.py"));
-                }
-
-                if (!File.Exists(scriptPath)) {
-                    return Results.Problem($"No se encuentra el script en: {scriptPath}");
-                }
-
-                var pythonCmd = "python";
-                if (!System.OperatingSystem.IsWindows()) pythonCmd = "python3";
-
-                var startInfo = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = pythonCmd,
-                    Arguments = $"\"{scriptPath}\"",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                };
-
-                using var process = System.Diagnostics.Process.Start(startInfo);
-                if (process == null) return Results.Problem("No se pudo iniciar el proceso de Python.");
-
-                var output = await process.StandardOutput.ReadToEndAsync();
-                var error = await process.StandardError.ReadToEndAsync();
-                await process.WaitForExitAsync();
-
-                if (process.ExitCode != 0)
-                {
-                    return Results.Problem($"Error en script: {error}");
-                }
-
-                return Results.Ok(new { message = "Sincronización completada con éxito", log = output });
+                var log = await syncService.SincronizarAsync();
+                return Results.Ok(new { message = "Sincronización completada con éxito", log });
             }
             catch (Exception ex)
             {
-                return Results.Problem($"Excepción: {ex.Message}");
+                return Results.Problem($"Error en la sincronización: {ex.Message}");
             }
         });
 
