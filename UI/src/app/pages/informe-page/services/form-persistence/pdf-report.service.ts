@@ -38,25 +38,25 @@ export interface BombaPDF {
 
 // --- CONFIGURACIÓN ESTÉTICA ---
 const C = {
-  PRIMARY:    [30, 64, 175]   as [number, number, number], // Indigo-700
-  SECONDARY:  [71, 85, 105]   as [number, number, number], // Slate-600
-  SUCCESS:    [5, 150, 105]   as [number, number, number], // Emerald-600
-  DANGER:     [185, 28, 28]   as [number, number, number], // Red-700
-  WARN:       [245, 158, 11]  as [number, number, number], // Amber-500
-  TEXT_MAIN:  [15, 23, 42]    as [number, number, number], // Slate-900
-  TEXT_MUTED: [100, 116, 139] as [number, number, number], // Slate-500
-  BG_LIGHT:   [248, 250, 252] as [number, number, number], // Slate-50
-  BG_ACCENT:  [238, 242, 255] as [number, number, number], // Indigo-50
-  BORDER:     [226, 232, 240] as [number, number, number], // Slate-200
+  PRIMARY:    [30, 64, 175]   as [number, number, number],
+  SECONDARY:  [71, 85, 105]   as [number, number, number],
+  SUCCESS:    [5, 150, 105]   as [number, number, number],
+  DANGER:     [185, 28, 28]   as [number, number, number],
+  WARN:       [245, 158, 11]  as [number, number, number],
+  TEXT_MAIN:  [15, 23, 42]    as [number, number, number],
+  TEXT_MUTED: [100, 116, 139] as [number, number, number],
+  BG_LIGHT:   [248, 250, 252] as [number, number, number],
+  BG_ACCENT:  [238, 242, 255] as [number, number, number],
+  BORDER:     [226, 232, 240] as [number, number, number],
   WHITE:      [255, 255, 255] as [number, number, number],
   BLACK:      [0, 0, 0]       as [number, number, number],
-  SHADOW:     [203, 213, 225] as [number, number, number], // Slate-300
+  SHADOW:     [203, 213, 225] as [number, number, number],
 };
 
-const PW  = 210;
-const MX  = 20;
-const CW  = PW - MX * 2;
-const BAND_W = 6; // Ancho de la banda lateral de color
+const PW     = 210;
+const MX     = 20;
+const CW     = PW - MX * 2;
+const BAND_W = 6;
 
 @Injectable({ providedIn: 'root' })
 export class ServicioReporteDocumento {
@@ -78,6 +78,8 @@ export class ServicioReporteDocumento {
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     let y = 0;
 
+    // Reserva espacio si el contenido no cabe en la página actual.
+    // NOTA: no se usa para secciones (siempre abren página nueva).
     const checkPage = (h: number) => {
       if (y + h > 272) {
         doc.addPage();
@@ -85,13 +87,7 @@ export class ServicioReporteDocumento {
       }
     };
 
-    const checkPageForSection = () => {
-      if (y > 232) {
-        doc.addPage();
-        y = this.drawHeaderContinuation(doc, datos);
-      }
-    };
-
+    // Cada tarea: si no cabe completa, salta de página.
     const checkPageForTask = (taskHeight: number) => {
       if (y + taskHeight > 272) {
         doc.addPage();
@@ -105,9 +101,24 @@ export class ServicioReporteDocumento {
     // 2. Metadata
     y = this.drawMetadata(doc, datos, y);
 
-    // 3. Secciones
+    // 3. Secciones — cada una comienza en página nueva (excepto la primera,
+    //    que continúa tras la metadata si hay espacio; en la práctica la
+    //    portada + metadata ya ocupa casi una página, así que también salta).
+    let primeraSeccion = true;
     for (const seccion of datos.secciones) {
-      checkPageForSection();
+      if (!primeraSeccion) {
+        // Forzar nueva página para cada sección
+        doc.addPage();
+        y = this.drawHeaderContinuation(doc, datos);
+      } else {
+        // Para la primera sección comprobamos si cabe el encabezado (≈28mm)
+        if (y + 28 > 272) {
+          doc.addPage();
+          y = this.drawHeaderContinuation(doc, datos);
+        }
+        primeraSeccion = false;
+      }
+
       y = this.drawSeccionHeader(doc, seccion, y);
 
       let rowIdx = 0;
@@ -149,24 +160,19 @@ export class ServicioReporteDocumento {
   private drawPortada(doc: any, datos: DatosPDF): number {
     const X = (t: string) => t ?? '';
 
-    // Fondo suave
     doc.setFillColor(...C.BG_LIGHT);
     doc.rect(0, 0, PW, 70, 'F');
 
-    // Banda lateral de color
     doc.setFillColor(...C.PRIMARY);
     doc.rect(0, 0, BAND_W, 297, 'F');
 
-    // Línea de acento horizontal
     doc.setFillColor(...C.PRIMARY);
     doc.rect(BAND_W, 68, PW - BAND_W, 2, 'F');
 
-    // Logo
     if (this.logoBase64) {
       doc.addImage(this.logoBase64, 'PNG', PW - MX - 38, 12, 38, 38, undefined, 'FAST');
     }
 
-    // Títulos
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...C.PRIMARY);
     doc.setFontSize(22);
@@ -182,7 +188,6 @@ export class ServicioReporteDocumento {
     doc.setFontSize(17);
     doc.text(X(datos.nombreObra).toUpperCase(), MX + BAND_W, 52);
 
-    // Subtítulo descriptivo
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(...C.SECONDARY);
     doc.setFontSize(9);
@@ -196,7 +201,6 @@ export class ServicioReporteDocumento {
   private drawHeaderContinuation(doc: any, datos: DatosPDF): number {
     const X = (t: string) => t ?? '';
 
-    // Banda lateral persistente
     doc.setFillColor(...C.PRIMARY);
     doc.rect(0, 0, BAND_W, 297, 'F');
 
@@ -226,7 +230,6 @@ export class ServicioReporteDocumento {
     doc.setFillColor(...C.BG_ACCENT);
     doc.roundedRect(MX + BAND_W, y, CW - BAND_W, 22, 3, 3, 'F');
 
-    // Separador central
     doc.setDrawColor(...C.BORDER);
     doc.setLineWidth(0.2);
     doc.line(MX + BAND_W + (CW - BAND_W) / 2, y + 4, MX + BAND_W + (CW - BAND_W) / 2, y + 18);
@@ -255,11 +258,9 @@ export class ServicioReporteDocumento {
     const X = (t: string) => t ?? '';
     y += 5;
 
-    // Fondo de cabecera de sección
     doc.setFillColor(...C.BG_ACCENT);
     doc.roundedRect(MX + BAND_W, y, CW - BAND_W, 13, 2, 2, 'F');
 
-    // Acento izquierdo de sección (pequeña barra adicional)
     doc.setFillColor(...C.PRIMARY);
     doc.roundedRect(MX + BAND_W, y, 3, 13, 1, 1, 'F');
 
@@ -269,40 +270,53 @@ export class ServicioReporteDocumento {
     doc.text(X(seccion.tituloSeccion).toUpperCase(), MX + BAND_W + 8, y + 9);
     y += 19;
 
-    // Encabezado de tabla
+    // Encabezado de tabla — SIN columna REF
     doc.setFillColor(...C.SECONDARY);
     doc.rect(MX + BAND_W, y, CW - BAND_W, 9, 'F');
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...C.WHITE);
-    doc.text('ESTADO', MX + BAND_W + 16, y + 5.5, { align: 'center' });
-    doc.text('REF', MX + BAND_W + 37, y + 5.5, { align: 'center' });
-    doc.text('DESCRIPCIÓN DE LA TAREA', MX + BAND_W + 50, y + 5.5);
+    doc.text('ESTADO', MX + BAND_W + 20, y + 5.5, { align: 'center' });
+    doc.text('DESCRIPCIÓN DE LA TAREA', MX + BAND_W + 42, y + 5.5);
     y += 9;
 
     return y;
   }
 
-  // ─── FILA DE PUNTO/TAREA ───────────────────────────────────────────────────
+  // ─── CÁLCULO DE ALTURA DE FILA ─────────────────────────────────────────────
 
   private calcRowHeight(doc: any, punto: PuntoPDF): number {
     const X = (t: string) => t ?? '';
-    const descLines = doc.splitTextToSize(X(punto.descripcionManual), CW - BAND_W - 52);
-    const noteLines = punto.notaPunto ? doc.splitTextToSize('Nota: ' + punto.notaPunto, CW - BAND_W - 52) : [];
+    // Ancho disponible para descripción (sin columna REF)
+    const descW = CW - BAND_W - 42;
+    const descLines = doc.splitTextToSize(X(punto.descripcionManual), descW);
+    const noteLines = punto.notaPunto
+      ? doc.splitTextToSize('Nota: ' + punto.notaPunto, descW)
+      : [];
 
-    let contentH = descLines.length * 5.5 + 6;
+    // Altura mínima de la fila: suficiente para que badge y texto queden al mismo nivel
+    const ROW_PADDING_TOP    = 5;  // espacio superior antes del texto
+    const ROW_PADDING_BOTTOM = 5;  // espacio inferior
+    const LINE_H             = 5.5;
+    const BADGE_H            = 7;
+
+    let contentH = ROW_PADDING_TOP + ROW_PADDING_BOTTOM;
+    contentH += descLines.length * LINE_H;
     if (punto.amperios || punto.hz || punto.bar || punto.porcentaje) contentH += 10;
-    if (punto.bombasQuimicas?.length) contentH += punto.bombasQuimicas.length * 7 + 6;
+    if (punto.bombasQuimicas?.length) contentH += punto.bombasQuimicas.length * 7 + 4;
     if (noteLines.length) contentH += noteLines.length * 5 + 4;
 
-    return Math.max(14, contentH);
+    // La altura mínima debe acomodar el badge verticalmente centrado con padding
+    return Math.max(BADGE_H + ROW_PADDING_TOP + ROW_PADDING_BOTTOM, contentH);
   }
+
+  // ─── FILA DE PUNTO/TAREA ───────────────────────────────────────────────────
 
   private drawPunto(doc: any, punto: PuntoPDF, y: number, rowIdx: number): number {
     const X = (t: string) => t ?? '';
-    const rowH = this.calcRowHeight(doc, punto);
+    const rowH     = this.calcRowHeight(doc, punto);
+    const startX   = MX + BAND_W;
     const efectiveCW = CW - BAND_W;
-    const startX = MX + BAND_W;
 
     // Zebra striping
     if (rowIdx % 2 === 0) {
@@ -310,63 +324,84 @@ export class ServicioReporteDocumento {
       doc.rect(startX, y, efectiveCW, rowH, 'F');
     }
 
-    // Badge de estado (más grande y legible)
-    const badgeW = 18;
-    const badgeH = 6;
-    const bx = startX + 16 - (badgeW / 2);
-    const by = y + (rowH / 2) - (badgeH / 2);
+    // ── Badge de estado ────────────────────────────────────────────────────
+    // Alineado verticalmente al centro de la fila.
+    // El texto de descripción también arranca en el mismo centro vertical
+    // para que ambos estén a la misma altura visual.
+
+    const BADGE_W = 22;
+    const BADGE_H = 7;
+    const badgeCenterX = startX + 21;           // centro horizontal del badge
+    const rowCenterY   = y + rowH / 2;          // centro vertical de la fila
+
+    const bx = badgeCenterX - BADGE_W / 2;
+    const by = rowCenterY   - BADGE_H / 2;
 
     let statusLabel = 'PEND.';
     let statusBg: [number, number, number] = C.BORDER;
     let statusTxt: [number, number, number] = C.TEXT_MUTED;
 
     if (punto.ok) {
-      statusLabel = '✓ OK';
-      statusBg = C.SUCCESS;
-      statusTxt = C.WHITE;
+      statusLabel = 'OK';
+      statusBg    = C.SUCCESS;
+      statusTxt   = C.WHITE;
     } else if (punto.noOk) {
-      statusLabel = '✗ NO';
-      statusBg = C.DANGER;
-      statusTxt = C.WHITE;
+      statusLabel = 'NO OK';
+      statusBg    = C.DANGER;
+      statusTxt   = C.WHITE;
     }
 
     doc.setFillColor(...statusBg);
-    doc.roundedRect(bx, by, badgeW, badgeH, 1, 1, 'F');
+    doc.roundedRect(bx, by, BADGE_W, BADGE_H, 1.5, 1.5, 'F');
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(6.5);
+    doc.setFontSize(7);
     doc.setTextColor(...statusTxt);
-    doc.text(statusLabel, bx + badgeW / 2, by + 4, { align: 'center' });
+    doc.text(statusLabel, badgeCenterX, by + BADGE_H / 2 + 2.5, { align: 'center' });
 
-    // REF en fuente monoespaciada
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(8);
-    doc.setTextColor(...C.TEXT_MUTED);
-    doc.text(X(punto.idManual), startX + 37, y + (rowH / 2) + 1, { align: 'center' });
+    // ── Descripción ────────────────────────────────────────────────────────
+    // El texto arranca alineado con el mismo centro vertical que el badge,
+    // desplazado hacia arriba según el número de líneas para que el bloque
+    // de texto quede centrado (igual que el badge).
 
-    // Descripción
-    const descLines = doc.splitTextToSize(X(punto.descripcionManual), efectiveCW - 52);
+    const descW     = efectiveCW - 42;
+    const descX     = startX + 42;
+    const descLines = doc.splitTextToSize(X(punto.descripcionManual), descW);
+    const LINE_H    = 5.5;
+
+    // Calcular cuánto ocupa el bloque de texto completo de esta fila
+    let blockH = descLines.length * LINE_H;
+    if (punto.amperios || punto.hz || punto.bar || punto.porcentaje) blockH += 10;
+    if (punto.bombasQuimicas?.length) blockH += punto.bombasQuimicas.length * 7 + 4;
+    if (punto.notaPunto) {
+      const noteLines = doc.splitTextToSize('Nota: ' + punto.notaPunto, descW);
+      blockH += noteLines.length * 5 + 4;
+    }
+
+    // Punto de inicio del bloque para centrarlo verticalmente en la fila
+    let curY = rowCenterY - blockH / 2 + LINE_H; // +LINE_H = baseline del primer renglón
+
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10.5);
     doc.setTextColor(...C.TEXT_MAIN);
-    doc.text(descLines, startX + 50, y + 6);
-    let curY = y + 6 + descLines.length * 5.5;
+    doc.text(descLines, descX, curY);
+    curY += descLines.length * LINE_H;
 
     // Medidas (badges)
     const medValues: string[] = [];
-    if (punto.amperios) medValues.push(`${punto.amperios} A`);
-    if (punto.hz)       medValues.push(`${punto.hz} Hz`);
-    if (punto.bar)      medValues.push(`${punto.bar} Bar`);
+    if (punto.amperios)   medValues.push(`${punto.amperios} A`);
+    if (punto.hz)         medValues.push(`${punto.hz} Hz`);
+    if (punto.bar)        medValues.push(`${punto.bar} Bar`);
     if (punto.porcentaje) medValues.push(`${punto.porcentaje}%`);
 
     if (medValues.length > 0) {
       const label = medValues.join('  ·  ');
-      const bW = doc.getTextWidth(label) + 10;
+      const bW    = doc.getTextWidth(label) + 10;
       doc.setFillColor(...C.BG_ACCENT);
-      doc.roundedRect(startX + 50, curY, bW, 6.5, 1, 1, 'F');
+      doc.roundedRect(descX, curY, bW, 6.5, 1, 1, 'F');
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8);
       doc.setTextColor(...C.PRIMARY);
-      doc.text(label, startX + 55, curY + 4.5);
+      doc.text(label, descX + 5, curY + 4.5);
       curY += 10;
     }
 
@@ -376,7 +411,10 @@ export class ServicioReporteDocumento {
       doc.setFontSize(8.5);
       doc.setTextColor(...C.WARN);
       for (const b of punto.bombasQuimicas) {
-        doc.text(`○ ${b.nombre}: ${b.amperios || '0'} A  /  ${b.porcentaje || '0'}%`, startX + 52, curY + 3);
+        doc.text(
+          `o ${b.nombre}: ${b.amperios || '0'} A  /  ${b.porcentaje || '0'}%`,
+          descX, curY + 3
+        );
         curY += 7;
       }
       curY += 2;
@@ -384,11 +422,11 @@ export class ServicioReporteDocumento {
 
     // Notas
     if (punto.notaPunto) {
-      const noteLines = doc.splitTextToSize('Nota: ' + punto.notaPunto, efectiveCW - 52);
+      const noteLines = doc.splitTextToSize('Nota: ' + punto.notaPunto, descW);
       doc.setFont('helvetica', 'italic');
       doc.setFontSize(8.5);
       doc.setTextColor(...C.SECONDARY);
-      doc.text(noteLines, startX + 50, curY + 2);
+      doc.text(noteLines, descX, curY + 2);
     }
 
     // Separador fino
@@ -407,10 +445,10 @@ export class ServicioReporteDocumento {
     y: number,
     checkPage: (h: number) => void
   ): number {
-    const startX = MX + BAND_W;
+    const startX     = MX + BAND_W;
     const efectiveCW = CW - BAND_W;
-    const obsLines = doc.splitTextToSize(texto, efectiveCW - 14);
-    const obsH = obsLines.length * 6 + 16;
+    const obsLines   = doc.splitTextToSize(texto, efectiveCW - 14);
+    const obsH       = obsLines.length * 6 + 16;
     checkPage(obsH + 20);
 
     doc.setFillColor(...C.BG_LIGHT);
@@ -440,27 +478,33 @@ export class ServicioReporteDocumento {
     y: number,
     checkPage: (h: number) => void
   ): number {
-    const startX = MX + BAND_W;
+    const startX     = MX + BAND_W;
     const efectiveCW = CW - BAND_W;
-    checkPage(95);
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9.5);
-    doc.setTextColor(...C.TEXT_MUTED);
-    doc.text('REGISTRO FOTOGRÁFICO', startX, y);
-    y += 8;
 
     const cols   = 2;
     const gap    = 10;
     const fW     = (efectiveCW - gap * (cols - 1)) / cols;
     const fH_max = 72;
+    const LABEL_H = 8;  // altura del texto "Foto N / M" bajo cada imagen
+    const ROW_H  = fH_max + LABEL_H;
+
+    // Encabezado del bloque fotográfico
+    checkPage(ROW_H + 16);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9.5);
+    doc.setTextColor(...C.TEXT_MUTED);
+    doc.text('REGISTRO FOTOGRÁFICO', startX, y + 5);
+    y += 12;
 
     for (let i = 0; i < fotos.length; i++) {
       const col = i % cols;
-      if (col === 0 && i > 0) {
-        y += fH_max + gap + 14;
-        checkPage(fH_max + gap + 18);
+
+      // Al inicio de cada nueva fila de imágenes, comprobar que cabe
+      if (col === 0) {
+        checkPage(ROW_H + 4);
       }
+
       const fx = startX + col * (fW + gap);
 
       // Sombra simulada
@@ -472,9 +516,9 @@ export class ServicioReporteDocumento {
       doc.roundedRect(fx, y, fW, fH_max, 3, 3, 'F');
 
       try {
-        const b64  = fotos[i];
-        const fmt  = b64.startsWith('data:image/png') ? 'PNG' : 'JPEG';
-        const props = doc.getImageProperties(b64);
+        const b64      = fotos[i];
+        const fmt      = b64.startsWith('data:image/png') ? 'PNG' : 'JPEG';
+        const props    = doc.getImageProperties(b64);
         const imgRatio = props.width / props.height;
         const boxRatio = fW / fH_max;
 
@@ -486,15 +530,13 @@ export class ServicioReporteDocumento {
           finalW = fH_max * imgRatio;
         }
 
-        const offsetX = (fW - finalW) / 2;
+        const offsetX = (fW     - finalW) / 2;
         const offsetY = (fH_max - finalH) / 2;
 
-        // Clip con roundedRect — marco de borde
         doc.setDrawColor(...C.BORDER);
         doc.setLineWidth(0.3);
         doc.roundedRect(fx, y, fW, fH_max, 3, 3, 'S');
         doc.addImage(b64, fmt, fx + offsetX, y + offsetY, finalW, finalH, undefined, 'MEDIUM');
-
       } catch {
         doc.setFillColor(240, 240, 240);
         doc.roundedRect(fx, y, fW, fH_max, 3, 3, 'F');
@@ -505,9 +547,16 @@ export class ServicioReporteDocumento {
       doc.setFontSize(7.5);
       doc.setTextColor(...C.TEXT_MUTED);
       doc.text(`Foto ${i + 1} / ${fotos.length}`, fx + fW / 2, y + fH_max + 5, { align: 'center' });
+
+      // Avanzar y solo al completar una fila (dos columnas) o en la última foto
+      const esUltima      = i === fotos.length - 1;
+      const completaFila  = col === cols - 1;
+      if (completaFila || esUltima) {
+        y += ROW_H + gap;
+      }
     }
 
-    return y + fH_max + 22;
+    return y + 4;
   }
 
   // ─── CONCLUSIONES ──────────────────────────────────────────────────────────
@@ -518,20 +567,14 @@ export class ServicioReporteDocumento {
     y: number,
     checkPage: (h: number) => void
   ): number {
-    const startX = MX + BAND_W;
+    const startX     = MX + BAND_W;
     const efectiveCW = CW - BAND_W;
-    const concLines = doc.splitTextToSize(texto, efectiveCW - 16);
-    const concH = concLines.length * 6 + 24;
+    const concLines  = doc.splitTextToSize(texto, efectiveCW - 16);
+    const concH      = concLines.length * 6 + 24;
     checkPage(concH + 25);
 
     doc.setFillColor(...C.PRIMARY);
     doc.roundedRect(startX, y, efectiveCW, concH, 4, 4, 'F');
-
-    // Acento decorativo (rectángulo semitransparente claro)
-    doc.setFillColor(255, 255, 255);
-    doc.setGState && doc.setGState(doc.GState({ opacity: 0.07 }));
-    doc.roundedRect(startX + efectiveCW - 30, y + 4, 25, concH - 8, 3, 3, 'F');
-    doc.setGState && doc.setGState(doc.GState({ opacity: 1 }));
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
@@ -552,20 +595,17 @@ export class ServicioReporteDocumento {
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
 
-      // Banda lateral en todas las páginas
       doc.setFillColor(...C.PRIMARY);
       doc.rect(0, 0, BAND_W, 297, 'F');
 
-      // Línea divisora
       doc.setDrawColor(...C.BORDER);
       doc.setLineWidth(0.6);
       doc.line(MX + BAND_W, 284, PW - MX, 284);
 
-      // Logo en miniatura (si está disponible)
       if (this.logoBase64) {
         try {
           doc.addImage(this.logoBase64, 'PNG', MX + BAND_W, 286, 8, 8, undefined, 'FAST');
-        } catch { /* si falla el logo, omitir */ }
+        } catch { /* omitir si falla el logo */ }
       }
 
       doc.setFontSize(8);
@@ -583,11 +623,11 @@ export class ServicioReporteDocumento {
       const img = new Image();
       img.crossOrigin = 'Anonymous';
       img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const scale = 2;
+        const canvas  = document.createElement('canvas');
+        const scale   = 2;
         canvas.width  = (img.width  || 400) * scale;
         canvas.height = (img.height || 400) * scale;
-        const ctx = canvas.getContext('2d');
+        const ctx     = canvas.getContext('2d');
         if (ctx) {
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
           resolve(canvas.toDataURL('image/png'));
@@ -596,7 +636,7 @@ export class ServicioReporteDocumento {
         }
       };
       img.onerror = reject;
-      img.src = url;
+      img.src     = url;
     });
   }
 }

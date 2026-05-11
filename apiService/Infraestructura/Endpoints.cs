@@ -135,9 +135,8 @@ public static class Endpoints
             return Results.Ok(new { datos });
         });
 
-        groupInformes.MapPost("/", async (SolicitudGuardarInforme req, ContextoBaseDatos db, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
+        groupInformes.MapPost("/", async (SolicitudGuardarInforme req, ContextoBaseDatos db) =>
         {
-            if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();
 
             var id = req.Id ?? DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             var entity = await db.Informes
