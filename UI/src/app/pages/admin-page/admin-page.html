@@ -25,4 +25,15 @@
       </button>
     </div>
   </div>
+
+  <div class="admin-list-section">
+    <h3>Gestión de Cuatrimestres</h3>
+    @if (informesGuardados().length === 0) {
+    <div class="no-drafts">No hay cuatrimestres ni borradores registrados.</div>
+    } @else {
+    <app-lista-cuatrimestres [grupos]="informesPorCuatrimestre" [isAdmin]="true"
+      (eliminarCuatrimestre)="eliminarCuatrimestre($event)" (editarInforme)="editarInforme($event)">
+    </app-lista-cuatrimestres>
+    }
+  </div>
 </div>
