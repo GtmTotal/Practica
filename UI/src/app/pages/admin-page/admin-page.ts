@@ -8,7 +8,6 @@ import { ListaCuatrimestresComponent } from '../main-page/main/lista-cuatrimestr
 import { InformeGuardado } from '../informe.interface';
 import { ServicioInicializacionFormulario } from '../informe-page/services/form-initialization.service';
 import { ServicioNavegacion } from '../main-page/services/navigation.service';
-import { ServicioBaseDeDatos } from '../main-page/services/database.service';
 import { UIService } from '../../shared/services/ui.service';
 
 @Component({
@@ -24,13 +23,11 @@ export class AdminPageComponent {
   private persistService = inject(ServicioPersistenciaFormulario);
   private initService = inject(ServicioInicializacionFormulario);
   private navService = inject(ServicioNavegacion);
-  private dbService = inject(ServicioBaseDeDatos);
   private ui = inject(UIService);
   private router = inject(Router);
 
   isAdmin = this.adminService.isAdmin;
   isSyncing = signal(false);
-  isCleaning = signal(false);
 
   get informesGuardados() {
     return this.persistService.informesGuardados;
@@ -68,50 +65,6 @@ export class AdminPageComponent {
   async eliminarCuatrimestre(cuatrimestre: string) {
     const ok = await this.cuatriService.eliminarCuatrimestreConUI(cuatrimestre);
     if (ok) this.persistService.cargarHistorial().subscribe();
-  }
-
-  async limpiarInformesHuerfanos() {
-    if (this.isCleaning()) return;
-    this.isCleaning.set(true);
-
-    try {
-      const huerfanos = await this.dbService.obtenerSinCuatrimestre();
-      if (huerfanos.length === 0) {
-        this.ui.success('No hay informes huérfanos para eliminar');
-        return;
-      }
-
-      const ok = await this.ui.confirm(
-        'Limpiar Informes Huérfanos',
-        `Se encontraron ${huerfanos.length} informe(s) sin cuatrimestre. ¿Eliminarlos todos?`,
-        'Eliminar',
-        'Cancelar'
-      );
-      if (!ok) return;
-
-      let eliminados = 0;
-      for (const inf of huerfanos) {
-        try {
-          await this.dbService.eliminar(inf.id);
-          eliminados++;
-        } catch (error) {
-          console.error(`Error eliminando informe ${inf.id}:`, error);
-        }
-      }
-
-      this.persistService.cargarHistorial().subscribe();
-
-      if (eliminados === huerfanos.length) {
-        this.ui.success(`${eliminados} informe(s) huérfano(s) eliminado(s)`);
-      } else {
-        this.ui.warning(`Eliminados ${eliminados} de ${huerfanos.length} informes huérfanos`);
-      }
-    } catch (error) {
-      console.error('Error limpiando informes huérfanos:', error);
-      this.ui.error('Error al limpiar informes huérfanos');
-    } finally {
-      this.isCleaning.set(false);
-    }
   }
 
   async editarInforme(inf: InformeGuardado) {

@@ -1,0 +1,19 @@
+# Variables de entorno
+.env
+
+# Archivos temporales de Excel
+~$*.xlsx
+
+# Node
+UI/node_modules/
+UI/dist/
+
+# .NET
+apiService/bin/
+apiService/obj/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

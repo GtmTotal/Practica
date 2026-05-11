@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using InformeObras.Infraestructura.Persistencia;
 using InformeObras.Infraestructura.Archivos;
 using InformeObras.Infraestructura;
+using DotNetEnv;
+
+// Cargar variables de entorno desde archivo .env
+DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
