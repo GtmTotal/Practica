@@ -27,7 +27,6 @@ export class MainPageComponent implements OnDestroy {
   private adminService = inject(ServicioAdmin);
 
   isAdmin = this.adminService.isAdmin;
-  isSyncing = signal(false);
 
   get informesGuardados() {
     return this.persistService.informesGuardados;
@@ -45,26 +44,17 @@ export class MainPageComponent implements OnDestroy {
 
   async toggleAdmin() {
     if (this.isAdmin()) {
-      this.adminService.setAdmin(false);
+      await this.navService.irAAdmin();
     } else {
       const pass = window.prompt('Contraseña de administrador:');
       if (pass) {
         const ok = await this.adminService.login(pass);
-        if (!ok) alert('Contraseña incorrecta');
+        if (ok) {
+          await this.navService.irAAdmin();
+        } else {
+          alert('Contraseña incorrecta');
+        }
       }
-    }
-  }
-
-  async sincronizarExcel() {
-    if (this.isSyncing()) return;
-    this.isSyncing.set(true);
-    try {
-      const res = await this.adminService.sincronizarExcel();
-      alert(res.message || 'Sincronización completada');
-    } catch (err: any) {
-      alert('Error sincronizando: ' + (err.error?.detail || err.message));
-    } finally {
-      this.isSyncing.set(false);
     }
   }
 
@@ -83,10 +73,6 @@ export class MainPageComponent implements OnDestroy {
     }
   }
 
-  async crearCuatrimestre() {
-    await this.cuatriService.crearCuatrimestreConUI(this.informesGuardados());
-    this.persistService.cargarHistorial().subscribe();
-  }
 
   async eliminarCuatrimestre(cuatrimestre: string) {
     const ok = await this.cuatriService.eliminarCuatrimestreConUI(cuatrimestre);

@@ -1,0 +1,28 @@
+<div class="admin-container">
+  <div class="admin-header-main">
+    <button class="btn-back" (click)="volver()" title="Volver al inicio">
+      ⬅️ Volver
+    </button>
+    <h2>Administración</h2>
+  </div>
+
+  <div class="admin-panel animate-fade-in">
+    <div class="admin-header">
+      <h3>Panel de Control</h3>
+      <span class="badge-admin">Modo Edición</span>
+    </div>
+    
+    <div class="admin-description">
+      Gestiona los datos base de la aplicación y la estructura de los cuatrimestres.
+    </div>
+
+    <div class="admin-actions">
+      <button class="btn-admin-action sync" (click)="sincronizarExcel()" [disabled]="isSyncing()">
+        {{ isSyncing() ? '⏳ Sincronizando...' : '🔄 Sincronizar Excel' }}
+      </button>
+      <button class="btn-admin-action create" (click)="crearCuatrimestre()">
+        📅 Crear Cuatrimestre
+      </button>
+    </div>
+  </div>
+</div>

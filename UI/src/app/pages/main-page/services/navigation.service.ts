@@ -45,6 +45,10 @@ export class ServicioNavegacion {
     }
   }
 
+  async irAAdmin(): Promise<void> {
+    await this.router.navigate(['/admin']);
+  }
+
   async reset(): Promise<void> {
     this.vistaActual.set('inicio');
     this.centroSeleccionado.set('');

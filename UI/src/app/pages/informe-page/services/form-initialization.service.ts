@@ -17,7 +17,7 @@ export class ServicioInicializacionFormulario {
 
   async inicializarFormulario(nombre: string, cuatrimestre: string | null = null): Promise<void> {
     const centroConfig = await this.servicioConfiguracionCentros.getByCentro(nombre);
-    
+
     if (!centroConfig) {
       throw new Error(`El centro '${nombre}' no existe.`);
     }
