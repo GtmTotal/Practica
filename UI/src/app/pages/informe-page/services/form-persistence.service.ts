@@ -100,7 +100,6 @@ export class ServicioPersistenciaFormulario {
     
     await this.dbService.guardar(informeCompleto);
     await firstValueFrom(this.cargarHistorial());
-    this.ui.success('Informe guardado');
   }
 
   async editarInforme(inf: InformeGuardado): Promise<{

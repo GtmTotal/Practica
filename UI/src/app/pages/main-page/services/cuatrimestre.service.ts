@@ -144,7 +144,6 @@ export class ServicioCuatrimestre {
     if (!ok) return false;
     
     try {
-      this.ui.toast('Eliminando cuatrimestre...', 'warning');
       await this.dbService.eliminarCuatrimestre(cuatrimestre);
       this.ui.success('Cuatrimestre eliminado');
       return true;

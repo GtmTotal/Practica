@@ -47,7 +47,6 @@ export class AdminPageComponent {
   async sincronizarExcel() {
     if (this.isSyncing()) return;
     this.isSyncing.set(true);
-    this.ui.toast('Sincronizando con Excel...', 'info');
     try {
       const res = await this.adminService.sincronizarExcel();
       this.ui.success(res.message || 'Sincronización completada');

@@ -11,7 +11,7 @@ export class ServicioGestionFotografias {
   private ui = inject(UIService);
   private readonly apiBase = `http://${window.location.hostname}:5000/api`;
 
-  async comprimirImagen(file: File, maxPx = 800, calidad = 0.6): Promise<string> {
+  async comprimirImagen(file: File, maxPx = 600, calidad = 0.45): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onerror = reject;
