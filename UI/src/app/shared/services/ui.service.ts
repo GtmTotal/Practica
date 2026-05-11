@@ -9,7 +9,7 @@ export interface DialogOptions {
   okText?: string;
   cancelText?: string;
   placeholder?: string;
-  resolve?: (value: boolean | string) => void;
+  resolve?: (value: boolean | string | null) => void;
 }
 
 @Injectable({

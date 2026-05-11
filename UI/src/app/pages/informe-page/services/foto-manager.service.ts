@@ -1,4 +1,4 @@
-import { Injectable, WritableSignal } from '@angular/core';
+import { Injectable, WritableSignal, inject } from '@angular/core';
 import { Foto } from '../../informe-page/foto.interface'; 
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -42,7 +42,7 @@ export class ServicioGestionFotografias {
     formData.append('file', file, nombre);
     const response = await firstValueFrom(
       this.http.post<{ url: string }>(`${this.apiBase}/files/upload`, formData)
-    );
+    ) as { url: string };
     return response.url;
   }
 

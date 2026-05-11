@@ -1,4 +1,4 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { Injectable, signal, WritableSignal, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, Observable, map } from 'rxjs';
@@ -9,6 +9,7 @@ import { ServicioNavegacion } from '../../main-page/services/navigation.service'
 import { ServicioConfiguracionCentros } from '../../services/config-centros.service';
 import { ServicioConstruccionDatosDocumento } from './form-persistence/pdf-data-builder.service';
 import { ServicioReporteDocumento } from './form-persistence/pdf-report.service';
+import { UIService } from '../../../shared/services/ui.service';
 
 function calcularProgresoFormulario(form: FormGroup): number {
   const secciones = form.get('secciones') as FormArray;
@@ -38,16 +39,14 @@ function calcularProgresoFormulario(form: FormGroup): number {
 export class ServicioPersistenciaFormulario {
   private informesGuardadosSignal = signal<InformeGuardado[]>([]);
 
-  constructor(
-    private fb: FormBuilder,
-    private dbService: ServicioBaseDeDatos,
-    private http: HttpClient,
-    private navService: ServicioNavegacion,
-    private servicioConfiguracionCentros: ServicioConfiguracionCentros,
-    private pdfDataBuilder: ServicioConstruccionDatosDocumento,
-    private pdfService: ServicioReporteDocumento,
-    private ui: UIService
-  ) {}
+  private fb = inject(FormBuilder);
+  private dbService = inject(ServicioBaseDeDatos);
+  private http = inject(HttpClient);
+  private navService = inject(ServicioNavegacion);
+  private servicioConfiguracionCentros = inject(ServicioConfiguracionCentros);
+  private pdfDataBuilder = inject(ServicioConstruccionDatosDocumento);
+  private pdfService = inject(ServicioReporteDocumento);
+  private ui = inject(UIService);
 
   get informesGuardados() {
     return this.informesGuardadosSignal;
