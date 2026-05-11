@@ -82,4 +82,9 @@ export class AdminPageComponent {
   volver() {
     this.router.navigate(['/']);
   }
+
+  cerrarSesion() {
+    this.adminService.setAdmin(false);
+    this.router.navigate(['/']);
+  }
 }

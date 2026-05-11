@@ -15,6 +15,7 @@
   margin: 0;
   font-size: 1.8rem;
   color: #0f172a;
+  flex: 1;
 }
 
 .btn-back {
@@ -31,6 +32,22 @@
 .btn-back:hover {
   background: #e2e8f0;
   color: #0f172a;
+}
+
+.btn-logout {
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #991b1b;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover {
+  background: #fee2e2;
+  color: #7f1d1d;
 }
 
 .admin-panel {
@@ -154,6 +171,16 @@
 }
 
 @media (max-width: 700px) {
+  .admin-header-main {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .admin-header-main h2 {
+    order: 3;
+    flex-basis: 100%;
+  }
+
   .admin-actions {
     grid-template-columns: 1fr;
   }
