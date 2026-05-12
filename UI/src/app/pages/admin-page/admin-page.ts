@@ -57,6 +57,23 @@ export class AdminPageComponent {
     }
   }
 
+  async onSubirExcel(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.isSyncing.set(true);
+    try {
+      const res = await this.adminService.sincronizarExcelDesdeArchivo(file);
+      this.ui.success(res.message || 'Excel sincronizado correctamente');
+    } catch (err: any) {
+      this.ui.error('Error subiendo Excel: ' + (err.error?.detail || err.message));
+    } finally {
+      this.isSyncing.set(false);
+      input.value = '';
+    }
+  }
+
   async crearCuatrimestre() {
     await this.cuatriService.crearCuatrimestreConUI(this.informesGuardados());
     this.persistService.cargarHistorial().subscribe();

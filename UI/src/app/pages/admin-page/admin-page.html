@@ -20,8 +20,9 @@
     </div>
 
     <div class="admin-actions">
-      <button class="btn-admin-action sync" (click)="sincronizarExcel()" [disabled]="isSyncing()">
-        {{ isSyncing() ? '⏳ Sincronizando...' : '🔄 Sincronizar Excel' }}
+      <input type="file" #excelInput accept=".xlsx" hidden (change)="onSubirExcel($event)" />
+      <button class="btn-admin-action sync" (click)="excelInput.click()" [disabled]="isSyncing()">
+        {{ isSyncing() ? '⏳ Sincronizando...' : '� Subir Excel (.xlsx)' }}
       </button>
       <button class="btn-admin-action create" (click)="crearCuatrimestre()">
         📅 Crear Cuatrimestre

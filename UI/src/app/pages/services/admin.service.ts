@@ -41,4 +41,12 @@ export class ServicioAdmin {
   async sincronizarExcel(): Promise<any> {
     return firstValueFrom(this.http.post(`${this.apiBase}/sync`, {}, { headers: this.getAuthHeaders() }));
   }
+
+  async sincronizarExcelDesdeArchivo(file: File): Promise<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return firstValueFrom(
+      this.http.post(`${this.apiBase}/sync/upload`, formData, { headers: this.getAuthHeaders() })
+    );
+  }
 }

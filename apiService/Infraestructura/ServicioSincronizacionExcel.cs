@@ -47,10 +47,16 @@ public sealed class ServicioSincronizacionExcel
             throw new FileNotFoundException($"No se encuentra el archivo Excel en: {_excelPath}");
         }
 
-        var sbLog = new StringBuilder();
-        sbLog.AppendLine("Iniciando sincronización nativa...");
+        using var stream = File.OpenRead(_excelPath);
+        return await SincronizarAsync(stream);
+    }
 
-        using var workbook = new XLWorkbook(_excelPath);
+    public async Task<string> SincronizarAsync(Stream excelStream)
+    {
+        var sbLog = new StringBuilder();
+        sbLog.AppendLine("Iniciando sincronización desde archivo...");
+
+        using var workbook = new XLWorkbook(excelStream);
         var okCount = 0;
         var skippedCount = 0;
 

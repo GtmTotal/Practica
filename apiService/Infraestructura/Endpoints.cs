@@ -309,6 +309,28 @@ public static class Endpoints
             return Results.Json(new { success = false }, statusCode: 401);
         });
 
+        app.MapPost("/api/admin/sync/upload", async (IFormFile file, ServicioSincronizacionExcel syncService, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
+        {
+            if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();
+
+            if (file == null || file.Length == 0)
+                return Results.BadRequest(new { message = "Debes seleccionar un archivo Excel." });
+
+            if (!file.FileName.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+                return Results.BadRequest(new { message = "El archivo debe ser un Excel (.xlsx)." });
+
+            try
+            {
+                await using var stream = file.OpenReadStream();
+                var log = await syncService.SincronizarAsync(stream);
+                return Results.Ok(new { message = "Sincronización completada con éxito", log });
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem($"Error en la sincronización: {ex.Message}");
+            }
+        });
+
         app.MapPost("/api/admin/sync", async (ServicioSincronizacionExcel syncService, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
         {
             if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();

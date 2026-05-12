@@ -125,8 +125,8 @@ export class ServicioReporteDocumento {
     content.push({ canvas: [{ type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1.5, lineColor: '#1e40af' }], margin: [0, 5, 0, 15] });
 
     // 3. Secciones
-    for (const seccion of datos.secciones) {
-      content.push(this.buildSeccion(seccion));
+    for (let i = 0; i < datos.secciones.length; i++) {
+      content.push(this.buildSeccion(datos.secciones[i], i > 0));
     }
 
     // 4. Conclusiones
@@ -198,7 +198,7 @@ export class ServicioReporteDocumento {
     };
   }
 
-  private buildSeccion(seccion: SeccionPDF): any {
+  private buildSeccion(seccion: SeccionPDF, conSalto: boolean = false): any {
     const content: any[] = [
       { text: seccion.tituloSeccion.toUpperCase(), style: 'sectionTitle' }
     ];
@@ -260,7 +260,8 @@ export class ServicioReporteDocumento {
 
     return {
       stack: content,
-      pageBreak: 'after'
+      pageBreak: conSalto ? 'before' : undefined,
+      margin: [0, 0, 0, 20]
     };
   }
 
@@ -309,33 +310,27 @@ export class ServicioReporteDocumento {
   }
 
   private buildFotosGrid(fotos: FotoPDF[]): any {
-    const columns: any[] = [];
+    const items: any[] = [];
 
     for (let i = 0; i < fotos.length; i++) {
       const desc = fotos[i].descripcion?.trim();
-      columns.push({
-        stack: [
-          {
-            image: fotos[i].base64,
-            width: 200,
-            margin: [0, 0, 0, 5]
-          },
-          {
-            text: desc || `Foto ${i + 1} / ${fotos.length}`,
-            fontSize: 8,
-            alignment: 'center',
-            color: desc ? '#1e40af' : '#64748b',
-            bold: !!desc
-          }
-        ],
-        margin: [5, 10, 5, 10]
+      items.push({
+        image: fotos[i].base64,
+        width: 260,
+        alignment: 'left',
+        margin: [0, 0, 0, 4]
+      });
+      items.push({
+        text: desc || `Foto ${i + 1} / ${fotos.length}`,
+        fontSize: 9,
+        color: desc ? '#1e40af' : '#64748b',
+        bold: !!desc,
+        italics: !desc,
+        margin: [0, 0, 0, 18]
       });
     }
 
-    return {
-      columns: columns,
-      columnGap: 10
-    };
+    return { stack: items };
   }
 
   private buildConclusiones(conclusiones: string): any {
