@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 
+// pdfMake cargado via CDN en index.html
+declare const pdfMake: any;
+
 export interface DatosPDF {
   nombreObra: string;
   tecnico: string;
@@ -94,25 +97,7 @@ const estilos = {
 
 @Injectable({ providedIn: 'root' })
 export class ServicioReporteDocumento {
-  private pdfMakeInstance: any = null;
   private logoBase64: string = '';
-
-  private async getPdfMake(): Promise<any> {
-    if (this.pdfMakeInstance) {
-      return this.pdfMakeInstance;
-    }
-
-    const pdfMakeModule = await import('pdfmake/build/pdfmake');
-    const pdfFontsModule = await import('pdfmake/build/vfs_fonts');
-
-    const pdfMake = pdfMakeModule.default || pdfMakeModule;
-    const pdfFonts = pdfFontsModule.default || pdfFontsModule;
-
-    (pdfMake as any).vfs = (pdfFonts as any)['pdfMake'].vfs;
-    this.pdfMakeInstance = pdfMake;
-
-    return pdfMake;
-  }
 
   async generarPDF(datos: DatosPDF): Promise<void> {
     // Cargar logo si no está cargado
@@ -172,7 +157,6 @@ export class ServicioReporteDocumento {
     };
 
     // Generar y descargar
-    const pdfMake = await this.getPdfMake();
     pdfMake.createPdf(docDefinition as any).download(`Informe_${datos.nombreObra}_${datos.fecha}.pdf`);
   }
 
