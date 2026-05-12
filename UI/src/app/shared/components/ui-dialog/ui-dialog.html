@@ -18,7 +18,7 @@
       
       @if (d.type === 'prompt') {
         <div class="dialog-input">
-          <input type="text" [placeholder]="d.placeholder || ''" 
+          <input [type]="d.inputType || 'text'" [placeholder]="d.placeholder || ''"
                  [(ngModel)]="inputVal" (keyup.enter)="onOk()" autofocus>
         </div>
       }

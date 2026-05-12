@@ -116,7 +116,7 @@ export class MainPageComponent implements OnInit, OnDestroy {
     if (this.isAdmin()) {
       await this.navService.irAAdmin();
     } else {
-      const pass = await this.ui.prompt('Acceso Admin', 'Introduce la contraseña de administrador:', 'Contraseña');
+      const pass = await this.ui.prompt('Acceso Admin', 'Introduce la contraseña de administrador:', 'Contraseña', 'Aceptar', 'Cancelar', 'password');
       if (pass) {
         const ok = await this.adminService.login(pass);
         if (ok) {

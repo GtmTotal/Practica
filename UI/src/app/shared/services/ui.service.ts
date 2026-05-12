@@ -10,6 +10,7 @@ export interface DialogOptions {
   okText?: string;
   cancelText?: string;
   placeholder?: string;
+  inputType?: 'text' | 'password';
   resolve?: (value: boolean | string | null) => void;
 }
 
@@ -59,7 +60,7 @@ export class UIService {
     });
   }
 
-  prompt(title: string, message: string, placeholder = '', okText = 'Aceptar', cancelText = 'Cancelar'): Promise<string | null> {
+  prompt(title: string, message: string, placeholder = '', okText = 'Aceptar', cancelText = 'Cancelar', inputType: 'text' | 'password' = 'text'): Promise<string | null> {
     return new Promise((resolve) => {
       this.dialogState.set({
         title,
@@ -68,6 +69,7 @@ export class UIService {
         okText,
         cancelText,
         placeholder,
+        inputType,
         resolve: (val) => {
           this.dialogState.set(null);
           if (typeof val === 'string') resolve(val);

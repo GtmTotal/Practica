@@ -188,6 +188,12 @@
             </div>
           }
         </section>
+
+        @if (cuatrimestreSeleccionado()) {
+          <button class="mobile-delete-cuatrimestre" (click)="eliminarCuatrimestre(cuatrimestreSeleccionado())">
+            <span class="mdi">🗑</span> Eliminar cuatrimestre
+          </button>
+        }
       </div>
     </div>
 
