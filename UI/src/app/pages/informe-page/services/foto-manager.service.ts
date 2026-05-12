@@ -1,17 +1,18 @@
 import { Injectable, WritableSignal, inject } from '@angular/core';
-import { Foto } from '../../informe-page/foto.interface'; 
+import { Foto } from '../../informe-page/foto.interface';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
 import { UIService } from '../../../shared/services/ui.service';
 import { ServicioAdmin } from '../../services/admin.service';
+import { getApiBaseUrl } from '../../../core/api-config';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioGestionFotografias {
   private http = inject(HttpClient);
   private ui = inject(UIService);
   private adminService = inject(ServicioAdmin);
-  private readonly apiBase = `http://${window.location.hostname}:5000/api`;
+  private readonly apiBase = getApiBaseUrl();
 
   async comprimirImagen(file: File, maxPx = 600, calidad = 0.45): Promise<string> {
     return new Promise((resolve, reject) => {

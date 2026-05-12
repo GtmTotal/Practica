@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ConfigCentro } from '../config.interface';
+import { getApiBaseUrl } from '../../core/api-config';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioConfiguracionCentros {
-  private readonly apiBase = `http://${window.location.hostname}:5000/api`;
+  private readonly apiBase = getApiBaseUrl();
   private cache: Record<string, ConfigCentro> | null = null;
   private centroCache = new Map<string, ConfigCentro>();
 

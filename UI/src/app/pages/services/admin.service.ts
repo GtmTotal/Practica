@@ -1,10 +1,11 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { getApiBaseUrl } from '../../core/api-config';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioAdmin {
-  private readonly apiBase = `http://${window.location.hostname}:5000/api/admin`;
+  private readonly apiBase = `${getApiBaseUrl()}/admin`;
   private readonly tokenKey = 'gtm_admin_token';
   
   // Estado persistente en la sesión

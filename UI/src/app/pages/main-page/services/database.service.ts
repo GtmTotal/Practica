@@ -3,10 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, Observable, map } from 'rxjs';
 import { InformeGuardado } from '../../informe.interface';
 import { ServicioAdmin } from '../../services/admin.service';
+import { getApiBaseUrl } from '../../../core/api-config';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioBaseDeDatos {
-  private readonly apiBase = `http://${window.location.hostname}:5000/api`;
+  private readonly apiBase = getApiBaseUrl();
 
   constructor(private http: HttpClient, private adminService: ServicioAdmin) {}
 

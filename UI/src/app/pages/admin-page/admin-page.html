@@ -1,11 +1,9 @@
 <div class="admin-container">
   <div class="admin-header-main">
-    <button class="btn-back" (click)="volver()" title="Volver al inicio">
-      ⬅️ Volver
-    </button>
     <h2>Administración</h2>
     <button class="btn-logout" (click)="cerrarSesion()" title="Cerrar sesión admin">
-      🔒 Salir admin
+      <span class="logout-icon">🔒</span>
+      <span class="logout-text">Salir</span>
     </button>
   </div>
 
@@ -22,7 +20,7 @@
     <div class="admin-actions">
       <input type="file" #excelInput accept=".xlsx" hidden (change)="onSubirExcel($event)" />
       <button class="btn-admin-action sync" (click)="excelInput.click()" [disabled]="isSyncing()">
-        {{ isSyncing() ? '⏳ Sincronizando...' : '� Subir Excel (.xlsx)' }}
+        {{ isSyncing() ? '⏳ Sincronizando...' : '📤 Subir Excel' }}
       </button>
       <button class="btn-admin-action create" (click)="crearCuatrimestre()">
         📅 Crear Cuatrimestre
