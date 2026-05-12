@@ -106,7 +106,7 @@ export class ServicioReporteDocumento {
     // Cargar logo si no está cargado
     if (!this.logoBase64) {
       try {
-        this.logoBase64 = await this.convertImageToBase64('/logoNoOficial.svg');
+        this.logoBase64 = await this.convertImageToBase64('/logo3.webp');
       } catch {
         this.logoBase64 = '';
       }
@@ -139,13 +139,13 @@ export class ServicioReporteDocumento {
       defaultStyle: {
         font: 'Roboto'
       },
-      pageMargins: [40, 30, 40, 30],
+      pageMargins: [40, 100, 40, 30],
       header: (currentPage: number) => {
         if (currentPage === 1) return {};
         return {
           columns: [
             { text: '', width: '*' },
-            this.logoBase64 ? { image: this.logoBase64, width: 80, margin: [0, 15, 0, 0], alignment: 'right' } : {}
+            this.logoBase64 ? { image: this.logoBase64, width: 70, margin: [0, 25, 0, 0], alignment: 'right' } : {}
           ],
           margin: [40, 10, 40, 0]
         };
@@ -174,13 +174,19 @@ export class ServicioReporteDocumento {
   }
 
   private buildPortada(datos: DatosPDF): any {
-    return {
+    const leftCol = {
       stack: [
         { text: 'INFORME TÉCNICO', style: 'header' },
         { text: 'Mantenimiento Preventivo de Instalaciones', fontSize: 10, color: '#64748b', margin: [0, 0, 0, 20] },
-        { text: datos.nombreObra.toUpperCase(), fontSize: 18, bold: true, color: '#0f172a', margin: [0, 0, 0, 10] },
-        { text: `${datos.fecha} · ${datos.tecnico}`, fontSize: 9, color: '#475569' }
-      ],
+        { text: datos.nombreObra.toUpperCase(), fontSize: 18, bold: true, color: '#0f172a', margin: [0, 0, 0, 10] }
+      ]
+    };
+    const rightCol = this.logoBase64
+      ? { image: this.logoBase64, width: 140, alignment: 'right', margin: [0, 0, 0, 10] }
+      : {};
+    return {
+      columns: [leftCol, rightCol],
+      columnGap: 20,
       margin: [0, 0, 0, 30]
     };
   }
@@ -267,7 +273,6 @@ export class ServicioReporteDocumento {
     // Fotos
     if (seccion.fotos && seccion.fotos.length > 0) {
       content.push({
-        unbreakable: true,
         stack: [
           {
             text: 'REGISTRO FOTOGRÁFICO',
