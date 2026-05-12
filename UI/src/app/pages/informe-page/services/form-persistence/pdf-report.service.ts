@@ -251,11 +251,16 @@ export class ServicioReporteDocumento {
     // Fotos
     if (seccion.fotos && seccion.fotos.length > 0) {
       content.push({
-        text: 'REGISTRO FOTOGRÁFICO',
-        style: 'subheader',
-        margin: [0, 20, 0, 10]
+        unbreakable: true,
+        stack: [
+          {
+            text: 'REGISTRO FOTOGRÁFICO',
+            style: 'subheader',
+            margin: [0, 20, 0, 10]
+          },
+          this.buildFotosGrid(seccion.fotos)
+        ]
       });
-      content.push(this.buildFotosGrid(seccion.fotos));
     }
 
     return {
