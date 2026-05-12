@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import * as pdfMake from 'pdfmake/build/pdfmake';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 // Configurar fuentes para pdfMake
 (pdfMake as any).vfs = (pdfFonts as any)['pdfMake'].vfs;
