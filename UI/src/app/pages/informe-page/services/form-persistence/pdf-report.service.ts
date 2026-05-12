@@ -1,13 +1,4 @@
 import { Injectable } from '@angular/core';
-import * as pdfMakeNamespace from 'pdfmake/build/pdfmake';
-import * as pdfFontsNamespace from 'pdfmake/build/vfs_fonts';
-
-// Fallback para producción (default vs namespace import)
-const pdfMake: any = (pdfMakeNamespace as any).default || pdfMakeNamespace;
-const pdfFonts: any = (pdfFontsNamespace as any).default || pdfFontsNamespace;
-
-// Configurar fuentes para pdfMake
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export interface DatosPDF {
   nombreObra: string;
@@ -103,7 +94,25 @@ const estilos = {
 
 @Injectable({ providedIn: 'root' })
 export class ServicioReporteDocumento {
+  private pdfMakeInstance: any = null;
   private logoBase64: string = '';
+
+  private async getPdfMake(): Promise<any> {
+    if (this.pdfMakeInstance) {
+      return this.pdfMakeInstance;
+    }
+
+    const pdfMakeModule = await import('pdfmake/build/pdfmake');
+    const pdfFontsModule = await import('pdfmake/build/vfs_fonts');
+
+    const pdfMake = pdfMakeModule.default || pdfMakeModule;
+    const pdfFonts = pdfFontsModule.default || pdfFontsModule;
+
+    (pdfMake as any).vfs = (pdfFonts as any)['pdfMake'].vfs;
+    this.pdfMakeInstance = pdfMake;
+
+    return pdfMake;
+  }
 
   async generarPDF(datos: DatosPDF): Promise<void> {
     // Cargar logo si no está cargado
@@ -162,7 +171,8 @@ export class ServicioReporteDocumento {
       }
     };
 
-    // Generar y descargar (castear como any para evitar problemas de tipado)
+    // Generar y descargar
+    const pdfMake = await this.getPdfMake();
     pdfMake.createPdf(docDefinition as any).download(`Informe_${datos.nombreObra}_${datos.fecha}.pdf`);
   }
 
