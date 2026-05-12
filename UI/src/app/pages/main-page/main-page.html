@@ -1,23 +1,130 @@
-<div class="historial-container">
-  <!-- Botón Admin flotante o discreto -->
-  <div class="admin-access">
-    <button class="btn-admin-gear" (click)="toggleAdmin()"
-      [title]="isAdmin() ? 'Ir a Administración' : 'Modo Administrador'">
-      <span class="icon-gear">⚙️</span>
+<div class="main-layout">
+  <!-- Sidebar (desktop) -->
+  <aside class="main-sidebar">
+    <div class="sidebar-top">
+      <div class="brand">
+        <span class="brand-arrow brand-arrow-yellow">▶</span>
+        <span class="brand-name">GTM</span>
+        <span class="brand-arrow">▶</span>
+      </div>
+      <h1 class="sidebar-title">Control total del mantenimiento.</h1>
+      <p class="sidebar-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
+    </div>
+    <button class="btn-admin-gear" (click)="toggleAdmin()" title="Administración">
+      <span>⚙</span>
     </button>
-  </div>
+  </aside>
 
-  <div class="inicio-logo-container">
-    <img src="/logoNoOficial.svg" alt="Logo" style="height: 120px" />
-  </div>
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Desktop -->
+    <div class="desktop-content">
+      <header class="content-header">
+        <span class="header-label">MERCADONA · INFORMES</span>
+      </header>
 
-  <h2>Informes de Mantenimiento de Mercadona</h2>
+      @if (informesGuardados().length === 0) {
+        <div class="empty-state">No hay informes guardados.</div>
+      } @else {
+        <app-lista-cuatrimestres
+          [grupos]="informesPorCuatrimestre"
+          [isAdmin]="isAdmin()"
+          (eliminarCuatrimestre)="eliminarCuatrimestre($event)"
+          (editarInforme)="editarInforme($event)">
+        </app-lista-cuatrimestres>
+      }
+    </div>
 
-  @if (informesGuardados().length === 0) {
-  <div class="no-drafts">No hay borradores guardados.</div>
-  } @else {
-  <app-lista-cuatrimestres [grupos]="informesPorCuatrimestre" [isAdmin]="isAdmin()"
-    (eliminarCuatrimestre)="eliminarCuatrimestre($event)" (editarInforme)="editarInforme($event)">
-  </app-lista-cuatrimestres>
-  }
+    <!-- ===== MOBILE: PANEL VIEW ===== -->
+    <div class="mobile-view mobile-panel-view" [class.active]="vistaPanel()">
+      <div class="mobile-panel-header">
+        <div class="mobile-brand-row">
+          <div class="mobile-brand">
+            <span class="mobile-brand-arrow">▶</span>
+            <span class="mobile-brand-name">GTM</span>
+            <span class="mobile-brand-arrow-2">▶</span>
+          </div>
+          <button class="mobile-gear" (click)="toggleAdmin()" title="Administración">⚙</button>
+        </div>
+        <h1 class="mobile-panel-title">Control total del mantenimiento.</h1>
+        <p class="mobile-panel-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
+      </div>
+
+      <div class="mobile-panel-body">
+        <div class="mobile-section-label">CUATRIMESTRES</div>
+        @if (cuatrimestres().length === 0) {
+          <div class="empty-state">No hay informes guardados.</div>
+        } @else {
+          <div class="mobile-cuatrimestres-list">
+            @for (grupo of cuatrimestres(); track grupo.clave) {
+              <button class="mobile-cuatrimestre-item" (click)="seleccionarCuatrimestre(grupo.clave)">
+                <div class="mci-info">
+                  <div class="mci-title">{{ grupo.label }}</div>
+                  <div class="mci-meta">{{ grupo.informes.length }} centros</div>
+                </div>
+                <div class="mci-count">{{ grupo.informes.length }}</div>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- ===== MOBILE: CUATRIMESTRE VIEW ===== -->
+    <div class="mobile-view mobile-cuatrimestre-view" [class.active]="!vistaPanel()">
+      <div class="mobile-cuatrimestre-header">
+        <div class="mobile-brand-row">
+          <button class="mobile-back-link" (click)="vistaPanel.set(true)">‹ Períodos</button>
+          <div class="mobile-brand">
+            <span class="mobile-brand-arrow">▶</span>
+            <span class="mobile-brand-name">GTM</span>
+            <span class="mobile-brand-arrow-2">▶</span>
+          </div>
+        </div>
+        <div class="mobile-cuatri-row">
+          <span class="mobile-cuatri-title">{{ grupoSeleccionado()?.label }}</span>
+          <button class="mobile-close-btn" (click)="vistaPanel.set(true)" title="Volver">✕</button>
+        </div>
+        <p class="mobile-subtitle">Mercadona · informes de mantenimiento</p>
+        <div class="mobile-metrics">
+          <div class="mm-card">
+            <div class="mm-value">{{ metricas().total }}</div>
+            <div class="mm-label">CENTROS</div>
+          </div>
+          <div class="mm-card mm-orange">
+            <div class="mm-value">{{ metricas().enProgreso }}</div>
+            <div class="mm-label">EN PROGRESO</div>
+          </div>
+          <div class="mm-card mm-red">
+            <div class="mm-value">{{ metricas().pendientes }}</div>
+            <div class="mm-label">PENDIENTES</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-cuatrimestre-body">
+        <div class="centros-label">CENTROS</div>
+        <section class="centros-grid">
+          @for (inf of informesActuales(); track inf.id) {
+            <div
+              class="centro-card"
+              [style.--dot-color]="colorEstado(inf)"
+              [attr.data-estado]="estadoDe(inf)"
+              (click)="editarInforme(inf)">
+              <div class="card-header">
+                <span class="centro-nombre">{{ inf.nombreObra }}</span>
+                <span class="centro-estado">{{ labelEstado(inf) }}</span>
+              </div>
+              <div class="card-body">
+                <div class="centro-progreso">
+                  <span class="progreso-valor">{{ progresoDe(inf) }}% completado</span>
+                </div>
+                <div class="centro-fecha">{{ inf.ultimaModificacion || '—' }}</div>
+              </div>
+            </div>
+          }
+        </section>
+      </div>
+    </div>
+  </main>
 </div>

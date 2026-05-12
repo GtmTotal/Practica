@@ -184,7 +184,7 @@ export class ServicioReporteDocumento {
       margin: [0, 0, 0, 30]
     };
   }
-
+  
   private buildMetadata(datos: DatosPDF): any {
     return {
       table: {

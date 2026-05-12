@@ -1,78 +1,58 @@
-.grupo-cuatri {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  margin-bottom: 24px;
-  width: 100%;
+.cuatrimestre-wrapper {
+  border-bottom: 1px solid #e2e8f0;
 }
 
-.grupo-header {
+.cuatrimestre-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  gap: 12px;
-  width: 100%;
+  padding: 20px 0;
+  cursor: pointer;
+  transition: background 0.1s;
+  gap: 16px;
 }
 
-.grupo-header h3 {
-  margin: 0;
-  color: #1e293b;
-  font-size: 1.15rem;
-  font-weight: 700;
+.cuatrimestre-row:hover {
+  background: #fafafa;
 }
 
-.btn-toggle-cuatri {
+.cuatrimestre-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cuatrimestre-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.cuatrimestre-year {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.cuatrimestre-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 100px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: #475569;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+  white-space: nowrap;
 }
 
-.btn-toggle-cuatri:hover {
-  background: #e2e8f0;
-  color: #1e293b;
+.arrow {
+  color: #94a3b8;
+  font-size: 14px;
 }
 
-.btn-toggle-cuatri .icon-toggle {
-  /* Eliminamos el color fijo para que mande el global */
-  font-size: 0.8rem;
-}
-
-.footer-cuatri {
-  display: flex;
-  justify-content: center;
-  padding: 15px 0;
-  margin-top: 10px;
-  border-top: 1px dashed #cbd5e1;
-}
-
-.btn-eliminar-cuatri {
-  border: 1px solid #fee2e2;
-  border-radius: 6px;
-  background: #fef2f2;
-  color: #991b1b;
-  padding: 6px 12px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-eliminar-cuatri:hover {
-  background: #fee2e2;
-  color: #7f1d1d;
-  border-color: #fecaca;
+.centros-panel {
+  padding: 0 0 16px 0;
 }
 
 @media (max-width: 700px) {
-  .grupo-header h3 {
+  .cuatrimestre-name {
     font-size: 1.25rem;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -11,6 +11,8 @@ import { ServicioNavegacion } from './services/navigation.service';
 import { ServicioAdmin } from '../services/admin.service';
 import { UIService } from '../../shared/services/ui.service';
 import { InformeGuardado } from '../informe.interface';
+
+type EstadoInforme = 'completado' | 'en-progreso' | 'pendiente';
 
 @Component({
   selector: 'app-main-page',
@@ -30,6 +32,8 @@ export class MainPageComponent implements OnInit, OnDestroy {
   private ui = inject(UIService);
 
   isAdmin = this.adminService.isAdmin;
+  vistaPanel = signal(true);
+  cuatrimestreSeleccionado = signal<string>('');
 
   get informesGuardados() {
     return this.persistService.informesGuardados;
@@ -37,6 +41,69 @@ export class MainPageComponent implements OnInit, OnDestroy {
 
   get informesPorCuatrimestre() {
     return this.cuatriService.getInformesPorCuatrimestre(this.informesGuardados());
+  }
+
+  cuatrimestres = computed(() => {
+    return this.cuatriService.getInformesPorCuatrimestre(this.informesGuardados());
+  });
+
+  grupoSeleccionado = computed(() => {
+    const grupos = this.cuatrimestres();
+    const sel = this.cuatrimestreSeleccionado();
+    return grupos.find(g => g.clave === sel);
+  });
+
+  metricas = computed(() => {
+    const grupo = this.grupoSeleccionado();
+    if (!grupo) return { total: 0, completados: 0, enProgreso: 0, pendientes: 0 };
+    const informes = grupo.informes;
+    const total = informes.length;
+    const completados = informes.filter(i => this.estadoDe(i) === 'completado').length;
+    const enProgreso = informes.filter(i => this.estadoDe(i) === 'en-progreso').length;
+    const pendientes = total - completados - enProgreso;
+    return { total, completados, enProgreso, pendientes };
+  });
+
+  informesActuales = computed(() => this.grupoSeleccionado()?.informes || []);
+
+  seleccionarCuatrimestre(clave: string) {
+    this.cuatrimestreSeleccionado.set(clave);
+    this.vistaPanel.set(false);
+  }
+
+  estadoDe(informe: InformeGuardado): EstadoInforme {
+    const prog = this.progresoDe(informe);
+    if (prog >= 100) return 'completado';
+    if (prog > 0) return 'en-progreso';
+    return 'pendiente';
+  }
+
+  progresoDe(informe: InformeGuardado): number {
+    if (informe.progreso !== undefined) return informe.progreso;
+    const secciones = informe.secciones;
+    if (!secciones?.length) return 0;
+    let total = 0, hechas = 0;
+    for (const sec of secciones) {
+      for (const t of sec.tareas || []) {
+        total++;
+        if (t.rev || t.ok || t.noOk) hechas++;
+      }
+    }
+    return total > 0 ? Math.round((hechas / total) * 100) : 0;
+  }
+
+  colorEstado(informe: InformeGuardado): string {
+    const estado = this.estadoDe(informe);
+    if (estado === 'completado') return '#059669';
+    if (estado === 'en-progreso') return '#d97706';
+    return '#94a3b8';
+  }
+
+  labelEstado(informe: InformeGuardado): string {
+    const estado = this.estadoDe(informe);
+    if (estado === 'completado') return 'COMPLETADO';
+    if (estado === 'en-progreso') return 'EN PROGRESO';
+    return 'PENDIENTE';
   }
 
   constructor() {}

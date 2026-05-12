@@ -1,14 +1,4 @@
-<div class="card-informe">
-  <div>
-    <strong class="market-name">
-      {{ informe().nombreObra }}
-      <div class="mini-progreso-container">
-        <div class="mini-progreso-bar" [style.width.%]="informe().progreso ?? 0"></div>
-        <span class="mini-progreso-texto">{{ informe().progreso ?? 0 }}%</span>
-      </div>
-    </strong>
-    <br />
-    <small>💾 {{ informe().ultimaModificacion }}</small>
-  </div>
-  <button class="btn-editar" (click)="editar.emit(informe())">Editar</button>
+<div class="centro-row" (click)="editar.emit(informe())">
+  <span class="centro-name">{{ informe().nombreObra }}</span>
+  <span class="centro-date">{{ informe().ultimaModificacion || '' }}</span>
 </div>
