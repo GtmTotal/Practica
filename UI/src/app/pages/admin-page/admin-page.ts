@@ -132,7 +132,9 @@ export class AdminPageComponent {
     this.isSyncing.set(true);
     try {
       const res = await this.adminService.sincronizarExcelDesdeArchivo(file);
-      this.ui.success(res.message || 'Excel sincronizado correctamente');
+      const msg = res.message || 'Excel sincronizado correctamente';
+      const log = res.log ? '\n\n' + res.log : '';
+      this.ui.success(msg + log);
     } catch (err: any) {
       this.ui.error('Error subiendo Excel: ' + (err.error?.detail || err.message));
     } finally {

@@ -326,8 +326,12 @@ public static class Endpoints
 
             try
             {
-                await using var stream = file.OpenReadStream();
-                var log = await syncService.SincronizarAsync(stream);
+                await using var uploadStream = file.OpenReadStream();
+                using var memoryStream = new MemoryStream();
+                await uploadStream.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                var log = await syncService.SincronizarAsync(memoryStream);
                 return Results.Ok(new { message = "Sincronización completada con éxito", log });
             }
             catch (Exception ex)
