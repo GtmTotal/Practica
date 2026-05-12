@@ -59,38 +59,36 @@ const estilos = {
     margin: [0, 10, 0, 5]
   },
   sectionTitle: {
-    fontSize: 13,
+    fontSize: 14,
     bold: true,
-    color: '#1e40af',
-    margin: [0, 15, 0, 8],
-    background: '#f1f5f9'
+    color: '#1e3a5f',
+    margin: [0, 22, 0, 14]
   },
   tableHeader: {
     bold: true,
-    fontSize: 9,
+    fontSize: 8,
     color: 'white',
-    fillColor: '#475569',
-    margin: [0, 5, 0, 5]
+    fillColor: '#334155',
+    margin: [0, 6, 0, 6]
   },
   textoTarea: {
     fontSize: 10,
-    margin: [0, 5, 0, 5]
+    margin: [0, 3, 0, 3]
   },
   textoNota: {
     fontSize: 8,
     italics: true,
     color: '#64748b',
-    margin: [0, 3, 0, 3]
+    margin: [0, 2, 0, 2]
   },
   observaciones: {
     fontSize: 9,
     color: '#475569',
-    margin: [0, 5, 0, 5],
-    background: '#f8fafc'
+    margin: [0, 5, 0, 5]
   },
   conclusiones: {
     fontSize: 11,
-    color: 'white',
+    color: '#1e293b',
     margin: [0, 10, 0, 10]
   },
   footer: {
@@ -126,7 +124,7 @@ export class ServicioReporteDocumento {
 
     // 3. Secciones
     for (let i = 0; i < datos.secciones.length; i++) {
-      content.push(this.buildSeccion(datos.secciones[i], i > 0));
+      content.push(this.buildSeccion(datos.secciones[i]));
     }
 
     // 4. Conclusiones
@@ -142,10 +140,19 @@ export class ServicioReporteDocumento {
         font: 'Roboto'
       },
       pageMargins: [40, 30, 40, 30],
+      header: (currentPage: number) => {
+        if (currentPage === 1) return {};
+        return {
+          columns: [
+            { text: '', width: '*' },
+            this.logoBase64 ? { image: this.logoBase64, width: 80, margin: [0, 15, 0, 0], alignment: 'right' } : {}
+          ],
+          margin: [40, 10, 40, 0]
+        };
+      },
       footer: (currentPage: number, pageCount: number) => {
         return {
           columns: [
-            this.logoBase64 ? { image: this.logoBase64, width: 30, margin: [0, 5, 5, 0] } : {},
             {
               text: `GTM Mantenimiento · ${datos.nombreObra}`,
               style: 'footer',
@@ -157,7 +164,7 @@ export class ServicioReporteDocumento {
               alignment: 'right'
             }
           ],
-          margin: [20, 10, 20, 0]
+          margin: [40, 5, 40, 0]
         };
       }
     };
@@ -198,7 +205,7 @@ export class ServicioReporteDocumento {
     };
   }
 
-  private buildSeccion(seccion: SeccionPDF, conSalto: boolean = false): any {
+  private buildSeccion(seccion: SeccionPDF): any {
     const content: any[] = [
       { text: seccion.tituloSeccion.toUpperCase(), style: 'sectionTitle' }
     ];
@@ -215,12 +222,14 @@ export class ServicioReporteDocumento {
       for (const punto of seccion.puntos) {
         tableBody.push([
           {
-            text: punto.ok ? 'OK' : punto.noOk ? 'NO OK' : 'PENDIENTE',
-            color: punto.ok ? '#10b981' : punto.noOk ? '#ef4444' : '#94a3b8',
-            bold: true,
-            fontSize: 8,
-            alignment: 'center',
-            valign: 'middle'
+            margin: [0, 3, 0, 0],
+            stack: [{
+              text: punto.ok ? 'OK' : punto.noOk ? 'NO OK' : 'PENDIENTE',
+              color: punto.ok ? '#059669' : punto.noOk ? '#dc2626' : '#94a3b8',
+              bold: true,
+              fontSize: 9,
+              alignment: 'center'
+            }]
           },
           this.buildPuntoContent(punto)
         ]);
@@ -229,22 +238,29 @@ export class ServicioReporteDocumento {
       content.push({
         table: {
           headerRows: 1,
-          widths: [40, '*'],
+          widths: [48, '*'],
           body: tableBody
         },
-        layout: 'lightHorizontalLines'
+        layout: {
+          hLineWidth: (i: number) => i === 0 ? 0 : 0.5,
+          vLineWidth: () => 0,
+          hLineColor: () => '#e2e8f0',
+          paddingLeft: () => 8,
+          paddingRight: () => 8,
+          paddingTop: () => 6,
+          paddingBottom: () => 6
+        }
       });
     }
 
     // Observaciones
     if (seccion.observaciones?.trim()) {
       content.push({
-        text: [
-          { text: 'OBSERVACIONES DE SECCIÓN:', bold: true, fontSize: 8 },
-          { text: seccion.observaciones, fontSize: 9, margin: [0, 5, 0, 0] }
+        stack: [
+          { text: 'OBSERVACIONES DE SECCIÓN', bold: true, fontSize: 8, color: '#64748b', margin: [0, 0, 0, 4] },
+          { text: seccion.observaciones, fontSize: 9, color: '#475569' }
         ],
-        style: 'observaciones',
-        margin: [0, 15, 0, 15]
+        margin: [0, 22, 0, 15]
       });
     }
 
@@ -263,10 +279,17 @@ export class ServicioReporteDocumento {
       });
     }
 
+    // Separador visual entre secciones
+    content.push({
+      canvas: [
+        { type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 0.5, lineColor: '#e2e8f0' }
+      ],
+      margin: [0, 25, 0, 5]
+    });
+
     return {
       stack: content,
-      pageBreak: conSalto ? 'before' : undefined,
-      margin: [0, 0, 0, 20]
+      margin: [0, 0, 0, 15]
     };
   }
 
@@ -287,7 +310,7 @@ export class ServicioReporteDocumento {
         text: medidas.join(' · '),
         fontSize: 8,
         color: '#1e40af',
-        margin: [0, 3, 0, 3]
+        margin: [0, 1, 0, 1]
       });
     }
 
@@ -298,7 +321,7 @@ export class ServicioReporteDocumento {
           text: `• ${bomba.nombre}: ${bomba.amperios || '0'} A / ${bomba.porcentaje || '0'}%`,
           fontSize: 8,
           color: '#f59e0b',
-          margin: [0, 2, 0, 2]
+          margin: [0, 1, 0, 1]
         });
       }
     }
@@ -315,27 +338,63 @@ export class ServicioReporteDocumento {
   }
 
   private buildFotosGrid(fotos: FotoPDF[]): any {
-    const items: any[] = [];
+    const rows: any[] = [];
 
-    for (let i = 0; i < fotos.length; i++) {
-      const desc = fotos[i].descripcion?.trim();
-      items.push({
-        image: fotos[i].base64,
-        width: 260,
-        alignment: 'left',
-        margin: [0, 0, 0, 4]
+    for (let i = 0; i < fotos.length; i += 2) {
+      const cols: any[] = [];
+
+      // Columna izquierda (siempre existe)
+      const desc1 = fotos[i].descripcion?.trim();
+      cols.push({
+        stack: [
+          {
+            image: fotos[i].base64,
+            width: 240,
+            alignment: 'left',
+            margin: [0, 0, 0, 4]
+          },
+          {
+            text: desc1 || `Foto ${i + 1} / ${fotos.length}`,
+            fontSize: 9,
+            color: desc1 ? '#1e40af' : '#64748b',
+            bold: !!desc1,
+            italics: !desc1,
+            margin: [0, 0, 0, 12]
+          }
+        ]
       });
-      items.push({
-        text: desc || `Foto ${i + 1} / ${fotos.length}`,
-        fontSize: 9,
-        color: desc ? '#1e40af' : '#64748b',
-        bold: !!desc,
-        italics: !desc,
-        margin: [0, 0, 0, 18]
+
+      // Columna derecha (si existe)
+      if (i + 1 < fotos.length) {
+        const desc2 = fotos[i + 1].descripcion?.trim();
+        cols.push({
+          stack: [
+            {
+              image: fotos[i + 1].base64,
+              width: 240,
+              alignment: 'left',
+              margin: [0, 0, 0, 4]
+            },
+            {
+              text: desc2 || `Foto ${i + 2} / ${fotos.length}`,
+              fontSize: 9,
+              color: desc2 ? '#1e40af' : '#64748b',
+              bold: !!desc2,
+              italics: !desc2,
+              margin: [0, 0, 0, 12]
+            }
+          ]
+        });
+      }
+
+      rows.push({
+        columns: cols,
+        columnGap: 10,
+        margin: [0, 0, 0, 6]
       });
     }
 
-    return { stack: items };
+    return { stack: rows };
   }
 
   private buildConclusiones(conclusiones: string): any {
@@ -344,21 +403,22 @@ export class ServicioReporteDocumento {
         {
           text: 'CONCLUSIONES GENERALES',
           bold: true,
-          fontSize: 11,
-          color: 'white',
-          background: '#1e40af',
+          fontSize: 12,
+          color: '#1e40af',
+          margin: [0, 0, 0, 8]
+        },
+        {
+          canvas: [{ type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1, lineColor: '#e2e8f0' }],
           margin: [0, 0, 0, 10]
         },
         {
           text: conclusiones,
           fontSize: 10,
-          color: 'white',
+          color: '#334155',
           margin: [0, 0, 0, 10]
         }
       ],
-      background: '#1e40af',
-      margin: [0, 20, 0, 20],
-      borderRadius: 5
+      margin: [0, 25, 0, 20]
     };
   }
 
