@@ -309,9 +309,12 @@ public static class Endpoints
             return Results.Json(new { success = false }, statusCode: 401);
         });
 
-        app.MapPost("/api/admin/sync/upload", async (IFormFile file, ServicioSincronizacionExcel syncService, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
+        app.MapPost("/api/admin/sync/upload", async (HttpRequest request, ServicioSincronizacionExcel syncService, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
         {
             if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();
+
+            var form = await request.ReadFormAsync();
+            var file = form.Files.GetFile("file");
 
             if (file == null || file.Length == 0)
                 return Results.BadRequest(new { message = "Debes seleccionar un archivo Excel." });
@@ -329,7 +332,7 @@ public static class Endpoints
             {
                 return Results.Problem($"Error en la sincronización: {ex.Message}");
             }
-        });
+        }).DisableAntiforgery();
 
         app.MapPost("/api/admin/sync", async (ServicioSincronizacionExcel syncService, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
         {
