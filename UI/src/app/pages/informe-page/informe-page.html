@@ -12,6 +12,7 @@
     (agregarFoto)="agregarFotos($event.event, $event.secIdx)"
     (eliminarFoto)="eliminarFoto($event.secIdx, $event.fotoIdx)"
     (descargarFoto)="descargarFoto($event)"
+    (actualizarDescripcion)="actualizarDescripcionFoto($event.secIdx, $event.fotoIdx, $event.descripcion)"
     (generarPDF)="generarPDF()"
     (guardarYSalir)="guardarYSalir()">
   </app-informe>

@@ -245,7 +245,8 @@ export class ServicioPersistenciaFormulario {
       url: f.url,
       preview: f.url || f.base64,
       nombre: f.nombre,
-      base64: f.base64
+      base64: f.base64,
+      descripcion: f.descripcion || ''
     }));
 
     return { seccionGroup, fotos };

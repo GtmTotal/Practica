@@ -4,6 +4,13 @@
       <img [src]="foto.preview || foto.url || foto.base64">
       <button type="button" class="btn-del-foto" (click)="eliminarFoto.emit($index)">✕</button>
       <button type="button" class="btn-download-foto" (click)="descargarFoto.emit(foto)">⬇️</button>
+      <input
+        type="text"
+        class="foto-desc-input"
+        placeholder="Descripción..."
+        [value]="foto.descripcion || ''"
+        (input)="actualizarDescripcion.emit({index: $index, descripcion: $any($event.target).value})"
+      />
     </div>
   }
 </div>

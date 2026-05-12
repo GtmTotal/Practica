@@ -100,3 +100,28 @@
   background: rgba(0, 0, 0, 0.8);
   transform: scale(1.05);
 }
+
+.foto-desc-input {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding: 4px 6px;
+  border: none;
+  border-top: 1px solid var(--gray-200);
+  background: rgba(255, 255, 255, 0.95);
+  font-size: 0.7rem;
+  color: var(--gray-700);
+  outline: none;
+  z-index: 5;
+}
+
+.foto-desc-input::placeholder {
+  color: var(--gray-400);
+}
+
+.foto-desc-input:focus {
+  background: white;
+  border-top-color: var(--primary);
+}

@@ -165,6 +165,17 @@ export class InformePageComponent implements OnDestroy {
     await this.fotoManager.descargarFoto(foto);
   }
 
+  actualizarDescripcionFoto(secIdx: number, fotoIdx: number, descripcion: string) {
+    const fotosSignal = this.fotosPorSeccionBase64[secIdx];
+    if (!fotosSignal) return;
+    const fotos = fotosSignal();
+    if (fotoIdx >= 0 && fotoIdx < fotos.length) {
+      const actualizadas = [...fotos];
+      actualizadas[fotoIdx] = { ...actualizadas[fotoIdx], descripcion };
+      fotosSignal.set(actualizadas);
+    }
+  }
+
   async editarInforme(inf: InformeGuardado) {
     const result = await this.persistService.editarInforme(inf);
     if (result) {

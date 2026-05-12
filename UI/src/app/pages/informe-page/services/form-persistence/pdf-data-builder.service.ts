@@ -8,18 +8,17 @@ export class ServicioConstruccionDatosDocumento {
     const seccionesConFotosBase64 = await Promise.all(
       (v.secciones || []).map(async (s: any, idx: number) => {
         const fotos = fotosPorSeccionBase64[idx]() || [];
-        const fotosBase64 = await Promise.all(
+        const fotosPDF = await Promise.all(
           fotos.map(async (foto: any) => {
-            if (foto.base64) return foto.base64;
-            if (foto.url) return await this.urlToBase64(foto.url);
-            return '';
+            const base64 = foto.base64 ? foto.base64 : foto.url ? await this.urlToBase64(foto.url) : '';
+            return { base64, descripcion: foto.descripcion };
           })
         );
         return {
           tituloSeccion: s.titulo ?? '',
           tipoSeccion: s.tipo ?? '',
           observaciones: s.observaciones ?? '',
-          fotosBase64: fotosBase64.filter(b64 => b64),
+          fotos: fotosPDF.filter(f => f.base64),
           puntos: (s.tareas ?? []).map((t: any, pIdx: number) => ({
             idManual: `${s.prefijo}.${pIdx + 1}`,
             descripcionManual: t.descripcion ?? '',

@@ -19,6 +19,7 @@ export class ListaSeccionesComponent {
   agregarFoto = output<{ event: Event; secIdx: number }>();
   eliminarFoto = output<{ secIdx: number; fotoIdx: number }>();
   descargarFoto = output<Foto>();
+  actualizarDescripcion = output<{secIdx: number; fotoIdx: number; descripcion: string}>();
 
   onAgregarFoto(event: Event, secIdx: number) {
     this.agregarFoto.emit({ event, secIdx });

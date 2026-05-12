@@ -4,4 +4,5 @@ export interface Foto {
   url?: string;
   nombre: string;
   preview?: string;
+  descripcion?: string;
 }

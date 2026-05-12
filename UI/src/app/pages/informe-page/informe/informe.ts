@@ -34,4 +34,5 @@ export class InformeComponent {
   agregarFoto = output<{ event: Event; secIdx: number }>();
   eliminarFoto = output<{ secIdx: number; fotoIdx: number }>();
   descargarFoto = output<Foto>();
+  actualizarDescripcion = output<{secIdx: number; fotoIdx: number; descripcion: string}>();
 }

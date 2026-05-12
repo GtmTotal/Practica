@@ -22,10 +22,14 @@ export class SeccionItemComponent {
   agregarFoto = output<Event>();
   eliminarFoto = output<{ secIdx: number; fotoIdx: number }>();
   descargarFoto = output<Foto>();
+  actualizarDescripcion = output<{secIdx: number; fotoIdx: number; descripcion: string}>();
 
   onToggle() { this.toggle.emit(this.idxSeccion()); }
   onAgregarFoto(event: Event) { this.agregarFoto.emit(event); }
   onEliminarFoto(fotoIdx: number) { this.eliminarFoto.emit({ secIdx: this.idxSeccion(), fotoIdx }); }
+  onActualizarDescripcion(e: {index: number, descripcion: string}) {
+    this.actualizarDescripcion.emit({ secIdx: this.idxSeccion(), fotoIdx: e.index, descripcion: e.descripcion });
+  }
 
   getTareasArray() { return this.seccionGroup().get('tareas') as FormArray; }
   getPrefijo() { return this.seccionGroup().get('prefijo')?.value; }

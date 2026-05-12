@@ -11,12 +11,17 @@ export interface DatosPDF {
   secciones: SeccionPDF[];
 }
 
+export interface FotoPDF {
+  base64: string;
+  descripcion?: string;
+}
+
 export interface SeccionPDF {
   tituloSeccion: string;
   tipoSeccion: string;
   observaciones: string;
   puntos: PuntoPDF[];
-  fotosBase64?: string[];
+  fotos?: FotoPDF[];
 }
 
 export interface PuntoPDF {
@@ -117,6 +122,7 @@ export class ServicioReporteDocumento {
 
     // 2. Metadata
     content.push(this.buildMetadata(datos));
+    content.push({ canvas: [{ type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1.5, lineColor: '#1e40af' }], margin: [0, 5, 0, 15] });
 
     // 3. Secciones
     for (const seccion of datos.secciones) {
@@ -135,7 +141,7 @@ export class ServicioReporteDocumento {
       defaultStyle: {
         font: 'Roboto'
       },
-      pageMargins: [20, 20, 20, 20],
+      pageMargins: [40, 30, 40, 30],
       footer: (currentPage: number, pageCount: number) => {
         return {
           columns: [
@@ -213,7 +219,8 @@ export class ServicioReporteDocumento {
             color: punto.ok ? '#10b981' : punto.noOk ? '#ef4444' : '#94a3b8',
             bold: true,
             fontSize: 8,
-            alignment: 'center'
+            alignment: 'center',
+            valign: 'middle'
           },
           this.buildPuntoContent(punto)
         ]);
@@ -242,13 +249,13 @@ export class ServicioReporteDocumento {
     }
 
     // Fotos
-    if (seccion.fotosBase64 && seccion.fotosBase64.length > 0) {
+    if (seccion.fotos && seccion.fotos.length > 0) {
       content.push({
         text: 'REGISTRO FOTOGRÁFICO',
         style: 'subheader',
         margin: [0, 20, 0, 10]
       });
-      content.push(this.buildFotosGrid(seccion.fotosBase64));
+      content.push(this.buildFotosGrid(seccion.fotos));
     }
 
     return {
@@ -301,22 +308,24 @@ export class ServicioReporteDocumento {
     return { stack: content };
   }
 
-  private buildFotosGrid(fotos: string[]): any {
+  private buildFotosGrid(fotos: FotoPDF[]): any {
     const columns: any[] = [];
 
     for (let i = 0; i < fotos.length; i++) {
+      const desc = fotos[i].descripcion?.trim();
       columns.push({
         stack: [
           {
-            image: fotos[i],
+            image: fotos[i].base64,
             width: 200,
             margin: [0, 0, 0, 5]
           },
           {
-            text: `Foto ${i + 1} / ${fotos.length}`,
+            text: desc || `Foto ${i + 1} / ${fotos.length}`,
             fontSize: 8,
             alignment: 'center',
-            color: '#64748b'
+            color: desc ? '#1e40af' : '#64748b',
+            bold: !!desc
           }
         ],
         margin: [5, 10, 5, 10]
