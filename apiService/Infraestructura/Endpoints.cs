@@ -127,7 +127,8 @@ public static class Endpoints
                         {
                             url = f.UrlPublica,
                             base64 = f.Base64,
-                            nombre = f.Nombre
+                            nombre = f.Nombre,
+                            descripcion = f.Descripcion
                         })
                     })
             };
@@ -195,6 +196,7 @@ public static class Endpoints
                     Base64 = ObtenerString(f, "base64"),
                     ObjectKey = ExtraerObjectKey(ObtenerString(f, "url")),
                     Nombre = ObtenerString(f, "nombre") ?? string.Empty,
+                    Descripcion = ObtenerString(f, "descripcion"),
                     Orden = idxFoto,
                 }).ToList()
             }).ToList();

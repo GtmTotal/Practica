@@ -8,7 +8,7 @@ public class Foto
     public string? UrlPublica { get; set; }
     public string? Base64 { get; set; }
     public string Nombre { get; set; } = string.Empty;
+    public string? Descripcion { get; set; }
     public int Orden { get; set; }
-
     public Sistema Sistema { get; set; } = null!;
 }
