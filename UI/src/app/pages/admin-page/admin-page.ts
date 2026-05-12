@@ -148,7 +148,11 @@ export class AdminPageComponent {
 
   async eliminarCuatrimestre(cuatrimestre: string) {
     const ok = await this.cuatriService.eliminarCuatrimestreConUI(cuatrimestre);
-    if (ok) this.persistService.cargarHistorial().subscribe();
+    if (ok) {
+      this.cuatrimestreSeleccionado.set('');
+      this.vistaPanel.set(true);
+      this.persistService.cargarHistorial().subscribe();
+    }
   }
 
   async editarInforme(inf: InformeGuardado) {
