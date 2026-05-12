@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
+import * as pdfMakeNamespace from 'pdfmake/build/pdfmake';
+import * as pdfFontsNamespace from 'pdfmake/build/vfs_fonts';
+
+// Fallback para producción (default vs namespace import)
+const pdfMake: any = (pdfMakeNamespace as any).default || pdfMakeNamespace;
+const pdfFonts: any = (pdfFontsNamespace as any).default || pdfFontsNamespace;
 
 // Configurar fuentes para pdfMake
-(pdfMake as any).vfs = (pdfFonts as any)['pdfMake'].vfs;
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export interface DatosPDF {
   nombreObra: string;
