@@ -100,15 +100,23 @@ const estilos = {
 
 @Injectable({ providedIn: 'root' })
 export class ServicioReporteDocumento {
-  private logoBase64: string = '';
+  private logoCompletoBase64: string = '';
+  private logoMedBase64: string = '';
 
   async generarPDF(datos: DatosPDF): Promise<void> {
-    // Cargar logo si no está cargado
-    if (!this.logoBase64) {
+    // Cargar logos si no están cargados
+    if (!this.logoCompletoBase64) {
       try {
-        this.logoBase64 = await this.convertImageToBase64('/logo3.webp');
+        this.logoCompletoBase64 = await this.convertImageToBase64('/gtmCompleto.png');
       } catch {
-        this.logoBase64 = '';
+        this.logoCompletoBase64 = '';
+      }
+    }
+    if (!this.logoMedBase64) {
+      try {
+        this.logoMedBase64 = await this.convertImageToBase64('/gtmMed.png');
+      } catch {
+        this.logoMedBase64 = '';
       }
     }
 
@@ -145,7 +153,7 @@ export class ServicioReporteDocumento {
         return {
           columns: [
             { text: '', width: '*' },
-            this.logoBase64 ? { image: this.logoBase64, width: 70, margin: [0, 25, 0, 0], alignment: 'right' } : {}
+            this.logoMedBase64 ? { image: this.logoMedBase64, width: 60, margin: [0, 5, 0, 0], alignment: 'right' } : {}
           ],
           margin: [40, 10, 40, 0]
         };
@@ -181,8 +189,8 @@ export class ServicioReporteDocumento {
         { text: datos.nombreObra.toUpperCase(), fontSize: 18, bold: true, color: '#0f172a', margin: [0, 0, 0, 10] }
       ]
     };
-    const rightCol = this.logoBase64
-      ? { image: this.logoBase64, width: 140, alignment: 'right', margin: [0, 0, 0, 10] }
+    const rightCol = this.logoCompletoBase64
+      ? { image: this.logoCompletoBase64, width: 180, alignment: 'right', margin: [0, -80, 0, 0] }
       : {};
     return {
       columns: [leftCol, rightCol],

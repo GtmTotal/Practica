@@ -39,6 +39,11 @@
   color: #ffffff;
 }
 
+.brand-logo {
+  width: 160px;
+  margin-bottom: 48px;
+}
+
 .sidebar-title {
   font-size: 32px;
   font-weight: 700;
@@ -171,6 +176,10 @@
     font-size: 18px;
     font-weight: 700;
     letter-spacing: 1px;
+  }
+
+  .mobile-brand-logo {
+    width: 120px;
   }
 
   .mobile-gear {

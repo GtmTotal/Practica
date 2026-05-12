@@ -2,11 +2,7 @@
   <!-- Sidebar (desktop) -->
   <aside class="main-sidebar">
     <div class="sidebar-top">
-      <div class="brand">
-        <span class="brand-arrow brand-arrow-yellow">▶</span>
-        <span class="brand-name">GTM</span>
-        <span class="brand-arrow">▶</span>
-      </div>
+      <img src="gtmCompleto.png" alt="GTM" class="brand-logo" />
       <h1 class="sidebar-title">Control total del mantenimiento.</h1>
       <p class="sidebar-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
     </div>
@@ -39,11 +35,7 @@
     <div class="mobile-view mobile-panel-view" [class.active]="vistaPanel()">
       <div class="mobile-panel-header">
         <div class="mobile-brand-row">
-          <div class="mobile-brand">
-            <span class="mobile-brand-arrow">▶</span>
-            <span class="mobile-brand-name">GTM</span>
-            <span class="mobile-brand-arrow-2">▶</span>
-          </div>
+          <img src="gtmCompleto.png" alt="GTM" class="mobile-brand-logo" />
           <button class="mobile-gear" (click)="toggleAdmin()" title="Administración">⚙</button>
         </div>
         <h1 class="mobile-panel-title">Control total del mantenimiento.</h1>
@@ -75,11 +67,7 @@
       <div class="mobile-cuatrimestre-header">
         <div class="mobile-brand-row">
           <button class="mobile-back-link" (click)="vistaPanel.set(true)">‹ Períodos</button>
-          <div class="mobile-brand">
-            <span class="mobile-brand-arrow">▶</span>
-            <span class="mobile-brand-name">GTM</span>
-            <span class="mobile-brand-arrow-2">▶</span>
-          </div>
+          <img src="gtmCompleto.png" alt="GTM" class="mobile-brand-logo" />
         </div>
         <div class="mobile-cuatri-row">
           <span class="mobile-cuatri-title">{{ grupoSeleccionado()?.label }}</span>
