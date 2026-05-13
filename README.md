@@ -255,6 +255,16 @@ El administrador puede cargar una **plantilla Excel** (`PLANTILLAS mantenimiento
 - **Generación de PDF**: desde el navegador, sin depender del backend, usando pdfmake.
 - **Gestión de fotos**: subida a MinIO con previsualización y descripciones.
 - **Panel de administración**: autenticación por token, sincronización Excel, gestión de archivos y borrado de informes/cuatrimestres.
+ç
+---
+
+## Comandos
+Putty: 
+user: gtm-cloud 
+pass: 1234 
+Borrar desde putty el caché de construcción: sudo docker builder prune -af 
+Borrar desde putty imágenes antiguas sudo docker image prune -af 
+Entrar a Dokploy:  http://192.168.1.135:3000/
 
 ---
 
