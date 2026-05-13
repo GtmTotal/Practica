@@ -107,11 +107,12 @@ export class ServicioCuatrimestre {
           };
         });
 
+        const hoy = new Date().toISOString().split('T')[0];
         const informe = {
           id,
           nombreObra: centro,
           tecnico: '',
-          fecha: fechaBase,
+          fecha: hoy,
           cuatrimestre: claveCuatri,
           protegido: true,
           secciones: seccionesVacias,

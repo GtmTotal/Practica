@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed, effect } from '@angular/core';
+import { Component, signal, inject, computed, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ServicioAdmin } from '../services/admin.service';
@@ -19,7 +19,7 @@ type EstadoInforme = 'completado' | 'en-progreso' | 'pendiente';
   templateUrl: './admin-page.html',
   styleUrls: ['./admin-page.css'],
 })
-export class AdminPageComponent {
+export class AdminPageComponent implements OnInit {
   private adminService = inject(ServicioAdmin);
   private cuatriService = inject(ServicioCuatrimestre);
   private persistService = inject(ServicioPersistenciaFormulario);
@@ -31,8 +31,8 @@ export class AdminPageComponent {
 
   isAdmin = this.adminService.isAdmin;
   isSyncing = signal(false);
-  vistaPanel = signal(true);
-  cuatrimestreSeleccionado = signal<string>('');
+  vistaPanel = signal(localStorage.getItem('adminVistaPanel') !== 'false');
+  cuatrimestreSeleccionado = signal<string>(localStorage.getItem('adminCuatrimestreSeleccionado') || '');
 
   get informesGuardados() {
     return this.persistService.informesGuardados;
@@ -73,7 +73,8 @@ export class AdminPageComponent {
       this.router.navigate(['/']);
       return;
     }
-    // Seleccionar el primer cuatrimestre cuando carguen los datos
+
+    // Auto-seleccionar primer cuatrimestre si no hay ninguno guardado
     effect(() => {
       const grupos = this.cuatrimestres();
       const sel = this.cuatrimestreSeleccionado();
@@ -81,6 +82,17 @@ export class AdminPageComponent {
         this.cuatrimestreSeleccionado.set(grupos[0].clave);
       }
     });
+
+    // Persistir estado de navegación del admin
+    effect(() => {
+      localStorage.setItem('adminCuatrimestreSeleccionado', this.cuatrimestreSeleccionado());
+      localStorage.setItem('adminVistaPanel', String(this.vistaPanel()));
+    });
+  }
+
+  async ngOnInit() {
+    // Cargar informes al recargar la página, igual que el dashboard principal
+    this.persistService.cargarHistorial().subscribe();
   }
 
   seleccionarCuatrimestre(clave: string) {

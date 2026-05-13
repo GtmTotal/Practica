@@ -16,10 +16,6 @@
     <!-- View 1: Panel de Selección de Cuatrimestres -->
     <div class="dash-view dash-panel-view" [class.active]="vistaPanel()">
       <div class="dash-panel-header">
-        <div class="dash-brand-row mobile-only">
-          <img src="gtmCompleto.png" alt="GTM" class="dash-brand-logo" />
-          <button class="dash-gear" (click)="toggleAdmin()" title="Administración">⚙</button>
-        </div>
         <h1 class="dash-panel-title">Control total del mantenimiento.</h1>
         <p class="dash-panel-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
       </div>
@@ -48,7 +44,7 @@
     <div class="dash-view dash-cuatrimestre-view" [class.active]="!vistaPanel()">
       <div class="dash-cuatrimestre-header">
         <div class="dash-brand-row">
-          <button class="dash-back-link" (click)="cerrarDetalle()">‹ Períodos</button>
+          <button class="dash-back-link" (click)="cerrarDetalle()">‹ Cuatrimestre</button>
           <img src="gtmCompleto.png" alt="GTM" class="dash-brand-logo mobile-only" />
         </div>
         <div class="dash-cuatri-row">
