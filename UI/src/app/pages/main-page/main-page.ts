@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { ListaCuatrimestresComponent } from './main/lista-cuatrimestres/lista-cuatrimestres';
 import { ServicioCuatrimestre } from './services/cuatrimestre.service';
 import { ServicioPersistenciaFormulario } from '../informe-page/services/form-persistence.service';
 import { ServicioInicializacionFormulario } from '../informe-page/services/form-initialization.service';
@@ -17,7 +16,7 @@ type EstadoInforme = 'completado' | 'en-progreso' | 'pendiente';
 @Component({
   selector: 'app-main-page',
   standalone: true,
-  imports: [CommonModule, ListaCuatrimestresComponent, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './main-page.html',
   styleUrls: ['./main-page.css'],
 })

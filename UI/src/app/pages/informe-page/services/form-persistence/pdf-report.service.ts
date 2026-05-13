@@ -367,11 +367,10 @@ export class ServicioReporteDocumento {
             margin: [0, 0, 0, 4]
           },
           {
-            text: desc1 || `Foto ${i + 1} / ${fotos.length}`,
+            text: desc1 || '',
             fontSize: 9,
-            color: desc1 ? '#1e40af' : '#64748b',
-            bold: !!desc1,
-            italics: !desc1,
+            color: '#1e40af',
+            bold: true,
             margin: [0, 0, 0, 12]
           }
         ]
@@ -389,11 +388,10 @@ export class ServicioReporteDocumento {
               margin: [0, 0, 0, 4]
             },
             {
-              text: desc2 || `Foto ${i + 2} / ${fotos.length}`,
+              text: desc2 || '',
               fontSize: 9,
-              color: desc2 ? '#1e40af' : '#64748b',
-              bold: !!desc2,
-              italics: !desc2,
+              color: '#1e40af',
+              bold: true,
               margin: [0, 0, 0, 12]
             }
           ]

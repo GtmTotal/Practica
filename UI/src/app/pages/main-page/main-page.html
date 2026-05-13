@@ -13,48 +13,30 @@
 
   <!-- Main Content -->
   <main class="main-content">
-    <!-- Desktop -->
-    <div class="desktop-content">
-      <header class="content-header">
-        <span class="header-label">MERCADONA · INFORMES</span>
-      </header>
-
-      @if (informesGuardados().length === 0) {
-        <div class="empty-state">No hay informes guardados.</div>
-      } @else {
-        <app-lista-cuatrimestres
-          [grupos]="informesPorCuatrimestre"
-          [isAdmin]="isAdmin()"
-          (eliminarCuatrimestre)="eliminarCuatrimestre($event)"
-          (editarInforme)="editarInforme($event)">
-        </app-lista-cuatrimestres>
-      }
-    </div>
-
-    <!-- ===== MOBILE: PANEL VIEW ===== -->
-    <div class="mobile-view mobile-panel-view" [class.active]="vistaPanel()">
-      <div class="mobile-panel-header">
-        <div class="mobile-brand-row">
-          <img src="gtmCompleto.png" alt="GTM" class="mobile-brand-logo" />
-          <button class="mobile-gear" (click)="toggleAdmin()" title="Administración">⚙</button>
+    <!-- View 1: Panel de Selección de Cuatrimestres -->
+    <div class="dash-view dash-panel-view" [class.active]="vistaPanel()">
+      <div class="dash-panel-header">
+        <div class="dash-brand-row mobile-only">
+          <img src="gtmCompleto.png" alt="GTM" class="dash-brand-logo" />
+          <button class="dash-gear" (click)="toggleAdmin()" title="Administración">⚙</button>
         </div>
-        <h1 class="mobile-panel-title">Control total del mantenimiento.</h1>
-        <p class="mobile-panel-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
+        <h1 class="dash-panel-title">Control total del mantenimiento.</h1>
+        <p class="dash-panel-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
       </div>
 
-      <div class="mobile-panel-body">
-        <div class="mobile-section-label">CUATRIMESTRES</div>
+      <div class="dash-panel-body">
+        <div class="dash-section-label">CUATRIMESTRES</div>
         @if (cuatrimestres().length === 0) {
           <div class="empty-state">No hay informes guardados.</div>
         } @else {
-          <div class="mobile-cuatrimestres-list">
+          <div class="dash-cuatrimestres-list">
             @for (grupo of cuatrimestres(); track grupo.clave) {
-              <button class="mobile-cuatrimestre-item" (click)="seleccionarCuatrimestre(grupo.clave)">
-                <div class="mci-info">
-                  <div class="mci-title">{{ grupo.label }}</div>
-                  <div class="mci-meta">{{ grupo.informes.length }} centros</div>
+              <button class="dash-cuatrimestre-item" (click)="seleccionarCuatrimestre(grupo.clave)">
+                <div class="dci-info">
+                  <div class="dci-title">{{ grupo.label }}</div>
+                  <div class="dci-meta">{{ grupo.informes.length }} centros</div>
                 </div>
-                <div class="mci-count">{{ grupo.informes.length }}</div>
+                <div class="dci-count">{{ grupo.informes.length }}</div>
               </button>
             }
           </div>
@@ -62,19 +44,19 @@
       </div>
     </div>
 
-    <!-- ===== MOBILE: CUATRIMESTRE VIEW ===== -->
-    <div class="mobile-view mobile-cuatrimestre-view" [class.active]="!vistaPanel()">
-      <div class="mobile-cuatrimestre-header">
-        <div class="mobile-brand-row">
-          <button class="mobile-back-link" (click)="vistaPanel.set(true)">‹ Períodos</button>
-          <img src="gtmCompleto.png" alt="GTM" class="mobile-brand-logo" />
+    <!-- View 2: Detalle de Cuatrimestre -->
+    <div class="dash-view dash-cuatrimestre-view" [class.active]="!vistaPanel()">
+      <div class="dash-cuatrimestre-header">
+        <div class="dash-brand-row">
+          <button class="dash-back-link" (click)="vistaPanel.set(true)">‹ Períodos</button>
+          <img src="gtmCompleto.png" alt="GTM" class="dash-brand-logo mobile-only" />
         </div>
-        <div class="mobile-cuatri-row">
-          <span class="mobile-cuatri-title">{{ grupoSeleccionado()?.label }}</span>
-          <button class="mobile-close-btn" (click)="vistaPanel.set(true)" title="Volver">✕</button>
+        <div class="dash-cuatri-row">
+          <span class="dash-cuatri-title">{{ grupoSeleccionado()?.label }}</span>
+          <button class="dash-close-btn" (click)="vistaPanel.set(true)" title="Volver">✕</button>
         </div>
-        <p class="mobile-subtitle">Mercadona · informes de mantenimiento</p>
-        <div class="mobile-metrics">
+        <p class="dash-subtitle">Mercadona · informes de mantenimiento</p>
+        <div class="dash-metrics">
           <div class="mm-card">
             <div class="mm-value">{{ metricas().total }}</div>
             <div class="mm-label">CENTROS</div>
@@ -90,7 +72,7 @@
         </div>
       </div>
 
-      <div class="mobile-cuatrimestre-body">
+      <div class="dash-cuatrimestre-body">
         <div class="centros-label">CENTROS</div>
         <section class="centros-grid">
           @for (inf of informesActuales(); track inf.id) {
