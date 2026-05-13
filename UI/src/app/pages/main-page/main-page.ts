@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, signal, inject, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 import { ServicioCuatrimestre } from './services/cuatrimestre.service';
 import { ServicioPersistenciaFormulario } from '../informe-page/services/form-persistence.service';
 import { ServicioInicializacionFormulario } from '../informe-page/services/form-initialization.service';
@@ -31,8 +32,8 @@ export class MainPageComponent implements OnInit, OnDestroy {
   private ui = inject(UIService);
 
   isAdmin = this.adminService.isAdmin;
-  vistaPanel = signal(true);
-  cuatrimestreSeleccionado = signal<string>('');
+  vistaPanel = signal(this.navService.cuatrimestreSeleccionado() === '');
+  cuatrimestreSeleccionado = signal<string>(this.navService.cuatrimestreSeleccionado());
 
   get informesGuardados() {
     return this.persistService.informesGuardados;
@@ -49,6 +50,7 @@ export class MainPageComponent implements OnInit, OnDestroy {
   grupoSeleccionado = computed(() => {
     const grupos = this.cuatrimestres();
     const sel = this.cuatrimestreSeleccionado();
+    console.log('[MAIN-PAGE] Buscando grupo para:', sel);
     return grupos.find(g => g.clave === sel);
   });
 
@@ -67,7 +69,13 @@ export class MainPageComponent implements OnInit, OnDestroy {
 
   seleccionarCuatrimestre(clave: string) {
     this.cuatrimestreSeleccionado.set(clave);
+    this.navService.cuatrimestreSeleccionado.set(clave);
     this.vistaPanel.set(false);
+  }
+
+  cerrarDetalle() {
+    this.vistaPanel.set(true);
+    this.navService.cuatrimestreSeleccionado.set('');
   }
 
   estadoDe(informe: InformeGuardado): EstadoInforme {
@@ -105,10 +113,43 @@ export class MainPageComponent implements OnInit, OnDestroy {
     return 'PENDIENTE';
   }
 
-  constructor() {}
+  private route = inject(ActivatedRoute);
+
+  constructor() {
+    // 1. Restauración inmediata por URL (Lo más fiable al volver con la X)
+    const initC = this.route.snapshot.queryParamMap.get('c');
+    if (initC) {
+      this.cuatrimestreSeleccionado.set(initC);
+      this.navService.cuatrimestreSeleccionado.set(initC);
+      this.vistaPanel.set(false);
+    }
+
+    // 2. Escuchar cambios en la URL de forma continua
+    this.route.queryParamMap.subscribe(params => {
+      const c = params.get('c');
+      if (c) {
+        this.cuatrimestreSeleccionado.set(c);
+        this.navService.cuatrimestreSeleccionado.set(c);
+        this.vistaPanel.set(false);
+      } else {
+        const fallback = this.navService.cuatrimestreSeleccionado();
+        if (fallback) {
+          this.cuatrimestreSeleccionado.set(fallback);
+          this.vistaPanel.set(false);
+        } else {
+          this.vistaPanel.set(true);
+        }
+      }
+    });
+  }
 
   async ngOnInit() {
-    this.persistService.cargarHistorial().subscribe();
+    this.persistService.cargarHistorial().subscribe(() => {
+      const sel = this.cuatrimestreSeleccionado();
+      if (sel) {
+        this.vistaPanel.set(false);
+      }
+    });
   }
 
   async toggleAdmin() {

@@ -143,6 +143,23 @@ export class AdminPageComponent {
     }
   }
 
+  async descargarExcel() {
+    try {
+      const blob = await this.adminService.descargarExcel();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Reporte_GTM_${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      this.ui.success('Excel descargado correctamente');
+    } catch (err: any) {
+      this.ui.error('Error descargando Excel: ' + (err.error?.detail || err.message));
+    }
+  }
+
   async crearCuatrimestre() {
     await this.cuatriService.crearCuatrimestreConUI(this.informesGuardados());
     this.persistService.cargarHistorial().subscribe();
@@ -165,7 +182,7 @@ export class AdminPageComponent {
         result.fotosPorSeccionBase64,
         result.seccionesColapsadas,
       );
-      await this.navService.irAFormulario(inf.cuatrimestre, inf.nombreObra);
+      await this.navService.irAFormulario(inf.cuatrimestre, inf.nombreObra, 'admin');
     }
   }
 

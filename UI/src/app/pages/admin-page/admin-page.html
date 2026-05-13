@@ -32,22 +32,36 @@
     <!-- Desktop Top Bar -->
     <header class="main-header">
       <div class="header-title">
-        <h1>{{ grupoSeleccionado()?.label || 'Administración' }}</h1>
+        <h1>{{ grupoSeleccionado().label || 'Administración' }}</h1>
         <span class="header-subtitle">Informes de mantenimiento</span>
       </div>
       <div class="header-actions">
-        <input type="file" #excelInput accept=".xlsx" hidden (change)="onSubirExcel($event)" />
-        <button class="btn-secondary" (click)="excelInput.click()" [disabled]="isSyncing()">
-          {{ isSyncing() ? 'Sincronizando...' : 'Subir Excel' }}
-        </button>
-        @if (cuatrimestreSeleccionado()) {
-          <button class="btn-text-danger" (click)="eliminarCuatrimestre(cuatrimestreSeleccionado())">
-            Eliminar
+        <!-- Grupo Excel -->
+        <div class="action-group">
+          <input type="file" #excelInput accept=".xlsx" hidden (change)="onSubirExcel($event)" />
+          <button class="btn-icon-label secondary" (click)="excelInput.click()" [disabled]="isSyncing()" title="Subir archivo Excel">
+            <span class="icon">📤</span>
+            <span class="label">{{ isSyncing() ? 'Subiendo...' : 'Subir Excel' }}</span>
           </button>
-        }
-        <button class="btn-primary" (click)="crearCuatrimestre()">
-          + Crear Cuatrimestre
-        </button>
+          <button class="btn-icon-label secondary" (click)="descargarExcel()" title="Descargar último Excel">
+            <span class="icon">📥</span>
+            <span class="label">Descargar</span>
+          </button>
+        </div>
+
+        <!-- Grupo Gestión -->
+        <div class="action-group">
+          @if (cuatrimestreSeleccionado()) {
+            <button class="btn-icon-label danger" (click)="eliminarCuatrimestre(cuatrimestreSeleccionado())" title="Eliminar este cuatrimestre">
+              <span class="icon">🗑️</span>
+              <span class="label">Eliminar</span>
+            </button>
+          }
+          <button class="btn-icon-label primary" (click)="crearCuatrimestre()" title="Crear nuevo cuatrimestre">
+            <span class="icon">➕</span>
+            <span class="label">Nuevo Período</span>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -137,8 +151,7 @@
           <button class="mobile-gear" (click)="vistaPanel.set(true)" title="Volver al panel">⚙</button>
         </div>
         <div class="mobile-cuatri-row">
-          <span class="mobile-cuatri-title">{{ grupoSeleccionado()?.label }}</span>
-          <button class="mobile-close-btn" (click)="vistaPanel.set(true)" title="Volver al panel">✕</button>
+          <span class="mobile-cuatri-title">{{ grupoSeleccionado().label }}</span>
         </div>
         <p class="mobile-subtitle">Mercadona · informes de mantenimiento</p>
         <div class="mobile-metrics">

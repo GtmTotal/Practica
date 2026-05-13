@@ -50,4 +50,13 @@ export class ServicioAdmin {
       this.http.post(`${this.apiBase}/sync/upload`, formData, { headers: this.getAuthHeaders() })
     );
   }
+
+  async descargarExcel(): Promise<Blob> {
+    return firstValueFrom(
+      this.http.get(`${this.apiBase}/export`, {
+        headers: this.getAuthHeaders(),
+        responseType: 'blob'
+      })
+    );
+  }
 }

@@ -8,8 +8,19 @@
         <h1>{{ centro() }}</h1>
         <button type="button" class="btn-back-minimal" (click)="cerrar()">✕</button>
       </div>
-      <div class="progreso-container-mini">
-        <div class="progreso-bar-fill" [style.width.%]="progreso()"></div>
+      <div class="header-status-row">
+        <div class="progreso-container-mini">
+          <div class="progreso-bar-fill" [style.width.%]="progreso()"></div>
+        </div>
+        <div class="auto-save-status" [attr.data-status]="estadoAutoguardado()">
+          @if (estadoAutoguardado() === 'guardando') {
+            <span class="icon-spin">⌛</span> Guardando...
+          } @else if (estadoAutoguardado() === 'guardado') {
+            <span>✓ Cambios guardados</span>
+          } @else if (estadoAutoguardado() === 'error') {
+            <span>❌ Error al guardar</span>
+          }
+        </div>
       </div>
     </div>
   </div>

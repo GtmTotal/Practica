@@ -1,8 +1,8 @@
-import { Component, OnDestroy, signal } from '@angular/core';
+import { Component, OnDestroy, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { Subscription, merge, Subject, firstValueFrom } from 'rxjs';
+import { debounceTime, tap, switchMap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 
 import { ServicioNavegacion } from '../main-page/services/navigation.service';
@@ -25,7 +25,7 @@ import { calcularProgresoFormulario } from './utils/progreso.util';
   templateUrl: './informe-page.html',
   styleUrls: [],
 })
-export class InformePageComponent implements OnDestroy {
+export class InformePageComponent implements OnInit, OnDestroy {
   get vistaActual() {
     return this.navService.vistaActual;
   }
@@ -62,9 +62,14 @@ export class InformePageComponent implements OnDestroy {
   get guardando() {
     return this._guardando;
   }
+
+  estadoAutoguardado = signal<'ocioso' | 'guardado' | 'guardando' | 'error'>('ocioso');
+
   private progresoSignalEstado = signal(0);
   private autoSaveSub?: Subscription;
   private progressSub?: Subscription;
+  private manualSaveTrigger$ = new Subject<void>();
+  private statusTimer?: any;
 
   constructor(
     private fb: FormBuilder,
@@ -79,29 +84,24 @@ export class InformePageComponent implements OnDestroy {
   async ngOnInit() {
     this.persistService.cargarHistorial().subscribe();
 
-    // 1. Prioridad: Parámetros en la URL (BOSS requirements)
     const cuatriParam = this.route.snapshot.paramMap.get('cuatrimestre');
     const centroParam = this.route.snapshot.paramMap.get('centro');
+    const fromParam = this.route.snapshot.queryParamMap.get('from') || undefined;
 
     if (cuatriParam && centroParam) {
-      // Forzar scroll al principio al cargar un informe
-      window.scrollTo(0, 0);
+      this.navService.cuatrimestreSeleccionado.set(cuatriParam);
+      this.navService.centroSeleccionado.set(centroParam);
+
       try {
-        console.log(`[DEBUG] Parámetros URL detectados: ${cuatriParam} - ${centroParam}`);
-        
-        this.navService.centroSeleccionado.set(centroParam);
-        
-        console.log(`[DEBUG] Buscando en DB local...`);
-        const informeExistente = await this.persistService.buscarPorCuatrimestreYCentro(cuatriParam, centroParam);
-        
+        const informes = await firstValueFrom(this.persistService.cargarHistorial());
+        const informeExistente = informes.find(
+          (inf: InformeGuardado) => inf.cuatrimestre === cuatriParam && inf.nombreObra === centroParam,
+        );
+
         if (informeExistente) {
-          console.log('[DEBUG] Informe ENCONTRADO en DB. Abriendo para editar...', informeExistente);
-          await this.editarInforme(informeExistente);
-          console.log('[DEBUG] Edición inicializada con éxito.');
+          await this.editarInforme(informeExistente, fromParam);
         } else {
-          console.log('[DEBUG] Informe NO encontrado en DB. Creando uno nuevo desde plantilla...');
           await this.seleccionarCentro(centroParam, cuatriParam);
-          console.log('[DEBUG] Nuevo informe creado con éxito.');
         }
       } catch (error) {
         console.error('[ERROR] Fallo crítico al inicializar desde URL:', error);
@@ -111,7 +111,6 @@ export class InformePageComponent implements OnDestroy {
       return;
     }
 
-    // 2. Segunda prioridad: Estado persistido en navService (Refresh)
     const centroPersistido = this.navService.centroSeleccionado();
     if (centroPersistido && !this.obraForm) {
       await this.seleccionarCentro(centroPersistido);
@@ -137,28 +136,27 @@ export class InformePageComponent implements OnDestroy {
     await this.navService.seleccionarCentro(nombre, cuatrimestre);
     await this.initService.inicializarFormulario(nombre, cuatrimestre || null);
     this.configurarProgreso();
-    this.configurarAutoGuardado(() => {
-      const form = this.obraForm;
-      if (form) {
-        this.persistService.soloGuardar(form, this.fotosPorSeccionBase64);
-      }
-    });
+    this.configurarAutoGuardado();
   }
 
   async agregarFotos(event: Event, secIdx: number) {
     const form = this.obraForm;
     if (!form) return;
-    await this.fotoManager.agregarFotosDesdeInput(event, this.fotosPorSeccionBase64[secIdx], () =>
-      this.persistService.soloGuardar(form, this.fotosPorSeccionBase64),
-    );
+    this.setEstadoStatus('guardando');
+    await this.fotoManager.agregarFotosDesdeInput(event, this.fotosPorSeccionBase64[secIdx], async () => {
+      await this.persistService.soloGuardar(form, this.fotosPorSeccionBase64);
+      this.setEstadoStatus('guardado');
+    });
   }
 
   async eliminarFoto(secIdx: number, fotoIdx: number) {
     const form = this.obraForm;
     if (!form) return;
-    await this.fotoManager.eliminarFoto(this.fotosPorSeccionBase64[secIdx], fotoIdx, () =>
-      this.persistService.soloGuardar(form, this.fotosPorSeccionBase64),
-    );
+    this.setEstadoStatus('guardando');
+    await this.fotoManager.eliminarFoto(this.fotosPorSeccionBase64[secIdx], fotoIdx, async () => {
+      await this.persistService.soloGuardar(form, this.fotosPorSeccionBase64);
+      this.setEstadoStatus('guardado');
+    });
   }
 
   async descargarFoto(foto: any) {
@@ -173,10 +171,11 @@ export class InformePageComponent implements OnDestroy {
       const actualizadas = [...fotos];
       actualizadas[fotoIdx] = { ...actualizadas[fotoIdx], descripcion };
       fotosSignal.set(actualizadas);
+      this.manualSaveTrigger$.next();
     }
   }
 
-  async editarInforme(inf: InformeGuardado) {
+  async editarInforme(inf: InformeGuardado, from?: string) {
     const result = await this.persistService.editarInforme(inf);
     if (result) {
       this.initService.setFormData(
@@ -185,13 +184,16 @@ export class InformePageComponent implements OnDestroy {
         result.seccionesColapsadas,
       );
       this.configurarProgreso();
-      this.configurarAutoGuardado(() => {
-        const form = this.obraForm;
-        if (form) {
-          this.persistService.soloGuardar(form, this.fotosPorSeccionBase64);
-        }
-      });
-      await this.navService.irAFormulario(inf.cuatrimestre, inf.nombreObra);
+      this.configurarAutoGuardado();
+      
+      // Solo navegamos (y sobreescribimos origen) si no estamos ya en la ruta correcta
+      // o si necesitamos actualizar el estado del servicio.
+      if (from) {
+        this.navService.vistaOrigen.set(from);
+      } else {
+        // Si no viene origen, es una navegación normal desde el dashboard
+        await this.navService.irAFormulario(inf.cuatrimestre, inf.nombreObra);
+      }
     }
   }
 
@@ -226,7 +228,9 @@ export class InformePageComponent implements OnDestroy {
   async guardarYSalir() {
     const form = this.obraForm;
     if (form) {
+      this.setEstadoStatus('guardando');
       await this.persistService.soloGuardar(form, this.fotosPorSeccionBase64);
+      this.setEstadoStatus('guardado');
       this.volver();
     }
   }
@@ -234,6 +238,16 @@ export class InformePageComponent implements OnDestroy {
   toggleSeccion(idx: number) {
     if (idx >= 0 && idx < this.seccionesColapsadas.length) {
       this.seccionesColapsadas[idx] = !this.seccionesColapsadas[idx];
+    }
+  }
+
+  private setEstadoStatus(nuevo: 'ocioso' | 'guardado' | 'guardando' | 'error') {
+    clearTimeout(this.statusTimer);
+    this.estadoAutoguardado.set(nuevo);
+    if (nuevo === 'guardado') {
+      this.statusTimer = setTimeout(() => {
+        this.estadoAutoguardado.set('ocioso');
+      }, 3000);
     }
   }
 
@@ -249,14 +263,26 @@ export class InformePageComponent implements OnDestroy {
     });
   }
 
-  private configurarAutoGuardado(onSave: () => void, delay = 2000) {
+  private configurarAutoGuardado(delay = 1000) {
     this.autoSaveSub?.unsubscribe();
     const form = this.obraForm;
     if (!form) return;
 
-    this.autoSaveSub = form.valueChanges
-      .pipe(debounceTime(delay))
-      .subscribe(() => onSave());
+    this.autoSaveSub = merge(form.valueChanges, this.manualSaveTrigger$)
+      .pipe(
+        tap(() => this.setEstadoStatus('guardando')),
+        debounceTime(delay),
+        switchMap(async () => {
+          try {
+            await this.persistService.soloGuardar(form, this.fotosPorSeccionBase64);
+            this.setEstadoStatus('guardado');
+          } catch (e) {
+            console.error('Error en autoguardado:', e);
+            this.setEstadoStatus('error');
+          }
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy() {
@@ -264,4 +290,3 @@ export class InformePageComponent implements OnDestroy {
     this.progressSub?.unsubscribe();
   }
 }
-

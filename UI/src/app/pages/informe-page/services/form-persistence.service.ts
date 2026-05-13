@@ -93,8 +93,7 @@ export class ServicioPersistenciaFormulario {
 
     const rawData = obraForm.value;
     if (!rawData.cuatrimestre || !rawData.cuatrimestre.trim()) {
-      this.ui.error('El informe debe tener un cuatrimestre asignado');
-      return;
+      return; // Silently fail for auto-save if cuatrimestre is missing
     }
     const informeCompleto: any = {
       ...rawData,
@@ -107,7 +106,8 @@ export class ServicioPersistenciaFormulario {
     };
     
     await this.dbService.guardar(informeCompleto);
-    await firstValueFrom(this.cargarHistorial());
+    // No recargamos el historial aquí para mayor velocidad en el autoguardado.
+    // El historial se recargará al volver al dashboard.
   }
 
   async editarInforme(inf: InformeGuardado): Promise<{
@@ -123,8 +123,8 @@ export class ServicioPersistenciaFormulario {
       if (!completo) return null;
 
       const nombreCentro = inf.nombreObra || completo.nombreObra || completo.nombre_obra;
-      console.log('[DEBUG-DEEP] Nombre del centro:', nombreCentro);
       this.navService.centroSeleccionado.set(nombreCentro);
+      this.navService.cuatrimestreSeleccionado.set(completo.cuatrimestre || inf.cuatrimestre || '');
 
       console.log('[DEBUG-DEEP] Construyendo FormGroup inicial...');
       const obraForm = this.fb.group({

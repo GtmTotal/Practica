@@ -26,6 +26,7 @@ export class InformeComponent {
   seccionesColapsadas = input<boolean[]>([]);
   fotosPorSeccionBase64 = input<WritableSignal<Foto[]>[]>([]);
   guardando = input(false);
+  estadoAutoguardado = input<'ocioso' | 'guardado' | 'guardando' | 'error'>('ocioso');
   onCerrar = input<() => void>();
 
   generarPDF = output<void>();

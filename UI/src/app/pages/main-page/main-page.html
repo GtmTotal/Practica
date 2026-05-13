@@ -48,12 +48,11 @@
     <div class="dash-view dash-cuatrimestre-view" [class.active]="!vistaPanel()">
       <div class="dash-cuatrimestre-header">
         <div class="dash-brand-row">
-          <button class="dash-back-link" (click)="vistaPanel.set(true)">‹ Períodos</button>
+          <button class="dash-back-link" (click)="cerrarDetalle()">‹ Períodos</button>
           <img src="gtmCompleto.png" alt="GTM" class="dash-brand-logo mobile-only" />
         </div>
         <div class="dash-cuatri-row">
           <span class="dash-cuatri-title">{{ grupoSeleccionado()?.label }}</span>
-          <button class="dash-close-btn" (click)="vistaPanel.set(true)" title="Volver">✕</button>
         </div>
         <p class="dash-subtitle">Mercadona · informes de mantenimiento</p>
         <div class="dash-metrics">

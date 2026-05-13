@@ -140,6 +140,28 @@
   cursor: pointer;
 }
 
+.dash-back-link {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  width: fit-content;
+}
+
+.dash-back-link:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(-4px);
+}
+
 /* Titles */
 .dash-panel-title,
 .dash-cuatri-title {
@@ -207,8 +229,7 @@
 }
 
 /* Back / Close Buttons */
-.dash-back-link,
-.dash-close-btn {
+.dash-back-link {
   background: transparent;
   border: none;
   color: rgba(255,255,255,0.6);
@@ -218,8 +239,7 @@
   transition: color 0.2s;
 }
 
-.dash-back-link:hover,
-.dash-close-btn:hover {
+.dash-back-link:hover {
   color: #ffffff;
 }
 

@@ -355,6 +355,23 @@ public static class Endpoints
             }
         });
 
+        app.MapGet("/api/admin/export", (IHostEnvironment env, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
+        {
+            if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();
+
+            var excelPath = Path.Combine(env.ContentRootPath, "Plantilla-modelo.xlsx");
+            if (!File.Exists(excelPath))
+                return Results.NotFound(new { message = "No hay ningún Excel almacenado en el servidor." });
+
+            var fileName = $"Reporte_GTM_{DateTime.UtcNow:yyyy-MM-dd}.xlsx";
+            var fileBytes = File.ReadAllBytes(excelPath);
+            return Results.File(
+                fileBytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                fileName
+            );
+        });
+
         app.MapGet("/api/main-page/config-centros/{centro}", async (string centro, IHostEnvironment env) =>
         {
             var folderPath = Path.Combine(env.ContentRootPath, "Infraestructura", "Datos", "config-centros");

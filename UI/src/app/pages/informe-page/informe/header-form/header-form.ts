@@ -12,6 +12,7 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 export class HeaderFormComponent {
   centro = input('');
   progreso = input(0);
+  estadoAutoguardado = input<'ocioso' | 'guardado' | 'guardando' | 'error'>('ocioso');
   formGroup = input.required<FormGroup>();
   onCerrar = input<() => void>();
 
