@@ -16,6 +16,7 @@
     <!-- View 1: Panel de Selección de Cuatrimestres -->
     <div class="dash-view dash-panel-view" [class.active]="vistaPanel()">
       <div class="dash-panel-header">
+        <button class="dash-admin-gear mobile-only" (click)="toggleAdmin()" title="Administración">⚙</button>
         <h1 class="dash-panel-title">Control total del mantenimiento.</h1>
         <p class="dash-panel-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
       </div>
