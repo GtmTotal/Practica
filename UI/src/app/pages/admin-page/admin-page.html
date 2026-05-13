@@ -32,7 +32,7 @@
     <!-- Desktop Top Bar -->
     <header class="main-header">
       <div class="header-title">
-        <h1>{{ grupoSeleccionado().label || 'Administración' }}</h1>
+        <h1>{{ grupoSeleccionado()?.label || 'Administración' }}</h1>
         <span class="header-subtitle">Informes de mantenimiento</span>
       </div>
       <div class="header-actions">
@@ -151,7 +151,7 @@
           <button class="mobile-gear" (click)="vistaPanel.set(true)" title="Volver al panel">⚙</button>
         </div>
         <div class="mobile-cuatri-row">
-          <span class="mobile-cuatri-title">{{ grupoSeleccionado().label }}</span>
+          <span class="mobile-cuatri-title">{{ grupoSeleccionado()?.label }}</span>
         </div>
         <p class="mobile-subtitle">Mercadona · informes de mantenimiento</p>
         <div class="mobile-metrics">

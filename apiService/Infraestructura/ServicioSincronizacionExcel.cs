@@ -120,8 +120,9 @@ public sealed class ServicioSincronizacionExcel
                 continue;
             }
 
-            // Tarea
-            if (currentSeccion != null && string.IsNullOrEmpty(colA))
+            // Tarea: cualquier fila con contenido en colD dentro de una sección activa
+            // (ignorar el valor de colA: puede tener números, marcas de revisión, etc.)
+            if (currentSeccion != null)
             {
                 var desc = StripNumbering(colD);
                 var tarea = new Dictionary<string, object> { { "descripcion", desc } };

@@ -42,4 +42,9 @@ export class ServicioConfiguracionCentros {
       return configs[nombre];
     }
   }
+
+  invalidateCache(): void {
+    this.cache = null;
+    this.centroCache.clear();
+  }
 }

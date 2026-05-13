@@ -311,7 +311,7 @@ public static class Endpoints
             return Results.Json(new { success = false }, statusCode: 401);
         });
 
-        app.MapPost("/api/admin/sync/upload", async (HttpRequest request, ServicioSincronizacionExcel syncService, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
+        app.MapPost("/api/admin/sync/upload", async (HttpRequest request, IHostEnvironment env, ServicioSincronizacionExcel syncService, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
         {
             if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();
 
@@ -329,8 +329,13 @@ public static class Endpoints
                 await using var uploadStream = file.OpenReadStream();
                 using var memoryStream = new MemoryStream();
                 await uploadStream.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
 
+                // 1. Guardar el Excel subido como Plantilla-modelo.xlsx para persistencia
+                var excelPath = Path.Combine(env.ContentRootPath, "Plantilla-modelo.xlsx");
+                await File.WriteAllBytesAsync(excelPath, memoryStream.ToArray());
+
+                // 2. Sincronizar desde el stream hacia los JSONs de config-centros
+                memoryStream.Position = 0;
                 var log = await syncService.SincronizarAsync(memoryStream);
                 return Results.Ok(new { message = "Sincronización completada con éxito", log });
             }

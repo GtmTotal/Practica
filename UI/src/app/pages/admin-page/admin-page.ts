@@ -8,6 +8,7 @@ import { InformeGuardado, GrupoCuatrimestre } from '../informe.interface';
 import { ServicioInicializacionFormulario } from '../informe-page/services/form-initialization.service';
 import { ServicioNavegacion } from '../main-page/services/navigation.service';
 import { UIService } from '../../shared/services/ui.service';
+import { ServicioConfiguracionCentros } from '../services/config-centros.service';
 
 type EstadoInforme = 'completado' | 'en-progreso' | 'pendiente';
 
@@ -26,6 +27,7 @@ export class AdminPageComponent {
   private navService = inject(ServicioNavegacion);
   private ui = inject(UIService);
   private router = inject(Router);
+  private configCentros = inject(ServicioConfiguracionCentros);
 
   isAdmin = this.adminService.isAdmin;
   isSyncing = signal(false);
@@ -135,6 +137,11 @@ export class AdminPageComponent {
       const msg = res.message || 'Excel sincronizado correctamente';
       if (res.log) console.log('[Sync log]\n', res.log);
       this.ui.success(msg);
+
+      // Invalidar cache de centros para que los nuevos puntos estén disponibles inmediatamente
+      this.configCentros.invalidateCache();
+      // Recargar historial por si la sincronización afectó datos existentes
+      this.persistService.cargarHistorial().subscribe();
     } catch (err: any) {
       this.ui.error('Error subiendo Excel: ' + (err.error?.detail || err.message));
     } finally {
@@ -170,6 +177,7 @@ export class AdminPageComponent {
     if (ok) {
       this.cuatrimestreSeleccionado.set('');
       this.vistaPanel.set(true);
+      this.navService.cuatrimestreSeleccionado.set('');
       this.persistService.cargarHistorial().subscribe();
     }
   }
