@@ -20,6 +20,12 @@
   let grupoSeleccionado = $derived(cuatrimestres.find(g => g.clave === cuatrimestreSeleccionado));
   let informesActuales = $derived(grupoSeleccionado?.informes || []);
 
+  let filtroSeleccionado = $state('todos');
+  let informesFiltrados = $derived.by(() => {
+    if (filtroSeleccionado === 'todos') return informesActuales;
+    return informesActuales.filter(inf => estadoDe(inf) === filtroSeleccionado);
+  });
+
   let metricas = $derived.by(() => {
     if (!grupoSeleccionado) return { total: 0, completados: 0, enProgreso: 0, pendientes: 0 };
     const informes = grupoSeleccionado.informes;
@@ -39,6 +45,7 @@
   function cerrarDetalle() {
     navService.cuatrimestreSeleccionado = '';
     navService.persist();
+    filtroSeleccionado = 'todos';
   }
 
   function estadoDe(informe: InformeGuardado) {
@@ -177,25 +184,41 @@
         </div>
         <p class="dash-subtitle">Mercadona · informes de mantenimiento</p>
         <div class="dash-metrics">
-          <div class="mm-card">
+          <button 
+            class="mm-card" 
+            class:active={filtroSeleccionado === 'todos'} 
+            onclick={() => filtroSeleccionado = 'todos'}>
             <div class="mm-value">{ metricas.total }</div>
             <div class="mm-label">CENTROS</div>
-          </div>
-          <div class="mm-card mm-orange">
+          </button>
+          <button 
+            class="mm-card mm-green" 
+            class:active={filtroSeleccionado === 'completado'} 
+            onclick={() => filtroSeleccionado = 'completado'}>
+            <div class="mm-value">{ metricas.completados }</div>
+            <div class="mm-label">COMPLETADOS</div>
+          </button>
+          <button 
+            class="mm-card mm-orange" 
+            class:active={filtroSeleccionado === 'en-progreso'} 
+            onclick={() => filtroSeleccionado = 'en-progreso'}>
             <div class="mm-value">{ metricas.enProgreso }</div>
             <div class="mm-label">EN PROGRESO</div>
-          </div>
-          <div class="mm-card mm-red">
+          </button>
+          <button 
+            class="mm-card mm-red" 
+            class:active={filtroSeleccionado === 'pendiente'} 
+            onclick={() => filtroSeleccionado = 'pendiente'}>
             <div class="mm-value">{ metricas.pendientes }</div>
             <div class="mm-label">PENDIENTES</div>
-          </div>
+          </button>
         </div>
       </div>
 
       <div class="dash-cuatrimestre-body">
         <div class="centros-label">CENTROS</div>
         <section class="centros-grid">
-          {#each informesActuales as inf (inf.id)}
+          {#each informesFiltrados as inf (inf.id)}
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <div
@@ -422,23 +445,33 @@
 /* Metrics */
 .dash-metrics {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
   margin-top: 24px;
-  max-width: 800px;
+  max-width: 1000px;
 }
 
 .mm-card {
   background: rgba(255,255,255,0.08);
+  border: 2px solid transparent;
   border-radius: 12px;
   padding: 20px 16px;
   text-align: center;
-  transition: transform 0.2s;
+  transition: all 0.2s;
+  cursor: pointer;
+  color: white;
+  width: 100%;
 }
 
 .mm-card:hover {
   background: rgba(255,255,255,0.12);
   transform: translateY(-2px);
+}
+
+.mm-card.active {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.4);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .mm-value {
@@ -449,6 +482,7 @@
 }
 
 .mm-orange .mm-value { color: #fbbf24; }
+.mm-green .mm-value { color: #10b981; }
 .mm-red .mm-value { color: #fca5a5; }
 
 .mm-label {

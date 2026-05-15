@@ -63,11 +63,16 @@
     return { total, completados, enProgreso, pendientes };
   });
 
-  let informesActuales = $derived(grupoSeleccionado?.informes || []);
+  let filtroSeleccionado = $state('todos');
+  let informesFiltrados = $derived.by(() => {
+    if (filtroSeleccionado === 'todos') return grupoSeleccionado?.informes || [];
+    return (grupoSeleccionado?.informes || []).filter(inf => estadoDe(inf) === filtroSeleccionado);
+  });
 
   function seleccionarCuatrimestre(clave: string) {
     cuatrimestreSeleccionado = clave;
     vistaPanel = false;
+    filtroSeleccionado = 'todos';
   }
 
   function estadoDe(informe: InformeGuardado) {
@@ -340,25 +345,29 @@
         </div>
         <p class="mobile-subtitle">Mercadona · informes de mantenimiento</p>
         <div class="mobile-metrics">
-          <div class="mm-card">
+          <button class="mm-card" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>
             <div class="mm-value">{ metricas.total }</div>
             <div class="mm-label">CENTROS</div>
-          </div>
-          <div class="mm-card mm-green">
+          </button>
+          <button class="mm-card mm-green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>
             <div class="mm-value">{ metricas.completados }</div>
             <div class="mm-label">COMPLETADOS</div>
-          </div>
-          <div class="mm-card mm-red">
+          </button>
+          <button class="mm-card mm-orange" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>
+            <div class="mm-value">{ metricas.enProgreso }</div>
+            <div class="mm-label">PROGRESO</div>
+          </button>
+          <button class="mm-card mm-red" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>
             <div class="mm-value">{ metricas.pendientes }</div>
             <div class="mm-label">PENDIENTES</div>
-          </div>
+          </button>
         </div>
       </div>
 
       <div class="mobile-cuatrimestre-body">
-        <div class="centros-label">CENTROS</div>
+        <div class="centros-label">CENTROS ({informesFiltrados.length})</div>
         <section class="centros-grid">
-          {#each informesActuales as inf (inf.id)}
+          {#each informesFiltrados as inf (inf.id)}
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <div
@@ -397,23 +406,27 @@
       {#if grupoSeleccionado}
         <!-- Métricas -->
         <section class="metrics-row">
-          <div class="metric-card">
+          <button class="metric-card" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>
             <div class="metric-value">{ metricas.total }</div>
             <div class="metric-label">CENTROS</div>
-          </div>
-          <div class="metric-card metric-green">
+          </button>
+          <button class="metric-card metric-green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>
             <div class="metric-value">{ metricas.completados }</div>
             <div class="metric-label">COMPLETADOS</div>
-          </div>
-          <div class="metric-card metric-red">
+          </button>
+          <button class="metric-card metric-orange" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>
+            <div class="metric-value">{ metricas.enProgreso }</div>
+            <div class="metric-label">EN PROGRESO</div>
+          </button>
+          <button class="metric-card metric-red" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>
             <div class="metric-value">{ metricas.pendientes }</div>
             <div class="metric-label">PENDIENTES</div>
-          </div>
+          </button>
         </section>
 
-        <div class="centros-label">CENTROS</div>
+        <div class="centros-label">CENTROS ({informesFiltrados.length})</div>
         <section class="centros-grid">
-          {#each informesActuales as inf (inf.id)}
+          {#each informesFiltrados as inf (inf.id)}
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <div
