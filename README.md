@@ -260,11 +260,11 @@ El administrador puede cargar una **plantilla Excel** (`PLANTILLAS mantenimiento
 
 ## Comandos
 Putty: 
-user: gtm-cloud 
-pass: 1234 
-Borrar desde putty el caché de construcción: sudo docker builder prune -af 
-Borrar desde putty imágenes antiguas sudo docker image prune -af 
-Entrar a Dokploy:  http://192.168.1.135:3000/
+- **Usuario**: gtm-cloud 
+**Contraseña**: 1234 
+- **Borrar desde putty el caché de construcción**: sudo docker builder prune -af 
+- **Borrar desde putty imágenes antiguas**: sudo docker image prune -af 
+- **Entrar a Dokploy**: http://192.168.1.135:3000/
 
 ---
 
