@@ -1,0 +1,11 @@
+<div>
+  @for (tarea of tareasGroups; track $index) {
+    <app-tarea-item
+      [tareaGroup]="tarea"
+      [idxTarea]="$index"
+      [prefijo]="prefijo()"
+      [idxSeccion]="idxSeccion()"
+      (eliminarFoto)="eliminarFoto.emit($event)"
+    />
+  }
+</div>

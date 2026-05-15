@@ -1,0 +1,35 @@
+@if (state(); as d) {
+<div class="dialog-overlay" (click)="(d.type !== 'confirm' && d.type !== 'prompt') ? onOk() : null">
+  <div class="dialog-card animate-pop" (click)="$event.stopPropagation()">
+    <div class="dialog-icon" [ngClass]="d.type">
+      @switch (d.type) {
+        @case ('success') { <span>✅</span> }
+        @case ('error') { <span>❌</span> }
+        @case ('warning') { <span>⚠️</span> }
+        @case ('confirm') { <span>❓</span> }
+        @case ('prompt') { <span>✏️</span> }
+        @default { <span>ℹ️</span> }
+      }
+    </div>
+    
+    <div class="dialog-content">
+      <h3>{{ d.title }}</h3>
+      <p>{{ d.message }}</p>
+      
+      @if (d.type === 'prompt') {
+        <div class="dialog-input">
+          <input [type]="d.inputType || 'text'" [placeholder]="d.placeholder || ''"
+                 [(ngModel)]="inputVal" (keyup.enter)="onOk()" autofocus>
+        </div>
+      }
+    </div>
+
+    <div class="dialog-footer">
+      @if (d.type === 'confirm' || d.type === 'prompt') {
+        <button class="btn-cancel" (click)="onCancel()">{{ d.cancelText || 'Cancelar' }}</button>
+      }
+      <button class="btn-ok" [ngClass]="d.type" (click)="onOk()">{{ d.okText || 'Aceptar' }}</button>
+    </div>
+  </div>
+</div>
+}

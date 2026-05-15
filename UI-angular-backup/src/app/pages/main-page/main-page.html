@@ -1,0 +1,96 @@
+<div class="main-layout">
+  <!-- Sidebar (desktop) -->
+  <aside class="main-sidebar">
+    <div class="sidebar-top">
+      <img src="gtmCompleto.png" alt="GTM" class="brand-logo" />
+      <h1 class="sidebar-title">Control total del mantenimiento.</h1>
+      <p class="sidebar-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
+    </div>
+    <button class="btn-admin-gear" (click)="toggleAdmin()" title="Administración">
+      <span>⚙</span>
+    </button>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- View 1: Panel de Selección de Cuatrimestres -->
+    <div class="dash-view dash-panel-view" [class.active]="vistaPanel()">
+      <div class="dash-panel-header">
+        <button class="dash-admin-gear mobile-only" (click)="toggleAdmin()" title="Administración">⚙</button>
+        <h1 class="dash-panel-title">Control total del mantenimiento.</h1>
+        <p class="dash-panel-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
+      </div>
+
+      <div class="dash-panel-body">
+        <div class="dash-section-label">CUATRIMESTRES</div>
+        @if (cuatrimestres().length === 0) {
+          <div class="empty-state">No hay informes guardados.</div>
+        } @else {
+          <div class="dash-cuatrimestres-list">
+            @for (grupo of cuatrimestres(); track grupo.clave) {
+              <button class="dash-cuatrimestre-item" (click)="seleccionarCuatrimestre(grupo.clave)">
+                <div class="dci-info">
+                  <div class="dci-title">{{ grupo.label }}</div>
+                  <div class="dci-meta">{{ grupo.informes.length }} centros</div>
+                </div>
+                <div class="dci-count">{{ grupo.informes.length }}</div>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- View 2: Detalle de Cuatrimestre -->
+    <div class="dash-view dash-cuatrimestre-view" [class.active]="!vistaPanel()">
+      <div class="dash-cuatrimestre-header">
+        <div class="dash-brand-row">
+          <button class="dash-back-link" (click)="cerrarDetalle()">‹ Cuatrimestre</button>
+          <img src="gtmCompleto.png" alt="GTM" class="dash-brand-logo mobile-only" />
+        </div>
+        <div class="dash-cuatri-row">
+          <span class="dash-cuatri-title">{{ grupoSeleccionado()?.label }}</span>
+        </div>
+        <p class="dash-subtitle">Mercadona · informes de mantenimiento</p>
+        <div class="dash-metrics">
+          <div class="mm-card">
+            <div class="mm-value">{{ metricas().total }}</div>
+            <div class="mm-label">CENTROS</div>
+          </div>
+          <div class="mm-card mm-orange">
+            <div class="mm-value">{{ metricas().enProgreso }}</div>
+            <div class="mm-label">EN PROGRESO</div>
+          </div>
+          <div class="mm-card mm-red">
+            <div class="mm-value">{{ metricas().pendientes }}</div>
+            <div class="mm-label">PENDIENTES</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-cuatrimestre-body">
+        <div class="centros-label">CENTROS</div>
+        <section class="centros-grid">
+          @for (inf of informesActuales(); track inf.id) {
+            <div
+              class="centro-card"
+              [style.--dot-color]="colorEstado(inf)"
+              [attr.data-estado]="estadoDe(inf)"
+              (click)="editarInforme(inf)">
+              <div class="card-header">
+                <span class="centro-nombre">{{ inf.nombreObra }}</span>
+                <span class="centro-estado">{{ labelEstado(inf) }}</span>
+              </div>
+              <div class="card-body">
+                <div class="centro-progreso">
+                  <span class="progreso-valor">{{ progresoDe(inf) }}% completado</span>
+                </div>
+                <div class="centro-fecha">{{ inf.ultimaModificacion || '—' }}</div>
+              </div>
+            </div>
+          }
+        </section>
+      </div>
+    </div>
+  </main>
+</div>

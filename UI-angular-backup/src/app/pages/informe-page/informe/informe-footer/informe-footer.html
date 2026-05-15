@@ -1,0 +1,11 @@
+<footer class="form-footer" [formGroup]="formGroup()">
+  <textarea formControlName="conclusiones" placeholder="Conclusiones finales..."></textarea>
+  <div class="footer-actions">
+    <button type="button" class="btn-save-exit" (click)="guardarYSalir.emit()" [disabled]="guardando()">
+      💾 GUARDAR Y SALIR
+    </button>
+    <button type="button" class="btn-submit" (click)="generarPDF.emit()" [disabled]="guardando()">
+      {{ guardando() ? '⌛ Generando...' : '📄 FINALIZAR Y GENERAR PDF' }}
+    </button>
+  </div>
+</footer>

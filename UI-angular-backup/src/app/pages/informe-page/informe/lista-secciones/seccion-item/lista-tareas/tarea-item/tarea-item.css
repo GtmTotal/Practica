@@ -1,0 +1,172 @@
+.inspeccion-item {
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--gray-200);
+}
+
+.inspeccion-item:hover {
+  background: white;
+  border-color: var(--gray-300);
+}
+
+.tarea-main-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tarea-indice {
+  font-weight: 800;
+  color: var(--primary);
+  background: rgba(30, 60, 114, 0.1);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  min-width: 48px;
+  text-align: center;
+}
+
+.tarea-texto {
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  font-weight: 500;
+  margin: 0;
+}
+
+.inspeccion-controles {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.check-inspeccion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  background: white;
+  padding: 6px 12px;
+  border-radius: 100px;
+  border: 1px solid var(--gray-300);
+  transition: var(--transition);
+}
+
+.check-inspeccion:hover {
+  background: var(--gray-100);
+}
+
+.check-inspeccion input {
+  display: none;
+}
+
+.box-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.check-inspeccion.ok {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.check-inspeccion.ok:has(input:checked) {
+  background: var(--success);
+  color: white;
+}
+
+.check-inspeccion.nook {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.check-inspeccion.nook:has(input:checked) {
+  background: var(--danger);
+  color: white;
+}
+
+.check-inspeccion:has(input:checked) {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.check-inspeccion:has(input:checked) .box-label {
+  color: white;
+}
+
+.tarea-extra-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--gray-200);
+}
+
+.campos-medicion-inline {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.campo-mini {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 100px;
+  padding: 4px 12px;
+}
+
+.campo-mini input {
+  width: 55px;
+  border: none;
+  background: transparent;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+  outline: none;
+}
+
+.mini-sufijo {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+
+.input-nota-tarea {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px 12px;
+  border: 1px solid var(--gray-200);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  background: white;
+}
+
+.input-nota-tarea:focus {
+  border-color: var(--primary);
+}
+
+@media (max-width: 600px) {
+  .tarea-main-row {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .inspeccion-controles {
+    justify-content: center;
+    margin-top: 12px;
+    margin-bottom: 8px;
+  }
+}

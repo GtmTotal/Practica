@@ -1,0 +1,17 @@
+<div class="secciones-container">
+  @if (seccionesGroups().length) {
+    @for (seccion of seccionesGroups(); track $index) {
+      <app-seccion-item
+        [seccionGroup]="seccion"
+        [idxSeccion]="$index"
+        [colapsada]="seccionesColapsadas()[$index]"
+        [fotosSignal]="fotosPorSeccionBase64()[$index]"
+        (toggle)="toggle.emit($event)"
+        (agregarFoto)="onAgregarFoto($event, $index)"
+        (eliminarFoto)="eliminarFoto.emit($event)"
+        (descargarFoto)="descargarFoto.emit($event)"
+        (actualizarDescripcion)="actualizarDescripcion.emit($event)"
+      />
+    }
+  }
+</div>

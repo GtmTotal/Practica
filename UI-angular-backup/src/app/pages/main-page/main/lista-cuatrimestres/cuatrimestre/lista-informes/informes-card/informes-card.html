@@ -1,0 +1,4 @@
+<div class="centro-row" (click)="editar.emit(informe())">
+  <span class="centro-name">{{ informe().nombreObra }}</span>
+  <span class="centro-date">{{ informe().ultimaModificacion || '' }}</span>
+</div>

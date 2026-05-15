@@ -1,0 +1,33 @@
+<div [formGroup]="tareaGroup()" class="inspeccion-item">
+  <div class="tarea-main-row">
+    <span class="tarea-indice">{{ prefijo() }}.{{ idxTarea() + 1 }}</span>
+    <p class="tarea-texto">{{ tareaGroup().get('descripcion')?.value }}</p>
+  </div>
+
+  <div class="inspeccion-controles">
+    <label class="check-inspeccion ok">
+      <input type="checkbox" formControlName="ok" (change)="toggleOk()">
+      <span class="box-label">OK</span>
+    </label>
+    <label class="check-inspeccion nook">
+      <input type="checkbox" formControlName="noOk" (change)="toggleNoOk()">
+      <span class="box-label">NO OK</span>
+    </label>
+  </div>
+
+  <div class="tarea-extra-row">
+    <div formArrayName="campos" class="campos-medicion-inline">
+      @for (campo of getCamposArray().controls; track $index) {
+        <div [formGroupName]="$index" class="campo-mini">
+          <input type="number" formControlName="valor" [placeholder]="campo.get('sufijo')?.value">
+          <span class="mini-sufijo">{{ campo.get('sufijo')?.value }}</span>
+        </div>
+      }
+    </div>
+    <input type="text" formControlName="notaTarea" placeholder="Notas/Observaciones..." class="input-nota-tarea">
+  </div>
+
+  @if (getBombasQuimicas()) {
+    <app-datos-motor [bombasArray]="getBombasQuimicas()!" />
+  }
+</div>
