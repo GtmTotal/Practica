@@ -8,7 +8,7 @@ Aplicación web para la gestión, digitalización y generación de informes de o
 
 | Capa | Tecnología |
 |------|------------|
-| **Frontend** | Angular 21 + TypeScript |
+| **Frontend** | Svelte 5 + TypeScript (Runes) |
 | **Backend** | ASP.NET Core 10 (Minimal APIs) |
 | **Base de datos** | PostgreSQL 16 + Entity Framework Core |
 | **Almacenamiento** | MinIO (compatible S3) |
@@ -22,7 +22,7 @@ Aplicación web para la gestión, digitalización y generación de informes de o
 
 ```
 ┌─────────────┐      HTTP       ┌─────────────┐
-│   Angular   │ ◄──────────────►│   .NET API  │
+│   Svelte 5  │ ◄──────────────►│   .NET API  │
 │   (UI/)     │                 │ (apiService/)│
 └─────────────┘                 └──────┬──────┘
        ▲                             │
@@ -37,11 +37,11 @@ Aplicación web para la gestión, digitalización y generación de informes de o
 
 ```
 reporte-obras-main/
-├── UI/                         # Frontend Angular
-│   ├── src/app/pages/
-│   │   ├── main-page/          # Landing / selector de centro y cuatrimestre
-│   │   ├── informe-page/       # Editor del informe (checklist + fotos)
-│   │   └── admin-page/         # Panel de administración
+├── UI/                         # Frontend SvelteKit (Svelte 5)
+│   ├── src/lib/components/
+│   │   ├── informe/            # Componentes del editor (Header, Secciones, Fotos)
+│   │   └── common/             # Spinner, Toast, Dialogs
+│   ├── src/routes/             # Enrutamiento basado en archivos
 │   └── Dockerfile
 │
 ├── apiService/                 # Backend .NET
@@ -85,7 +85,7 @@ reporte-obras-main/
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (o Docker Engine + Compose)
 - Opcional para desarrollo local:
   - [Node.js 20+](https://nodejs.org/)
-  - [Angular CLI](https://angular.io/cli)
+  - [Bun](https://bun.sh/) o npm (para gestionar dependencias)
   - [.NET 10 SDK](https://dotnet.microsoft.com/download)
 
 ---
@@ -152,16 +152,16 @@ dotnet run
 - API disponible en: `http://localhost:5000`
 - Asegúrate de tener el archivo `.env` en la raíz con `DB_PASS`, `ADMIN_PASSWORD` y `ADMIN_TOKEN_SECRET`.
 
-### 3. Frontend (Angular)
+### 3. Frontend (Svelte 5)
 
 ```bash
 cd UI
 npm install
-ng serve
+npm run dev
 ```
 
-- Aplicación en: `http://localhost:4200`
-- El proxy de desarrollo de Angular redirige `/api` al backend.
+- Aplicación en: `http://localhost:5173`
+- Vite redirige `/api` al backend mediante el archivo `vite.config.ts`.
 
 ---
 
@@ -188,7 +188,7 @@ docker-compose up --build -d
 
 ### Despliegue manual (sin Docker)
 
-- Compila el frontend: `cd UI && npm run build` (salida en `dist/reporte-obras/browser`).
+- Compila el frontend: `cd UI && npm run build` (salida en la carpeta `build/`).
 - Sirve los archivos estáticos con Nginx o similar.
 - Publica el backend: `cd apiService && dotnet publish -c Release`.
 - Configura PostgreSQL y un bucket S3/MinIO externos.
