@@ -1,20 +1,32 @@
 # Variables de entorno
 .env
-
+.env.*
+!.env.example
 
 # Archivos temporales de Excel
 ~$*.xlsx
 
-# Node
+# SvelteKit / Node
 UI/node_modules/
-UI/dist/
+UI/.svelte-kit/
+UI/build/
+UI/package-lock.json (solo si prefieres no subirlo, pero suele ser mejor subirlo)
+# Recomiendo subir el package-lock.json, así que lo dejamos comentado
+# !UI/package-lock.json
 
-# .NET
+# Backups temporales (para no subirlos si aún existen)
+UI-svelte/
+UI-angular-backup/
+
+# .NET (apiService)
 apiService/bin/
 apiService/obj/
+apiService/out/
 
-# IDE
+# IDE & OS
 .vscode/
 .idea/
 *.swp
 *.swo
+.DS_Store
+Thumbs.db
