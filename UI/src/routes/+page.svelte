@@ -1,0 +1,688 @@
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
+  import { navService } from '$lib/services/navigation.svelte';
+  import { adminService } from '$lib/services/admin.svelte';
+  import { ui } from '$lib/services/ui.svelte';
+  import { cuatrimestreService } from '$lib/services/cuatrimestre.svelte';
+  import { formPersistenceService } from '$lib/services/form-persistence.svelte';
+  import { formInitService } from '$lib/services/form-initialization.svelte';
+  import type { InformeGuardado } from '$lib/types/informe.interface';
+
+  // Derived state
+  let isAdmin = $derived(adminService.isAdmin);
+  let cuatrimestreSeleccionado = $derived(navService.cuatrimestreSeleccionado);
+  let vistaPanel = $derived(cuatrimestreSeleccionado === '');
+
+  let informesGuardados = $derived(formPersistenceService.informesGuardados);
+  let cuatrimestres = $derived(cuatrimestreService.getInformesPorCuatrimestre(informesGuardados));
+  
+  let grupoSeleccionado = $derived(cuatrimestres.find(g => g.clave === cuatrimestreSeleccionado));
+  let informesActuales = $derived(grupoSeleccionado?.informes || []);
+
+  let metricas = $derived.by(() => {
+    if (!grupoSeleccionado) return { total: 0, completados: 0, enProgreso: 0, pendientes: 0 };
+    const informes = grupoSeleccionado.informes;
+    const total = informes.length;
+    const completados = informes.filter(i => estadoDe(i) === 'completado').length;
+    const enProgreso = informes.filter(i => estadoDe(i) === 'en-progreso').length;
+    const pendientes = total - completados - enProgreso;
+    return { total, completados, enProgreso, pendientes };
+  });
+
+  // Methods
+  function seleccionarCuatrimestre(clave: string) {
+    navService.cuatrimestreSeleccionado = clave;
+    navService.persist();
+  }
+
+  function cerrarDetalle() {
+    navService.cuatrimestreSeleccionado = '';
+    navService.persist();
+  }
+
+  function estadoDe(informe: InformeGuardado) {
+    const prog = progresoDe(informe);
+    if (prog >= 100) return 'completado';
+    if (prog > 0) return 'en-progreso';
+    return 'pendiente';
+  }
+
+  function progresoDe(informe: InformeGuardado): number {
+    if (informe.progreso !== undefined) return informe.progreso;
+    const secciones = informe.secciones;
+    if (!secciones?.length) return 0;
+    let total = 0, hechas = 0;
+    for (const sec of secciones) {
+      for (const t of sec.tareas || []) {
+        total++;
+        if (t.rev || t.ok || t.noOk) hechas++;
+      }
+    }
+    return total > 0 ? Math.round((hechas / total) * 100) : 0;
+  }
+
+  function colorEstado(informe: InformeGuardado): string {
+    const estado = estadoDe(informe);
+    if (estado === 'completado') return '#059669';
+    if (estado === 'en-progreso') return '#d97706';
+    return '#94a3b8';
+  }
+
+  function labelEstado(informe: InformeGuardado): string {
+    const estado = estadoDe(informe);
+    if (estado === 'completado') return 'COMPLETADO';
+    if (estado === 'en-progreso') return 'EN PROGRESO';
+    return 'PENDIENTE';
+  }
+
+  async function toggleAdmin() {
+    if (isAdmin) {
+      await navService.irAAdmin();
+    } else {
+      const pass = await ui.prompt('Acceso Admin', 'Introduce la contraseña de administrador:', 'Contraseña', 'Aceptar', 'Cancelar', 'password');
+      if (pass) {
+        const ok = await adminService.login(pass);
+        if (ok) {
+          await navService.irAAdmin();
+        } else {
+          await ui.alert('Acceso Denegado', 'Contraseña incorrecta', 'error');
+        }
+      }
+    }
+  }
+
+  async function editarInforme(inf: InformeGuardado) {
+    const result = await formPersistenceService.editarInforme(inf);
+    if (result) {
+      formInitService.setFormData(
+        result.obraForm,
+        result.fotosPorSeccionBase64,
+        result.seccionesColapsadas
+      );
+      await navService.irAFormulario(inf.cuatrimestre, inf.nombreObra);
+    }
+  }
+
+  onMount(async () => {
+    await formPersistenceService.cargarHistorial();
+  });
+
+  $effect(() => {
+    const c = $page.url.searchParams.get('c');
+    if (c && c !== navService.cuatrimestreSeleccionado) {
+      navService.cuatrimestreSeleccionado = c;
+      navService.persist();
+    }
+  });
+
+</script>
+
+<svelte:head>
+  <title>Dashboard | GTM Mantenimiento</title>
+</svelte:head>
+
+<div class="main-layout">
+  <!-- Sidebar (desktop) -->
+  <aside class="main-sidebar">
+    <div class="sidebar-top">
+      <img src="gtmCompleto.png" alt="GTM" class="brand-logo" />
+      <h1 class="sidebar-title">Control total del mantenimiento.</h1>
+      <p class="sidebar-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
+    </div>
+    <button class="btn-admin-gear" onclick={toggleAdmin} title="Administración">
+      <span>⚙</span>
+    </button>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- View 1: Panel de Selección de Cuatrimestres -->
+    <div class="dash-view dash-panel-view" class:active={vistaPanel}>
+      <div class="dash-panel-header">
+        <button class="dash-admin-gear mobile-only" onclick={toggleAdmin} title="Administración">⚙</button>
+        <h1 class="dash-panel-title">Control total del mantenimiento.</h1>
+        <p class="dash-panel-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
+      </div>
+
+      <div class="dash-panel-body">
+        <div class="dash-section-label">CUATRIMESTRES</div>
+        {#if cuatrimestres.length === 0}
+          <div class="empty-state">No hay informes guardados.</div>
+        {:else}
+          <div class="dash-cuatrimestres-list">
+            {#each cuatrimestres as grupo (grupo.clave)}
+              <button class="dash-cuatrimestre-item" onclick={() => seleccionarCuatrimestre(grupo.clave)}>
+                <div class="dci-info">
+                  <div class="dci-title">{ grupo.label }</div>
+                  <div class="dci-meta">{ grupo.informes.length } centros</div>
+                </div>
+                <div class="dci-count">{ grupo.informes.length }</div>
+              </button>
+            {/each}
+          </div>
+        {/if}
+      </div>
+    </div>
+
+    <!-- View 2: Detalle de Cuatrimestre -->
+    <div class="dash-view dash-cuatrimestre-view" class:active={!vistaPanel}>
+      <div class="dash-cuatrimestre-header">
+        <div class="dash-brand-row">
+          <button class="dash-back-link" onclick={cerrarDetalle}>‹ Cuatrimestre</button>
+          <img src="gtmCompleto.png" alt="GTM" class="dash-brand-logo mobile-only" />
+        </div>
+        <div class="dash-cuatri-row">
+          <span class="dash-cuatri-title">{ grupoSeleccionado?.label || '' }</span>
+        </div>
+        <p class="dash-subtitle">Mercadona · informes de mantenimiento</p>
+        <div class="dash-metrics">
+          <div class="mm-card">
+            <div class="mm-value">{ metricas.total }</div>
+            <div class="mm-label">CENTROS</div>
+          </div>
+          <div class="mm-card mm-orange">
+            <div class="mm-value">{ metricas.enProgreso }</div>
+            <div class="mm-label">EN PROGRESO</div>
+          </div>
+          <div class="mm-card mm-red">
+            <div class="mm-value">{ metricas.pendientes }</div>
+            <div class="mm-label">PENDIENTES</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-cuatrimestre-body">
+        <div class="centros-label">CENTROS</div>
+        <section class="centros-grid">
+          {#each informesActuales as inf (inf.id)}
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <div
+              class="centro-card"
+              style="--dot-color: {colorEstado(inf)}"
+              data-estado={estadoDe(inf)}
+              onclick={() => editarInforme(inf)}>
+              <div class="card-header">
+                <span class="centro-nombre">{ inf.nombreObra }</span>
+                <span class="centro-estado">{ labelEstado(inf) }</span>
+              </div>
+              <div class="card-body">
+                <div class="centro-progreso">
+                  <span class="progreso-valor">{ progresoDe(inf) }% completado</span>
+                </div>
+                <div class="centro-fecha">{ inf.ultimaModificacion || '—' }</div>
+              </div>
+            </div>
+          {/each}
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+/* ===== LAYOUT ===== */
+.main-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f5f0;
+}
+
+/* ===== SIDEBAR (DESKTOP ONLY) ===== */
+.main-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  background: #1e3a5f;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 40px;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .main-sidebar {
+    display: none;
+  }
+}
+
+.brand-logo {
+  width: 140px;
+  margin-bottom: 48px;
+}
+
+.sidebar-title {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 16px 0;
+  color: #ffffff;
+}
+
+.sidebar-subtitle {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.55);
+  margin: 0;
+}
+
+.btn-admin-gear {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-admin-gear:hover {
+  border-color: rgba(255,255,255,0.5);
+  color: #ffffff;
+  background: rgba(255,255,255,0.08);
+}
+
+/* ===== MAIN CONTENT AREA ===== */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== DASHBOARD VIEWS (Common) ===== */
+.dash-view {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.dash-view.active {
+  display: flex;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: flex;
+  }
+}
+
+/* Botón admin (engranaje) en header móvil */
+.dash-admin-gear {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.85);
+  font-size: 20px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+}
+
+@media (max-width: 768px) {
+  .dash-admin-gear.mobile-only {
+    display: flex;
+  }
+}
+
+/* Headers */
+.dash-panel-header,
+.dash-cuatrimestre-header {
+  position: relative;
+  background: #1e3a5f;
+  padding: 32px 40px;
+  flex-shrink: 0;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .dash-panel-header,
+  .dash-cuatrimestre-header {
+    padding: 24px 20px;
+  }
+  .dash-cuatrimestre-header {
+    border-radius: 0 0 20px 20px;
+  }
+}
+
+.dash-brand-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.dash-brand-logo {
+  width: 100px;
+}
+
+.dash-back-link {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  width: fit-content;
+}
+
+.dash-back-link:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(-4px);
+}
+
+/* Titles */
+.dash-panel-title,
+.dash-cuatri-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.dash-panel-subtitle,
+.dash-subtitle {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .dash-panel-title,
+  .dash-cuatri-title { font-size: 24px; }
+}
+
+/* Metrics */
+.dash-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+  max-width: 800px;
+}
+
+.mm-card {
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 20px 16px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.mm-card:hover {
+  background: rgba(255,255,255,0.12);
+  transform: translateY(-2px);
+}
+
+.mm-value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.mm-orange .mm-value { color: #fbbf24; }
+.mm-red .mm-value { color: #fca5a5; }
+
+.mm-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 768px) {
+  .dash-metrics { gap: 10px; }
+  .mm-card { padding: 14px 10px; }
+  .mm-value { font-size: 22px; }
+}
+
+/* Back / Close Buttons */
+.dash-back-link {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.dash-back-link:hover {
+  color: #ffffff;
+}
+
+.dash-cuatri-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+/* Body */
+.dash-panel-body,
+.dash-cuatrimestre-body {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .dash-panel-body,
+  .dash-cuatrimestre-body { padding: 20px 16px; }
+}
+
+.dash-section-label,
+.centros-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+
+/* Cuatrimestres List (Grid on Desktop) */
+.dash-cuatrimestres-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.dash-cuatrimestre-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.dash-cuatrimestre-item:hover {
+  border-color: #1e3a5f;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.dci-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.dci-meta {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.dci-count {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e3a5f;
+  background: #f1f5f9;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+  .dash-cuatrimestres-list { grid-template-columns: 1fr; gap: 12px; }
+  .dash-cuatrimestre-item { padding: 16px; border-radius: 12px; }
+  .dci-title { font-size: 15px; }
+}
+
+/* Centros Grid (Desktop Optimization) */
+.centros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .centros-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.centro-card {
+  background: #ffffff;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 4px 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.centro-card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 12px 20px -5px rgba(0,0,0,0.08);
+  border-color: #e2e8f0;
+}
+
+.centro-card::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--dot-color, #d1d5db);
+  grid-row: 1 / 3;
+  box-shadow: 0 0 0 4px rgba(var(--dot-rgb, 209, 213, 219), 0.1);
+}
+
+.centro-card::after {
+  content: '›';
+  color: #cbd5e1;
+  font-size: 24px;
+  grid-row: 1 / 3;
+  transition: transform 0.2s;
+}
+
+.centro-card:hover::after {
+  transform: translateX(4px);
+  color: #1e3a5f;
+}
+
+.centro-nombre {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.centro-progreso {
+  grid-column: 2;
+  grid-row: 2;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.centro-estado {
+  grid-column: 3;
+  grid-row: 1;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: #f1f5f9;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.centro-card[data-estado="en-progreso"] .centro-estado {
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.centro-card[data-estado="completado"] .centro-estado {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.centro-fecha {
+  grid-column: 3;
+  grid-row: 2;
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .centro-card {
+    padding: 14px 16px;
+    border-radius: 12px;
+    gap: 4px 12px;
+  }
+  .centro-nombre { font-size: 15px; }
+  .centro-card::after { font-size: 18px; }
+}
+
+.empty-state {
+  padding: 100px 0;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 16px;
+}
+</style>

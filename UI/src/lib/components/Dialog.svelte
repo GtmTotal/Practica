@@ -1,0 +1,235 @@
+<script lang="ts">
+  import { ui } from '../services/ui.svelte';
+  import { fade, scale } from 'svelte/transition';
+
+  let inputVal = $state('');
+
+  function onOk() {
+    const s = ui.dialogState;
+    if (s?.type === 'prompt') {
+      s.resolve?.(inputVal);
+    } else {
+      s?.resolve?.(true);
+    }
+    inputVal = '';
+  }
+
+  function onCancel() {
+    ui.dialogState?.resolve?.(null);
+    inputVal = '';
+  }
+
+  function onOverlayClick(e: MouseEvent) {
+    if (e.target === e.currentTarget) {
+      if (ui.dialogState?.type !== 'confirm' && ui.dialogState?.type !== 'prompt') {
+        onOk();
+      }
+    }
+  }
+
+  function onKeyup(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      onOk();
+    }
+  }
+</script>
+
+{#if ui.dialogState}
+  {@const d = ui.dialogState}
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <div class="dialog-overlay" onclick={onOverlayClick} in:fade={{ duration: 150 }} out:fade={{ duration: 150 }}>
+    <div class="dialog-card" in:scale={{ duration: 250, start: 0.9 }}>
+      <div class="dialog-icon {d.type}">
+        {#if d.type === 'success'}
+          <span>✅</span>
+        {:else if d.type === 'error'}
+          <span>❌</span>
+        {:else if d.type === 'warning'}
+          <span>⚠️</span>
+        {:else if d.type === 'confirm'}
+          <span>❓</span>
+        {:else if d.type === 'prompt'}
+          <span>✏️</span>
+        {:else}
+          <span>ℹ️</span>
+        {/if}
+      </div>
+      
+      <div class="dialog-content">
+        <h3>{d.title}</h3>
+        <p>{d.message}</p>
+        
+        {#if d.type === 'prompt'}
+          <div class="dialog-input">
+            <input 
+              type={d.inputType || 'text'} 
+              placeholder={d.placeholder || ''}
+              bind:value={inputVal} 
+              onkeyup={onKeyup} 
+            />
+          </div>
+        {/if}
+      </div>
+
+      <div class="dialog-footer">
+        {#if d.type === 'confirm' || d.type === 'prompt'}
+          <button class="btn-cancel" onclick={onCancel}>{d.cancelText || 'Cancelar'}</button>
+        {/if}
+        <button class="btn-ok {d.type}" onclick={onOk}>{d.okText || 'Aceptar'}</button>
+      </div>
+    </div>
+  </div>
+{/if}
+
+<style>
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.dialog-card {
+  background: white;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.dialog-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.dialog-icon.success { background: #f0fdf4; }
+.dialog-icon.error { background: #fef2f2; }
+.dialog-icon.warning { background: #fffbeb; }
+.dialog-icon.confirm { background: #eff6ff; }
+.dialog-icon.prompt { background: #f3e8ff; }
+.dialog-icon.info { background: #f1f5f9; }
+
+.dialog-content h3 {
+  margin: 0 0 10px;
+  color: #0f172a;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.dialog-content p {
+  margin: 0;
+  color: #64748b;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.dialog-input {
+  margin-top: 20px;
+}
+
+.dialog-input input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.dialog-input input:focus {
+  border-color: #3b82f6;
+}
+
+.dialog-footer {
+  margin-top: 30px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.dialog-footer button {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  font-size: 1rem;
+}
+
+.btn-cancel {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.btn-cancel:hover { background: #e2e8f0; }
+
+.btn-ok {
+  background: #0f172a;
+  color: white;
+  flex: 1;
+}
+
+.btn-ok.success { background: #10b981; }
+.btn-ok.error { background: #ef4444; }
+.btn-ok.warning { background: #f59e0b; }
+.btn-ok.confirm { background: #3b82f6; }
+
+.btn-ok:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* Mejoras accesibilidad - Focus visible */
+.dialog-footer button:focus-visible,
+.dialog-input input:focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Responsive mejorado */
+@media (max-width: 480px) {
+  .dialog-card {
+    max-width: 100%;
+    margin: 16px;
+    padding: 24px;
+    border-radius: 20px;
+  }
+  
+  .dialog-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 1.75rem;
+  }
+  
+  .dialog-content h3 {
+    font-size: 1.25rem;
+  }
+  
+  .dialog-footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  
+  .dialog-footer button {
+    width: 100%;
+    padding: 14px 24px;
+    min-height: 48px;
+  }
+}
+</style>

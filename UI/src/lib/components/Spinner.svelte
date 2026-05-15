@@ -1,0 +1,85 @@
+<script lang="ts">
+  let { size = 'medium', color = 'primary', overlay = false } = $props<{
+    size?: 'small' | 'medium' | 'large';
+    color?: 'primary' | 'white';
+    overlay?: boolean;
+  }>();
+</script>
+
+{#if overlay}
+  <div class="spinner-overlay">
+    <div class="spinner {size} {color}"></div>
+  </div>
+{:else}
+  <div class="spinner {size} {color}"></div>
+{/if}
+
+<style>
+.spinner {
+  border: 3px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Tamaños */
+.spinner.small {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+.spinner.medium {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+.spinner.large {
+  width: 48px;
+  height: 48px;
+  border-width: 4px;
+}
+
+/* Colores */
+.spinner.primary {
+  color: #3b82f6;
+  border-left-color: #e0e7ff;
+  border-right-color: #e0e7ff;
+  border-bottom-color: #e0e7ff;
+}
+
+.spinner.white {
+  color: white;
+  border-left-color: rgba(255, 255, 255, 0.3);
+  border-right-color: rgba(255, 255, 255, 0.3);
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Overlay para loading de página */
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(2px);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Variante inline para botones */
+.spinner.inline {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+</style>
