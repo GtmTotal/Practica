@@ -1,4 +1,4 @@
-import { getApiBaseUrl } from '../api-config';
+import { getApiBaseUrl, getApiHeaders } from '../api-config';
 
 class ServicioAdmin {
   private get apiBase() { return `${getApiBaseUrl()}/admin`; }
@@ -23,14 +23,21 @@ class ServicioAdmin {
   getAuthHeaders(): Record<string, string> {
     if (typeof sessionStorage === 'undefined') return {};
     const token = sessionStorage.getItem(this.tokenKey);
-    return token ? { Authorization: `Bearer ${token}` } : {};
+    const headers: Record<string, string> = { ...getApiHeaders() };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
   }
 
   async login(password: string): Promise<boolean> {
     try {
       const res = await fetch(`${this.apiBase}/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...getApiHeaders()
+        },
         body: JSON.stringify({ password })
       });
       if (!res.ok) return false;

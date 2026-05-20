@@ -1,4 +1,4 @@
-import { getApiBaseUrl } from '../api-config';
+import { getApiBaseUrl, getApiHeaders } from '../api-config';
 import { adminService } from './admin.svelte';
 import type { InformeGuardado } from '$lib/types/informe.interface';
 
@@ -32,7 +32,9 @@ class ServicioBaseDeDatos {
   }
 
   async obtenerTodos(): Promise<InformeGuardado[]> {
-    const res = await fetch(`${this.apiBase}/informes`);
+    const res = await fetch(`${this.apiBase}/informes`, {
+      headers: getApiHeaders()
+    });
     if (!res.ok) return [];
     const data = await res.json();
 
@@ -70,7 +72,9 @@ class ServicioBaseDeDatos {
 
   async obtenerPorId(id: number): Promise<any | null> {
     try {
-      const res = await fetch(`${this.apiBase}/informes/${id}`);
+      const res = await fetch(`${this.apiBase}/informes/${id}`, {
+        headers: getApiHeaders()
+      });
       if (!res.ok) return null;
       const data = await res.json();
       return data?.datos ?? null;

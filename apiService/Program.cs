@@ -53,8 +53,8 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-app.MapOpenApi();
 app.UseCors("frontend");
+app.MapOpenApi();
 app.MapEndpoints();
 
 app.Run();

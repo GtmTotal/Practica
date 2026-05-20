@@ -1,4 +1,4 @@
-import { getApiBaseUrl } from '../api-config';
+import { getApiBaseUrl, getApiHeaders } from '../api-config';
 import type { ConfigCentro } from '$lib/types/config.interface';
 
 class ServicioConfiguracionCentros {
@@ -9,7 +9,9 @@ class ServicioConfiguracionCentros {
   async getAll(): Promise<Record<string, ConfigCentro>> {
     if (this.cache) return this.cache;
 
-    const res = await fetch(`${this.apiBase}/main-page/config-centros`);
+    const res = await fetch(`${this.apiBase}/main-page/config-centros`, {
+      headers: getApiHeaders()
+    });
     if (!res.ok) throw new Error('Error getting config-centros');
     this.cache = await res.json();
 
@@ -28,7 +30,9 @@ class ServicioConfiguracionCentros {
     }
 
     try {
-      const res = await fetch(`${this.apiBase}/main-page/config-centros/${encodeURIComponent(nombre)}`);
+      const res = await fetch(`${this.apiBase}/main-page/config-centros/${encodeURIComponent(nombre)}`, {
+        headers: getApiHeaders()
+      });
       if (!res.ok) throw new Error('Not found');
       const config = await res.json();
       this.centroCache.set(nombre, config);

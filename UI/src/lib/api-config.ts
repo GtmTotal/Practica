@@ -16,3 +16,13 @@ export function getApiBaseUrl(): string {
   // En producción (Netlify), usamos la URL pública de ngrok
   return 'https://earthly-discard-tarmac.ngrok-free.dev/api';
 }
+
+/**
+ * Devuelve los headers base para todas las peticiones a la API.
+ * Incluye el header para saltar el interstitial de ngrok.
+ */
+export function getApiHeaders(): Record<string, string> {
+  return {
+    'ngrok-skip-browser-warning': '1'
+  };
+}
