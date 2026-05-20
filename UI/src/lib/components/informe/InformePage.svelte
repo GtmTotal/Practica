@@ -195,6 +195,8 @@
       navService.cuatrimestreSeleccionado = cuatrimestreParam;
       navService.centroSeleccionado = centroParam;
       navService.vistaActual = 'formulario';
+      // Establecer vistaOrigen basado en la URL actual
+      navService.vistaOrigen = window.location.pathname.startsWith('/admin') ? 'admin' : 'dashboard';
       navService.persist();
 
       try {
