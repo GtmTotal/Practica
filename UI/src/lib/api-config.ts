@@ -1,7 +1,7 @@
 /**
  * Devuelve la URL base de la API.
  * En desarrollo local (localhost), apunta al servidor de producción local.
- * En producción (Netlify), usa la URL pública de la API en Dokploy.
+ * En producción (Netlify), usa la URL pública de la API en Dokply.
  */
 export function getApiBaseUrl(): string {
   if (typeof window === 'undefined') return ''; // Safety check for SSR
@@ -13,6 +13,6 @@ export function getApiBaseUrl(): string {
     return 'http://192.168.1.135:5000/api';
   }
 
-  // En producción (Netlify), usamos la URL pública de la API en Dokploy
-  return 'https://api.dokploy.com/api';
+  // En producción (Netlify), usamos la URL pública de ngrok
+  return 'https://earthly-discard-tarmac.ngrok-free.dev/api';
 }
