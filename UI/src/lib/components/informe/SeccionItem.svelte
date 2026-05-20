@@ -49,6 +49,8 @@
       <div class="fotos-seccion">
         <input
           type="file"
+          accept="image/*"
+          capture="environment"
           bind:this={fileInput}
           hidden
           onchange={onAgregarFoto}
