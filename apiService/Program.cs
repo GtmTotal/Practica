@@ -44,6 +44,7 @@ builder.Services.AddCors(options =>
                 "http://127.0.0.1:5173",
                 "http://192.168.1.135:5173",
                 "https://*.netlify.app",
+                "https://gtmtotal.netlify.app",
                 "https://earthly-discard-tarmac.ngrok-free.dev"
             )
             .AllowAnyHeader()
