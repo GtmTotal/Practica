@@ -1,28 +1,50 @@
 /**
  * Devuelve la URL base de la API.
- * En desarrollo local (localhost), apunta al servidor de producción local.
- * En producción (Netlify), usa la URL pública de la API en Dokply.
+ * Detecta automáticamente si está en red local o externo.
  */
 export function getApiBaseUrl(): string {
   if (typeof window === 'undefined') return ''; // Safety check for SSR
 
   const hostname = window.location.hostname;
 
-  // Si estamos en desarrollo local, el backend de producción local
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+  // Función para detectar si es una IP privada
+  const isPrivateIP = (ip: string): boolean => {
+    return /^10\./.test(ip) ||
+           /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(ip) ||
+           /^192\.168\./.test(ip) ||
+           /^127\./.test(ip) ||
+           /^localhost$/.test(ip);
+  };
+
+  // Si estamos en localhost o red local → usar IP directa
+  if (isPrivateIP(hostname)) {
     return 'http://192.168.1.135:5000/api';
   }
 
-  // En producción (Netlify), usamos la URL pública de ngrok
+  // Si estamos fuera de la red local → usar ngrok
   return 'https://earthly-discard-tarmac.ngrok-free.dev/api';
 }
 
 /**
  * Devuelve los headers base para todas las peticiones a la API.
- * Incluye el header para saltar el interstitial de ngrok.
+ * Incluye el header para saltar el interstitial de ngrok solo cuando es necesario.
  */
 export function getApiHeaders(): Record<string, string> {
-  return {
-    'ngrok-skip-browser-warning': '1'
+  const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+  
+  // Función para detectar si es una IP privada
+  const isPrivateIP = (ip: string): boolean => {
+    return /^10\./.test(ip) ||
+           /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(ip) ||
+           /^192\.168\./.test(ip) ||
+           /^127\./.test(ip) ||
+           /^localhost$/.test(ip);
   };
+
+  // Solo agregar header ngrok si NO estamos en red local
+  if (!isPrivateIP(hostname)) {
+    return { 'ngrok-skip-browser-warning': '1' };
+  }
+
+  return {};
 }
