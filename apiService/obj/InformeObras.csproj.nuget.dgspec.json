@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\desarrollo-software\\reporte-obras-main\\apiService\\InformeObras.csproj": {}
+    "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiService\\InformeObras.csproj": {}
   },
   "projects": {
-    "C:\\desarrollo-software\\reporte-obras-main\\apiService\\InformeObras.csproj": {
+    "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiService\\InformeObras.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\desarrollo-software\\reporte-obras-main\\apiService\\InformeObras.csproj",
+        "projectUniqueName": "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiService\\InformeObras.csproj",
         "projectName": "InformeObras",
-        "projectPath": "C:\\desarrollo-software\\reporte-obras-main\\apiService\\InformeObras.csproj",
+        "projectPath": "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiService\\InformeObras.csproj",
         "packagesPath": "C:\\Users\\alepe\\.nuget\\packages\\",
-        "outputPath": "C:\\desarrollo-software\\reporte-obras-main\\apiService\\obj\\",
+        "outputPath": "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\alepe\\AppData\\Roaming\\NuGet\\NuGet.Config"
