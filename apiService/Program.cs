@@ -39,9 +39,16 @@ builder.Services.AddSingleton<ServicioAutenticacionAdmin>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("frontend", policy =>
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod());
+        policy.WithOrigins(
+                "http://localhost:5173",
+                "http://127.0.0.1:5173",
+                "http://192.168.1.135:5173",
+                "https://*.netlify.app",
+                "https://earthly-discard-tarmac.ngrok-free.dev"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
 });
 
 var app = builder.Build();
