@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
   import { navService } from '$lib/services/navigation.svelte';
   import { adminService } from '$lib/services/admin.svelte';
   import { ui } from '$lib/services/ui.svelte';
@@ -46,6 +47,7 @@
     navService.cuatrimestreSeleccionado = '';
     navService.persist();
     filtroSeleccionado = 'todos';
+    goto('/');
   }
 
   function estadoDe(informe: InformeGuardado) {
@@ -117,7 +119,7 @@
 
   $effect(() => {
     const c = $page.url.searchParams.get('c');
-    if (c && c !== navService.cuatrimestreSeleccionado) {
+    if (c && c !== untrack(() => navService.cuatrimestreSeleccionado)) {
       navService.cuatrimestreSeleccionado = c;
       navService.persist();
     }
