@@ -8,7 +8,7 @@ export function getApiBaseUrl(): string {
 
   const hostname = window.location.hostname;
 
-  // Si estamos en desarrollo local, apuntamos al backend de producción local
+  // Si estamos en desarrollo local, el backend de producción local
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'http://192.168.1.135:5000/api';
   }
