@@ -28,14 +28,26 @@
   } = $props();
 
   let fileInput: HTMLInputElement | null = $state(null);
+
+  let numeroSeccion = $derived.by(() => {
+    const partes = seccion.titulo.split('-');
+    return partes.length > 1 ? partes[0].trim() : '';
+  });
+  let textoSeccion = $derived.by(() => {
+    const partes = seccion.titulo.split('-');
+    return partes.length > 1 ? partes[1].trim() : seccion.titulo;
+  });
 </script>
 
 <div class="seccion-card">
   <button type="button" class="seccion-titulo" onclick={onToggle}>
-    <span>{seccion.titulo}</span>
-    <span class="icon-toggle" class:is-open={!colapsada}
-      >{colapsada ? "▶" : "▼"}</span
-    >
+    <div class="seccion-titulo-left">
+      {#if numeroSeccion}
+        <span class="seccion-numero">{numeroSeccion}</span>
+      {/if}
+      <span class="seccion-texto">{textoSeccion}</span>
+    </div>
+    <span class="icon-toggle" class:is-open={!colapsada}>▼</span>
   </button>
 
   {#if !colapsada}

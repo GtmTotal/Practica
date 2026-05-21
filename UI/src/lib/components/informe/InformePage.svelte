@@ -12,6 +12,7 @@
   import ListaSecciones from './ListaSecciones.svelte';
   import InformeFooter from './InformeFooter.svelte';
   import Spinner from '../Spinner.svelte';
+  import SidebarIndice from './SidebarIndice.svelte';
 
   // Props from route parameters
   let { cuatrimestre: cuatrimestreParam, centro: centroParam }: {
@@ -253,18 +254,26 @@
       onCerrar={volver}
     />
 
-    <main class="informe-main">
-      <ListaSecciones
-        {obraForm}
-        {seccionesColapsadas}
-        {fotosPorSeccionBase64}
-        toggle={toggleSeccion}
-        agregarFoto={agregarFotos}
-        {eliminarFoto}
-        {descargarFoto}
-        actualizarDescripcion={actualizarDescripcionFoto}
+    <div class="layout-columns">
+      <SidebarIndice 
+        {obraForm} 
+        {seccionesColapsadas} 
+        {progreso} 
+        onToggle={toggleSeccion} 
       />
-    </main>
+      <main class="informe-main">
+        <ListaSecciones
+          {obraForm}
+          {seccionesColapsadas}
+          {fotosPorSeccionBase64}
+          toggle={toggleSeccion}
+          agregarFoto={agregarFotos}
+          {eliminarFoto}
+          {descargarFoto}
+          actualizarDescripcion={actualizarDescripcionFoto}
+        />
+      </main>
+    </div>
 
     <InformeFooter
       {obraForm}
@@ -282,16 +291,25 @@
 <style>
   .informe-wrapper {
     min-height: 100vh;
-    background: #f8f9fa;
+    background: #f8fafc;
     display: flex;
     flex-direction: column;
   }
 
+  .layout-columns {
+    display: flex;
+    gap: 24px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 24px 100px;
+    align-items: flex-start;
+  }
+
   .informe-main {
     flex: 1;
-    padding: 24px;
-    max-width: 900px;
     width: 100%;
+    max-width: 800px;
     margin: 0 auto;
   }
 

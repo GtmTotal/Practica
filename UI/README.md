@@ -28,13 +28,16 @@ ngrok http 192.168.1.135:5000 --url=earthly-discard-tarmac.ngrok-free.dev
 ## Build & Docker
 
 ```bash
-# compilar UI para producción
-npm run build   # genera ./build
+# Compilar UI para producción (opcional: Docker Compose ya lo hace automáticamente)
+# npm run build   # genera ./build
 
-# lanzar todo con Docker Compose (incluye API, MinIO, PostgreSQL)
+# Lanzar todo con Docker Compose (incluye API, MinIO, PostgreSQL y UI pre‑construida)
 cd ../infra
 docker compose up --build -d
 ```
+
+> **Nota:** Si utilizas `docker compose up --build`, el contenedor `ui` ejecuta el proceso de build durante la fase de construcción, por lo que no es necesario ejecutar `npm run build` por separado.
+
 
 El contenedor `ui` sirve los archivos estáticos desde `./build` usando Nginx.
 

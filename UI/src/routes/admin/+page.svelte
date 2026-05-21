@@ -334,11 +334,11 @@
     <div class="mobile-view mobile-cuatrimestre-view" class:active={!vistaPanel}>
       <div class="mobile-cuatrimestre-header">
         <div class="mobile-brand-row">
+          <button class="admin-back-link" onclick={() => { vistaPanel = true; cuatrimestreSeleccionado = ''; }}>‹ Cuatrimestre</button>
           <div class="mobile-brand">
             <span class="mobile-brand-arrow">▶</span>
             <span class="mobile-brand-name">GTM</span>
           </div>
-          <button class="mobile-gear" onclick={() => vistaPanel = true} title="Volver al panel">⚙</button>
         </div>
         <div class="mobile-cuatri-row">
           <span class="mobile-cuatri-title">{ grupoSeleccionado?.label }</span>

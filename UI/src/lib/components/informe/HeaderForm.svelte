@@ -46,13 +46,13 @@
       </div>
     </div>
   </div>
-  <div class="header-inputs-grid">
-    <div class="input-field">
-      <label for="tecnico-input">Técnico</label>
-      <input id="tecnico-input" type="text" bind:value={obraForm.tecnico} placeholder="Nombre completo">
+  <div class="header-inputs-inline">
+    <div class="input-field-inline">
+      <span class="input-icon">👤</span>
+      <input id="tecnico-input" type="text" bind:value={obraForm.tecnico} placeholder="Nombre completo del técnico">
     </div>
-    <div class="input-field">
-      <label for="fecha-input">Fecha</label>
+    <div class="input-field-inline">
+      <span class="input-icon">📅</span>
       <input id="fecha-input" type="date" bind:value={obraForm.fecha}>
     </div>
   </div>

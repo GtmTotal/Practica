@@ -496,25 +496,14 @@
 }
 
 @media (max-width: 768px) {
-  .dash-metrics { gap: 10px; }
+  .dash-metrics { 
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px; 
+  }
   .mm-card { padding: 14px 10px; }
   .mm-value { font-size: 22px; }
 }
 
-/* Back / Close Buttons */
-.dash-back-link {
-  background: transparent;
-  border: none;
-  color: rgba(255,255,255,0.6);
-  font-size: 14px;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s;
-}
-
-.dash-back-link:hover {
-  color: #ffffff;
-}
 
 .dash-cuatri-row {
   display: flex;

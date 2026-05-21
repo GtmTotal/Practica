@@ -36,10 +36,12 @@
   <div class="inspeccion-controles">
     <label class="check-inspeccion ok" class:checked={tarea.ok}>
       <input type="checkbox" bind:checked={tarea.ok} onchange={toggleOk}>
+      <span class="box-icon">✓</span>
       <span class="box-label">OK</span>
     </label>
     <label class="check-inspeccion nook" class:checked={tarea.noOk}>
       <input type="checkbox" bind:checked={tarea.noOk} onchange={toggleNoOk}>
+      <span class="box-icon">✕</span>
       <span class="box-label">NO OK</span>
     </label>
   </div>
@@ -114,15 +116,16 @@
     align-items: center;
     gap: 6px;
     cursor: pointer;
-    background: white;
-    padding: 6px 12px;
+    background: var(--gray-100, #f3f4f6);
+    padding: 8px 16px;
     border-radius: 100px;
-    border: 1px solid var(--gray-300, #d1d5db);
-    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--gray-600);
   }
 
   .check-inspeccion:hover {
-    background: var(--gray-100, #f3f4f6);
+    background: var(--gray-200);
   }
 
   .check-inspeccion input {
@@ -136,26 +139,20 @@
     letter-spacing: 0.03em;
   }
 
-  .check-inspeccion.ok {
-    border-color: var(--success, #059669);
-    color: var(--success, #059669);
+  .box-icon {
+    font-weight: 800;
   }
 
   .check-inspeccion.ok.checked {
     background: var(--success, #059669);
     color: white;
-    border-color: var(--success, #059669);
-  }
-
-  .check-inspeccion.nook {
-    border-color: var(--danger, #dc2626);
-    color: var(--danger, #dc2626);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
   }
 
   .check-inspeccion.nook.checked {
     background: var(--danger, #dc2626);
     color: white;
-    border-color: var(--danger, #dc2626);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
   }
 
   .tarea-extra-row {
@@ -203,16 +200,19 @@
   .input-nota-tarea {
     flex: 1;
     min-width: 150px;
-    padding: 8px 12px;
-    border: 1px solid var(--gray-200, #e5e7eb);
-    border-radius: 100px;
-    font-size: 0.8rem;
-    background: white;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    background: var(--gray-100, #f3f4f6);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
   }
 
   .input-nota-tarea:focus {
     outline: none;
+    background: white;
     border-color: var(--primary, #1e3a5f);
+    box-shadow: 0 4px 12px rgba(30, 60, 114, 0.08);
   }
 
   @media (max-width: 600px) {
