@@ -18,6 +18,7 @@ export interface TareaState {
   ok: boolean;
   noOk: boolean;
   notaTarea: string;
+  orden?: number;
   campos: CampoState[];
   bombasQuimicas?: BombaState[];
 }

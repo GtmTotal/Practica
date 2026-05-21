@@ -254,6 +254,30 @@
   transform: translateY(0);
 }
 
+/* ===== VIEW TOGGLE ===== */
+.action-group .btn-view-toggle {
+  padding: 8px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: #ffffff;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-group .btn-view-toggle.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+.action-group .btn-view-toggle:hover:not(.active) {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
 /* ===== MÉTRICAS ===== */
 .metrics-row {
   display: grid;
@@ -415,6 +439,39 @@
   flex: 1;
 }
 
+.centros-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 20px 32px 8px;
+  margin: 0;
+  display: block;
+}
+
+/* ===== DOCUMENTS SECTION ===== */
+.documents-section {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .admin-layout {
@@ -442,7 +499,6 @@
     display: none;
   }
 
-  /* ===== MOBILE VIEWS ===== */
   .mobile-view {
     display: none;
     flex-direction: column;
@@ -462,7 +518,6 @@
     background: #f5f5f0;
   }
 
-  /* ===== SHARED HEADER STYLES ===== */
   .mobile-brand-row {
     display: flex;
     justify-content: space-between;
@@ -509,7 +564,6 @@
     transform: translateX(-4px);
   }
 
-  /* ===== PANEL VIEW ===== */
   .mobile-panel-header {
     background: #1e3a5f;
     padding: 20px;
@@ -679,7 +733,6 @@
     color: #1e293b;
   }
 
-  /* ===== CUATRIMESTRE VIEW ===== */
   .mobile-cuatrimestre-header {
     background: #1e3a5f;
     padding: 20px;
@@ -697,17 +750,6 @@
     font-size: 22px;
     font-weight: 700;
     color: #ffffff;
-  }
-
-  .mobile-close-btn {
-    margin-left: auto;
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 16px;
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
   }
 
   .mobile-subtitle {
@@ -770,7 +812,6 @@
     overflow-y: auto;
   }
 
-  /* ===== CENTROS GRID MOBILE ===== */
   .centros-label {
     display: block;
     font-size: 12px;

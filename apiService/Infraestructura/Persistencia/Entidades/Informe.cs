@@ -1,3 +1,4 @@
+using System.Text.Json;
 namespace InformeObras.Infraestructura.Persistencia.Entidades;
 
 public class Informe
@@ -10,6 +11,7 @@ public class Informe
     public string? Tecnico { get; set; }
     public string? Conclusiones { get; set; }
     public bool Protegido { get; set; }
+    public JsonElement Datos { get; set; }
 
     public List<Sistema> Sistemas { get; set; } = [];
 }

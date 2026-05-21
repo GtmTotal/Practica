@@ -9,12 +9,15 @@
   import { ui } from '$lib/services/ui.svelte';
   import { configCentrosService } from '$lib/services/config-centros.svelte';
   import type { InformeGuardado, GrupoCuatrimestre } from '$lib/types/informe.interface';
+  import TareasEditor from '$lib/components/admin/TareasEditor.svelte';
 
   import './admin-page.css';
 
   let isAdmin = $derived(adminService.isAdmin);
   let isSyncing = $state(false);
   let vistaPanel = $state(true);
+  let vistaActual = $state<'centros'>('centros');
+  let showTareasEditor = $state(false);
   let cuatrimestreSeleccionado = $state('');
 
   let excelInput: HTMLInputElement;
@@ -94,7 +97,7 @@
     for (const sec of secciones) {
       for (const t of sec.tareas || []) {
         total++;
-        if (t.rev || t.ok || t.noOk) hechas++;
+        if (t.ok || t.noOk) hechas++;
       }
     }
     return total > 0 ? Math.round((hechas / total) * 100) : 0;
@@ -227,23 +230,33 @@
         <h1>{ grupoSeleccionado?.label || 'Administración' }</h1>
         <span class="header-subtitle">Informes de mantenimiento</span>
       </div>
-      <div class="header-actions">
-        <!-- Grupo Excel -->
-        <div class="action-group">
-          <input type="file" bind:this={excelInput} accept=".xlsx" hidden onchange={onSubirExcel} />
-          <button class="btn-icon-label secondary" onclick={() => excelInput.click()} disabled={isSyncing} title="Subir archivo Excel">
-            <span class="icon">📤</span>
-            <span class="label">{ isSyncing ? 'Subiendo...' : 'Subir Excel' }</span>
-          </button>
-          <button class="btn-icon-label secondary" onclick={descargarExcel} title="Descargar último Excel">
-            <span class="icon">📥</span>
-            <span class="label">Descargar</span>
-          </button>
-        </div>
+       <div class="header-actions">
+         <!-- Selector de Vista -->
+          <div class="action-group">
+            <span class="btn-view-toggle active">Centros</span>
+          </div>
 
-        <!-- Grupo Gestión -->
-        <div class="action-group">
-          {#if cuatrimestreSeleccionado}
+         <!-- Grupo Excel -->
+         <div class="action-group">
+           <input type="file" bind:this={excelInput} accept=".xlsx" hidden onchange={onSubirExcel} />
+           <button class="btn-icon-label secondary" onclick={() => excelInput.click()} disabled={isSyncing} title="Subir archivo Excel">
+             <span class="icon">📤</span>
+             <span class="label">{ isSyncing ? 'Subiendo...' : 'Subir Excel' }</span>
+           </button>
+           <button class="btn-icon-label secondary" onclick={descargarExcel} title="Descargar último Excel">
+             <span class="icon">📥</span>
+             <span class="label">Descargar</span>
+           </button>
+         </div>
+
+         <!-- Grupo Gestión -->
+         <div class="action-group">
+           <button class="btn-icon-label primary" onclick={() => showTareasEditor = true} title="Editar tareas de centros">
+             <span class="icon">🛠️</span>
+             <span class="label">Editar Tareas</span>
+           </button>
+           {#if cuatrimestreSeleccionado}
+
             <button class="btn-icon-label danger" onclick={() => eliminarCuatrimestre(cuatrimestreSeleccionado)} title="Eliminar este cuatrimestre">
               <span class="icon">🗑️</span>
               <span class="label">Eliminar</span>
@@ -404,58 +417,66 @@
     <!-- ===== DESKTOP CONTENT ===== -->
     <div class="desktop-content">
       {#if grupoSeleccionado}
-        <!-- Métricas -->
-        <section class="metrics-row">
-          <button class="metric-card" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>
-            <div class="metric-value">{ metricas.total }</div>
-            <div class="metric-label">CENTROS</div>
-          </button>
-          <button class="metric-card metric-green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>
-            <div class="metric-value">{ metricas.completados }</div>
-            <div class="metric-label">COMPLETADOS</div>
-          </button>
-          <button class="metric-card metric-orange" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>
-            <div class="metric-value">{ metricas.enProgreso }</div>
-            <div class="metric-label">EN PROGRESO</div>
-          </button>
-          <button class="metric-card metric-red" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>
-            <div class="metric-value">{ metricas.pendientes }</div>
-            <div class="metric-label">PENDIENTES</div>
-          </button>
-        </section>
+          <!-- Métricas -->
+          <section class="metrics-row">
+            <button class="metric-card" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>
+              <div class="metric-value">{ metricas.total }</div>
+              <div class="metric-label">CENTROS</div>
+            </button>
+            <button class="metric-card metric-green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>
+              <div class="metric-value">{ metricas.completados }</div>
+              <div class="metric-label">COMPLETADOS</div>
+            </button>
+            <button class="metric-card metric-orange" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>
+              <div class="metric-value">{ metricas.enProgreso }</div>
+              <div class="metric-label">EN PROGRESO</div>
+            </button>
+            <button class="metric-card metric-red" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>
+              <div class="metric-value">{ metricas.pendientes }</div>
+              <div class="metric-label">PENDIENTES</div>
+            </button>
+          </section>
 
-        <div class="centros-label">CENTROS ({informesFiltrados.length})</div>
-        <section class="centros-grid">
-          {#each informesFiltrados as inf (inf.id)}
-            <!-- svelte-ignore a11y_click_events_have_key_events -->
-            <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <div
-              class="centro-card"
-              style="border-left-color: {colorEstado(inf)}; --dot-color: {colorEstado(inf)}"
-              data-estado={estadoDe(inf)}
-              onclick={() => editarInforme(inf)}>
-              <div class="card-header">
-                <span class="centro-nombre">{ inf.nombreObra }</span>
-                <span class="centro-estado" style="color: {colorEstado(inf)}">
-                  { labelEstado(inf) }
-                </span>
-              </div>
-              <div class="card-body">
-                <div class="centro-progreso">
-                  <span class="progreso-valor">{ progresoDe(inf) }% completado</span>
+          <div class="centros-label">CENTROS ({informesFiltrados.length})</div>
+          <section class="centros-grid">
+            {#each informesFiltrados as inf (inf.id)}
+              <!-- svelte-ignore a11y_click_events_have_key_events -->
+              <!-- svelte-ignore a11y_no_static_element_interactions -->
+              <div
+                class="centro-card"
+                style="border-left-color: {colorEstado(inf)}; --dot-color: {colorEstado(inf)}"
+                data-estado={estadoDe(inf)}
+                onclick={() => editarInforme(inf)}>
+                <div class="card-header">
+                  <span class="centro-nombre">{ inf.nombreObra }</span>
+                  <span class="centro-estado" style="color: {colorEstado(inf)}">
+                    { labelEstado(inf) }
+                  </span>
                 </div>
-                <div class="centro-fecha">
-                  { inf.ultimaModificacion || '—' }
+                <div class="card-body">
+                  <div class="centro-progreso">
+                    <span class="progreso-valor">{ progresoDe(inf) }% completado</span>
+                  </div>
+                  <div class="centro-fecha">
+                    { inf.ultimaModificacion || '—' }
+                  </div>
                 </div>
               </div>
-            </div>
-          {/each}
-        </section>
-      {:else}
-        <div class="empty-state">
-          No hay cuatrimestres registrados.
-        </div>
-      {/if}
-    </div>
-  </main>
-</div>
+            {/each}
+          </section>
+        {:else}
+          <div class="empty-state">
+            No hay cuatrimestres registrados.
+          </div>
+        {/if}
+      </div>
+    </main>
+
+   {#if showTareasEditor}
+     <TareasEditor 
+       informes={informesFiltrados} 
+       onClose={() => showTareasEditor = false} 
+     />
+   {/if}
+ </div>
+

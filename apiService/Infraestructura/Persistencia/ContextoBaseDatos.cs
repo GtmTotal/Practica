@@ -26,6 +26,7 @@ public class ContextoBaseDatos(DbContextOptions<ContextoBaseDatos> options) : Db
             e.Property(x => x.Tecnico).HasColumnName("tecnico");
             e.Property(x => x.Conclusiones).HasColumnName("conclusiones");
             e.Property(x => x.Protegido).HasColumnName("protegido");
+            e.Property(x => x.Datos).HasColumnName("datos");
         });
 
         modelBuilder.Entity<Cuatrimestre>(e =>

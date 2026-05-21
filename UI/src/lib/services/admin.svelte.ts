@@ -1,11 +1,15 @@
 import { getApiBaseUrl, getApiHeaders } from '../api-config';
+import type { DocumentDto, UpdateDocumentDto } from '$lib/types/document.interface';
 
 class ServicioAdmin {
   private get apiBase() { return `${getApiBaseUrl()}/admin`; }
+  private get docsBase() { return `${getApiBaseUrl()}/documents`; }
   private readonly tokenKey = 'gtm_admin_token';
   
   // Estado persistente en la sesión
   isAdmin = $state(false);
+  documents = $state<DocumentDto[]>([]);
+  loadingDocs = $state(false);
 
   constructor() {
     if (typeof sessionStorage !== 'undefined') {
@@ -77,6 +81,59 @@ class ServicioAdmin {
       headers: this.getAuthHeaders()
     });
     return res.blob();
+  }
+
+  // --- Métodos para Documentos ---
+
+  async fetchDocuments() {
+    this.loadingDocs = true;
+    try {
+      const res = await fetch(this.docsBase, {
+        headers: this.getAuthHeaders()
+      });
+      if (!res.ok) throw new Error('Error al cargar documentos');
+      this.documents = await res.json();
+    } catch (e) {
+      console.error(e);
+      throw e;
+    } finally {
+      this.loadingDocs = false;
+    }
+  }
+
+  async saveDocument(doc: DocumentDto) {
+    const res = await fetch(this.docsBase, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.getAuthHeaders()
+      },
+      body: JSON.stringify(doc)
+    });
+    if (!res.ok) throw new Error('Error al guardar documento');
+    await this.fetchDocuments();
+  }
+
+  async updateDocument(id: number, update: UpdateDocumentDto) {
+    const res = await fetch(`${this.docsBase}/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.getAuthHeaders()
+      },
+      body: JSON.stringify(update)
+    });
+    if (!res.ok) throw new Error('Error al actualizar documento');
+    await this.fetchDocuments();
+  }
+
+  async deleteDocument(id: number) {
+    const res = await fetch(`${this.docsBase}/${id}`, {
+      method: 'DELETE',
+      headers: this.getAuthHeaders()
+    });
+    if (!res.ok) throw new Error('Error al eliminar documento');
+    await this.fetchDocuments();
   }
 }
 
