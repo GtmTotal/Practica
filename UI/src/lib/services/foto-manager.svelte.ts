@@ -86,16 +86,7 @@ class ServicioGestionFotografias {
       }))
     );
     
-    // Auto‑download each new photo so it stays on the device even if upload fails
-    nuevas.forEach(({ base64, nombre }) => {
-      const a = document.createElement('a');
-      a.href = base64;
-      a.download = nombre;
-      // Append temporarily to the DOM to make the click work on mobile browsers
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    });
+
     // Merge with existing list and update UI
     const actuales = [...fotosList, ...nuevas];
     onUpdate(actuales);

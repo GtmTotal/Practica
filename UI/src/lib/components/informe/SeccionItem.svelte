@@ -29,17 +29,20 @@
 
   let fileInput: HTMLInputElement | null = $state(null);
 
-  let numeroSeccion = $derived.by(() => {
-    const partes = seccion.titulo.split('-');
-    return partes.length > 1 ? partes[0].trim() : '';
+  let parsed = $derived.by(() => {
+    // Intenta formato: "1 - Titulo" o "1. Titulo" o "1 Titulo"
+    const match = seccion.titulo.match(/^(\d+)\s*[-.]?\s*(.+)$/);
+    if (match) {
+      return { numero: match[1], texto: match[2] };
+    }
+    return { numero: String(idxSeccion + 1), texto: seccion.titulo };
   });
-  let textoSeccion = $derived.by(() => {
-    const partes = seccion.titulo.split('-');
-    return partes.length > 1 ? partes[1].trim() : seccion.titulo;
-  });
+
+  let numeroSeccion = $derived(parsed.numero);
+  let textoSeccion = $derived(parsed.texto);
 </script>
 
-<div class="seccion-card">
+<div class="seccion-card" id="seccion-{idxSeccion}">
   <button type="button" class="seccion-titulo" onclick={onToggle}>
     <div class="seccion-titulo-left">
       {#if numeroSeccion}
@@ -47,7 +50,7 @@
       {/if}
       <span class="seccion-texto">{textoSeccion}</span>
     </div>
-    <span class="icon-toggle" class:is-open={!colapsada}>▼</span>
+    <span class="icon-toggle" class:is-open={!colapsada}>▶</span>
   </button>
 
   {#if !colapsada}

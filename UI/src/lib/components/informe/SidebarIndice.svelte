@@ -13,15 +13,16 @@
     onToggle: (idx: number) => void;
   } = $props();
 
-  function parseTituloCorto(tituloCompleto: string) {
-    const partes = tituloCompleto.split('-');
-    if (partes.length > 1) {
-      const numero = partes[0].trim();
-      const texto = partes[1].trim();
-      const textoFormateado = texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
-      return `${numero}. ${textoFormateado}`;
+  function parseTituloCorto(tituloCompleto: string, idx: number) {
+    // Intenta formato: "1 - Titulo" o "1. Titulo" o "1 Titulo"
+    const match = tituloCompleto.match(/^(\d+)\s*[-.]?\s*(.+)$/);
+    if (match) {
+      const num = match[1];
+      const textoFormateado = match[2].charAt(0).toUpperCase() + match[2].slice(1).toLowerCase();
+      return `${num}. ${textoFormateado}`;
     }
-    return tituloCompleto;
+    const textoFormateado = tituloCompleto.charAt(0).toUpperCase() + tituloCompleto.slice(1).toLowerCase();
+    return `${idx + 1}. ${textoFormateado}`;
   }
 
   function sectionIsComplete(seccion: any) {
@@ -33,14 +34,18 @@
   }
 
   function handleClick(idx: number) {
-    if (seccionesColapsadas[idx]) {
-      onToggle(idx);
-    }
-    // Scroll a la seccion
-    const el = document.getElementById(`seccion-${idx}`);
-    if (el) {
-      const y = el.getBoundingClientRect().top + window.scrollY - 100;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+    const isCollapsed = seccionesColapsadas[idx];
+    onToggle(idx);
+
+    if (isCollapsed) {
+      // Scroll only when opening the section
+      setTimeout(() => {
+        const el = document.getElementById(`seccion-${idx}`);
+        if (el) {
+          const y = el.getBoundingClientRect().top + window.scrollY - 100;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 50);
     }
   }
 </script>
@@ -58,7 +63,7 @@
         class="indice-item" 
         class:activa={!seccionesColapsadas[idx]} 
         onclick={() => handleClick(idx)}>
-        <span class="indice-texto">{parseTituloCorto(seccion.titulo)}</span>
+        <span class="indice-texto">{parseTituloCorto(seccion.titulo, idx)}</span>
         {#if sectionIsComplete(seccion)}
           <span class="indice-check">✅</span>
         {/if}
