@@ -220,6 +220,49 @@ public static class Endpoints
             return Results.Ok(new { id = entity.Id });
         });
 
+        groupInformes.MapPatch("/{id:long}/metadata", async (long id, JsonElement req, ContextoBaseDatos db) =>
+        {
+            var entity = await db.Informes.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity is null) return Results.NotFound();
+
+            if (req.TryGetProperty("tecnico", out var t)) entity.Tecnico = t.GetString();
+            if (req.TryGetProperty("conclusiones", out var c)) entity.Conclusiones = c.GetString();
+            if (req.TryGetProperty("protegido", out var p)) entity.Protegido = p.GetBoolean();
+            if (req.TryGetProperty("fecha", out var f) && DateOnly.TryParse(f.GetString(), out var fecha)) entity.Fecha = fecha;
+            
+            entity.Modificado = DateTime.Now.ToString("s");
+            await db.SaveChangesAsync();
+            return Results.Ok();
+        });
+
+        groupInformes.MapPatch("/{id:long}/seccion/{prefijo:int}", async (long id, int prefijo, JsonElement req, ContextoBaseDatos db) =>
+        {
+            var seccion = await db.Sistemas.FirstOrDefaultAsync(x => x.InformeId == id && x.Prefijo == prefijo);
+            if (seccion is null) return Results.NotFound();
+
+            if (req.TryGetProperty("observaciones", out var obs)) seccion.Observaciones = obs.GetString();
+            if (req.TryGetProperty("titulo", out var tit)) seccion.Titulo = tit.GetString();
+
+            await db.SaveChangesAsync();
+            return Results.Ok();
+        });
+
+        groupInformes.MapPatch("/{id:long}/seccion/{prefijo:int}/tarea/{orden:int}", async (long id, int prefijo, int orden, JsonElement req, ContextoBaseDatos db) =>
+        {
+            var tarea = await db.Tareas
+                .Include(t => t.Sistema)
+                .FirstOrDefaultAsync(x => x.Sistema.InformeId == id && x.Sistema.Prefijo == prefijo && x.Orden == orden);
+            if (tarea is null) return Results.NotFound();
+
+            if (req.TryGetProperty("ok", out var ok)) tarea.Ok = ok.GetBoolean();
+            if (req.TryGetProperty("noOk", out var noOk)) tarea.NoOk = noOk.GetBoolean();
+            if (req.TryGetProperty("rev", out var rev)) tarea.Rev = rev.GetBoolean();
+            if (req.TryGetProperty("notaTarea", out var nota)) tarea.NotaTarea = nota.GetString();
+
+            await db.SaveChangesAsync();
+            return Results.Ok();
+        });
+
         groupInformes.MapDelete("/{id:long}", async (long id, ContextoBaseDatos db, HttpRequest httpRequest, ServicioAutenticacionAdmin auth) =>
         {
             if (!EsAdmin(httpRequest, auth)) return Results.Unauthorized();

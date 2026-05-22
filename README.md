@@ -1,5 +1,7 @@
 # Informe de Obras
 
+> 📘 **¿Eres nuevo o no entiendes cómo funciona la BBDD?** [Lee la Guía para Torpes](./GUIA_PARA_TORPES.md) antes de empezar.
+
 Aplicación web para la gestión, digitalización y generación de informes de obras y mantenimiento. Permite a los técnicos completar checklist por sistemas, adjuntar fotografías, guardar progreso automáticamente y exportar el resultado como PDF profesional.
 
 ---
@@ -180,6 +182,7 @@ El `docker-compose.yml` ya está preparado para producción. Los pasos son idén
 2. Usar HTTPS (termina TLS con un reverse proxy como Nginx, Traefik o Caddy).
 
 3. Ejecutar:
+
 
 ```bash
 cd infra

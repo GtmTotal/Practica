@@ -50,6 +50,9 @@
   let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
   let statusTimer: ReturnType<typeof setTimeout> | null = null;
 
+  // Snapshot for deep comparison
+  let lastSavedSnapshot = $state<string>('');
+
   function setEstadoStatus(nuevo: 'ocioso' | 'guardado' | 'guardando' | 'error') {
     if (statusTimer) clearTimeout(statusTimer);
     estadoAutoguardado = nuevo;
@@ -60,19 +63,98 @@
     }
   }
 
+  async function performSmartSave() {
+    const form = obraForm;
+    if (!form || !form.id) return;
+
+    const currentSnapshot = JSON.stringify({
+      tecnico: form.tecnico,
+      fecha: form.fecha,
+      conclusiones: form.conclusiones,
+      secciones: form.secciones.map(s => ({
+        titulo: s.titulo,
+        observaciones: s.observaciones,
+        tareas: s.tareas.map(t => ({ ok: t.ok, noOk: t.noOk, rev: t.rev, notaTarea: t.notaTarea }))
+      }))
+    });
+
+    if (currentSnapshot === lastSavedSnapshot) {
+      estadoAutoguardado = 'ocioso';
+      return;
+    }
+
+    setEstadoStatus('guardando');
+
+    try {
+      const last = lastSavedSnapshot ? JSON.parse(lastSavedSnapshot) : null;
+      const current = JSON.parse(currentSnapshot);
+
+      // Check metadata
+      if (!last || last.tecnico !== current.tecnico || last.fecha !== current.fecha || last.conclusiones !== current.conclusiones) {
+        await formPersistenceService.patchMetadata(form.id, form);
+      }
+
+      // Check sections and tasks
+      for (let i = 0; i < form.secciones.length; i++) {
+        const sec = form.secciones[i];
+        const lastSec = last?.secciones[i];
+
+        if (!lastSec || lastSec.titulo !== current.secciones[i].titulo || lastSec.observaciones !== current.secciones[i].observaciones) {
+          await formPersistenceService.patchSeccion(form.id, sec);
+        }
+
+        for (let j = 0; j < sec.tareas.length; j++) {
+          const tarea = sec.tareas[j];
+          const lastTarea = lastSec?.tareas[j];
+          const curTarea = current.secciones[i].tareas[j];
+
+          if (!lastTarea || JSON.stringify(lastTarea) !== JSON.stringify(curTarea)) {
+            await formPersistenceService.patchTarea(form.id, Number(sec.prefijo), j, tarea);
+          }
+        }
+      }
+
+      lastSavedSnapshot = currentSnapshot;
+      setEstadoStatus('guardado');
+    } catch (e) {
+      console.error('Error en autoguardado inteligente:', e);
+      setEstadoStatus('error');
+    }
+  }
+
   function scheduleAutoSave() {
     if (!inicializado) return;
     if (autoSaveTimer) clearTimeout(autoSaveTimer);
-    setEstadoStatus('guardando');
-    autoSaveTimer = setTimeout(async () => {
-      try {
-        await formPersistenceService.soloGuardar(obraForm, fotosPorSeccionBase64);
-        setEstadoStatus('guardado');
-      } catch (e) {
-        console.error('Error en autoguardado:', e);
-        setEstadoStatus('error');
-      }
-    }, 1000);
+    
+    // Si no hay ID todavía, usamos el guardado completo tradicional para crear el registro
+    if (!obraForm?.id) {
+      setEstadoStatus('guardando');
+      autoSaveTimer = setTimeout(async () => {
+        try {
+          await formPersistenceService.soloGuardar(obraForm, fotosPorSeccionBase64);
+          if (obraForm?.id) {
+             // Inicializar snapshot después del primer guardado exitoso que asigna ID
+             lastSavedSnapshot = JSON.stringify({
+                tecnico: obraForm.tecnico,
+                fecha: obraForm.fecha,
+                conclusiones: obraForm.conclusiones,
+                secciones: obraForm.secciones.map(s => ({
+                  titulo: s.titulo,
+                  observaciones: s.observaciones,
+                  tareas: s.tareas.map(t => ({ ok: t.ok, noOk: t.noOk, rev: t.rev, notaTarea: t.notaTarea }))
+                }))
+              });
+          }
+          setEstadoStatus('guardado');
+        } catch (e) {
+          setEstadoStatus('error');
+        }
+      }, 2000);
+      return;
+    }
+
+    // Si ya hay ID, usamos el parche inteligente debounced
+    autoSaveTimer = setTimeout(performSmartSave, 2000);
   }
 
   // Watch form and photos for auto-save
