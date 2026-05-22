@@ -1,5 +1,6 @@
 <script lang="ts">
   import { databaseService } from '$lib/services/database.svelte';
+  import { formPersistenceService } from '$lib/services/form-persistence.svelte';
   import { ui } from '$lib/services/ui.svelte';
   import { fade } from 'svelte/transition';
 
@@ -56,25 +57,10 @@
     if (!currentInforme) return;
     saving = true;
     try {
-      const secciones = currentInforme.secciones;
-      const nombreObra = currentInforme.nombreObra;
-      const todos = await databaseService.obtenerTodos();
-      const matches = todos.filter(i => i.nombreObra === nombreObra);
+      await databaseService.guardar(currentInforme);
+      await formPersistenceService.cargarHistorial();
 
-      if (matches.length === 0) {
-        await databaseService.guardar(currentInforme);
-      } else {
-        for (const match of matches) {
-          const data = await databaseService.obtenerPorId(match.id);
-          if (data) {
-            data.secciones = JSON.parse(JSON.stringify(secciones));
-            data.cuatrimestre = match.cuatrimestre;
-            await databaseService.guardar(data);
-          }
-        }
-      }
-
-      ui.success(`Tareas actualizadas en ${matches.length} cuatrimestre${matches.length !== 1 ? 's' : ''}`);
+      ui.success('Tareas actualizadas en el cuatrimestre seleccionado');
       onClose();
     } catch (e: any) {
       ui.error('Error al guardar los cambios: ' + (e.message || 'Error desconocido'));
@@ -116,7 +102,7 @@
     <header class="editor-header">
       <div class="header-left">
         <h2>Editor de Centros</h2>
-        <p>Los cambios se aplican a todos los cuatrimestres</p>
+        <p>Los cambios se aplican solo al cuatrimestre seleccionado</p>
       </div>
       <button class="btn-close" onclick={onClose} title="Cerrar">✕</button>
     </header>
