@@ -16,6 +16,7 @@ public interface IServicioAlmacenamientoArchivos
 public sealed class SolicitudGuardarInforme
 {
     public long? Id { get; set; }
+    public string? Tipo { get; set; }
     public string? NombreObra { get; set; }
     public string? Tecnico { get; set; }
     public string? Fecha { get; set; }
@@ -69,6 +70,7 @@ public static class Endpoints
                 .Select(x => new
                 {
                     id = x.Id,
+                    tipo = x.Tipo,
                     nombre_obra = x.NombreObra,
                     tecnico = x.Tecnico,
                     fecha = x.Fecha,
@@ -157,6 +159,7 @@ public static class Endpoints
             var datos = req.Datos.ValueKind == JsonValueKind.Object ? req.Datos : default;
 
             entity.NombreObra = ObtenerString(datos, "nombreObra") ?? req.NombreObra ?? "Sin nombre";
+            entity.Tipo = req.Tipo ?? "mantenimiento";
             entity.Tecnico = ObtenerString(datos, "tecnico") ?? req.Tecnico;
             entity.Cuatrimestre = ObtenerString(datos, "cuatrimestre") ?? req.Cuatrimestre;
             if (string.IsNullOrWhiteSpace(entity.Cuatrimestre))
@@ -478,6 +481,7 @@ public static class Endpoints
             var entity = await db.Informes.FindAsync(id);
             if (entity == null) return Results.NotFound();
 
+            if (req.Tipo != null) entity.Tipo = req.Tipo;
             if (req.Tecnico != null) entity.Tecnico = req.Tecnico;
             if (req.Fecha != null) entity.Fecha = DateOnly.Parse(req.Fecha);
             if (req.Cuatrimestre != null) entity.Cuatrimestre = req.Cuatrimestre;

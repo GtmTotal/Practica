@@ -1,5 +1,6 @@
 export interface InformeGuardado {
   id?: number;
+  tipo?: string;
   nombreObra: string;
   tecnico?: string;
   fecha?: string;

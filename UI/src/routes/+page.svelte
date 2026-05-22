@@ -16,7 +16,8 @@
   let vistaPanel = $derived(cuatrimestreSeleccionado === '');
 
   let informesGuardados = $derived(formPersistenceService.informesGuardados);
-  let cuatrimestres = $derived(cuatrimestreService.getInformesPorCuatrimestre(informesGuardados));
+  let informesMantenimiento = $derived(informesGuardados.filter(i => i.tipo === 'mantenimiento' || !i.tipo));
+  let cuatrimestres = $derived(cuatrimestreService.getInformesPorCuatrimestre(informesMantenimiento));
   
   let grupoSeleccionado = $derived(cuatrimestres.find(g => g.clave === cuatrimestreSeleccionado));
   let informesActuales = $derived(grupoSeleccionado?.informes || []);

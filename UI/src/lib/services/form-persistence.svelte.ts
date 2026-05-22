@@ -46,7 +46,7 @@ class ServicioPersistenciaFormulario {
   async guardar(obraForm: FormState | null, fotosSecciones: Foto[][]): Promise<void> {
     if (!obraForm) return;
 
-    if (!obraForm.cuatrimestre || !obraForm.cuatrimestre.trim()) {
+    if ((!obraForm.tipo || obraForm.tipo === 'mantenimiento') && (!obraForm.cuatrimestre || !obraForm.cuatrimestre.trim())) {
       ui.error('El informe debe tener un cuatrimestre asignado');
       return;
     }
@@ -67,7 +67,7 @@ class ServicioPersistenciaFormulario {
   async soloGuardar(obraForm: FormState | null, fotosSecciones: Foto[][]): Promise<void> {
     if (!obraForm) return;
 
-    if (!obraForm.cuatrimestre || !obraForm.cuatrimestre.trim()) {
+    if ((!obraForm.tipo || obraForm.tipo === 'mantenimiento') && (!obraForm.cuatrimestre || !obraForm.cuatrimestre.trim())) {
       return; // Silently fail for auto-save if cuatrimestre is missing
     }
     const informeCompleto = {
@@ -100,13 +100,17 @@ class ServicioPersistenciaFormulario {
 
       const obraForm: FormState = {
         id: completo.id,
+        tipo: completo.tipo || 'mantenimiento',
         nombreObra: nombreCentro,
         tecnico: completo.tecnico || '',
         fecha: completo.fecha || '',
         cuatrimestre: completo.cuatrimestre || '',
         secciones: [],
         conclusiones: completo.conclusiones || '',
-        protegido: completo.protegido || false
+        protegido: completo.protegido || false,
+        nProy: completo.nProy,
+        nOrdenCuadro: completo.nOrdenCuadro,
+        nOrdenInstalacion: completo.nOrdenInstalacion
       };
 
       const fotosPorSeccionBase64: Foto[][] = [];

@@ -56,4 +56,20 @@
       <input id="fecha-input" type="date" bind:value={obraForm.fecha}>
     </div>
   </div>
+  {#if obraForm.tipo === 'cuadro_electrico'}
+    <div class="header-inputs-inline cuadro-extra-fields">
+      <div class="input-field-inline">
+        <span class="input-icon">📋</span>
+        <input type="text" bind:value={obraForm.nProy} placeholder="Nº Proyecto">
+      </div>
+      <div class="input-field-inline">
+        <span class="input-icon">🔢</span>
+        <input type="text" bind:value={obraForm.nOrdenCuadro} placeholder="Nº Orden Cuadro">
+      </div>
+      <div class="input-field-inline">
+        <span class="input-icon">🔌</span>
+        <input type="text" bind:value={obraForm.nOrdenInstalacion} placeholder="Nº Orden Instalación">
+      </div>
+    </div>
+  {/if}
 </header>

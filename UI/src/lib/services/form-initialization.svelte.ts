@@ -33,6 +33,7 @@ export interface SeccionState {
 
 export interface FormState {
   id: number | null;
+  tipo: string;
   nombreObra: string;
   tecnico: string;
   fecha: string;
@@ -40,6 +41,9 @@ export interface FormState {
   conclusiones: string;
   cuatrimestre: string | null;
   protegido: boolean;
+  nProy?: string;
+  nOrdenCuadro?: string;
+  nOrdenInstalacion?: string;
 }
 
 class ServicioInicializacionFormulario {
@@ -56,6 +60,7 @@ class ServicioInicializacionFormulario {
 
     const form: FormState = {
       id: null,
+      tipo: 'mantenimiento',
       nombreObra: centroConfig.nombre || nombre,
       tecnico: '',
       fecha: new Date().toISOString().split('T')[0],

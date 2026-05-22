@@ -10,9 +10,8 @@
 
   import HeaderForm from './HeaderForm.svelte';
   import ListaSecciones from './ListaSecciones.svelte';
-  import InformeFooter from './InformeFooter.svelte';
-  import Spinner from '../Spinner.svelte';
-  import SidebarIndice from './SidebarIndice.svelte';
+import InformeFooter from './InformeFooter.svelte';
+   import Spinner from '../Spinner.svelte';
 
   // Props from route parameters
   let { cuatrimestre: cuatrimestreParam, centro: centroParam }: {
@@ -238,7 +237,7 @@
 </script>
 
 <svelte:head>
-  <title>Informe {centroSeleccionado || ''} | GTM Mantenimiento</title>
+  <title>{centroSeleccionado || ''} | {obraForm?.tipo === 'cuadro_electrico' ? 'Cuadro Eléctrico' : 'Informe'} | GTM</title>
 </svelte:head>
 
 {#if cargando}
@@ -257,25 +256,19 @@
     />
 
     <div class="layout-columns">
-      <SidebarIndice 
-        {obraForm} 
-        {seccionesColapsadas} 
-        {progreso} 
-        onToggle={toggleSeccion} 
-      />
-      <main class="informe-main">
-        <ListaSecciones
-          {obraForm}
-          {seccionesColapsadas}
-          {fotosPorSeccionBase64}
-          toggle={toggleSeccion}
-          agregarFoto={agregarFotos}
-          {eliminarFoto}
-          {descargarFoto}
-          actualizarDescripcion={actualizarDescripcionFoto}
-        />
-      </main>
-    </div>
+       <main class="informe-main">
+         <ListaSecciones
+           {obraForm}
+           {seccionesColapsadas}
+           {fotosPorSeccionBase64}
+           toggle={toggleSeccion}
+           agregarFoto={agregarFotos}
+           {eliminarFoto}
+           {descargarFoto}
+           actualizarDescripcion={actualizarDescripcionFoto}
+         />
+       </main>
+     </div>
 
     <InformeFooter
       {obraForm}

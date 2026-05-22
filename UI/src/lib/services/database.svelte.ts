@@ -6,15 +6,14 @@ class ServicioBaseDeDatos {
   private get apiBase() { return getApiBaseUrl(); }
 
   async guardar(informe: any) {
-    if (!informe.cuatrimestre || !informe.cuatrimestre.trim()) {
-      throw new Error('El informe debe tener un cuatrimestre asignado');
-    }
+    const tipo = informe.tipo || 'mantenimiento';
 
     const payload = {
       id: informe.id,
+      tipo,
       nombreObra: informe.nombreObra || 'Sin nombre',
       fecha: informe.fecha || null,
-      cuatrimestre: informe.cuatrimestre.trim(),
+      cuatrimestre: (informe.cuatrimestre || '').trim(),
       ultimaModificacion: informe.ultimaModificacion || new Date().toLocaleString(),
       datos: informe,
     };
@@ -40,6 +39,7 @@ class ServicioBaseDeDatos {
 
     return data.map((item: any) => ({
       id: item.id,
+      tipo: item.tipo || 'mantenimiento',
       nombreObra: item.nombre_obra,
       fecha: item.fecha,
       cuatrimestre: item.cuatrimestre,

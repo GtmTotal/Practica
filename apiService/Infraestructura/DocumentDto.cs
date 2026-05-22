@@ -2,6 +2,7 @@ using System.Text.Json;
 namespace InformeObras.Infraestructura;
 public class DocumentDto {
     public long Id { get; set; }
+    public string Tipo { get; set; } = "mantenimiento";
     public string NombreObra { get; set; } = string.Empty;
     // Todas las columnas del Excel excepto "nombreCentro"
     public string Tecnico { get; set; } = string.Empty;
@@ -13,6 +14,7 @@ public class DocumentDto {
     public JsonElement Datos { get; set; }
 }
 public class UpdateDocumentDto {
+    public string? Tipo { get; set; }
     public string? Tecnico { get; set; }
     public string? Fecha { get; set; }
     public string? Cuatrimestre { get; set; }

@@ -7,9 +7,12 @@
   import { formInitService } from '$lib/services/form-initialization.svelte';
   import { navService } from '$lib/services/navigation.svelte';
   import { ui } from '$lib/services/ui.svelte';
-  import { configCentrosService } from '$lib/services/config-centros.svelte';
-  import type { InformeGuardado, GrupoCuatrimestre } from '$lib/types/informe.interface';
-  import TareasEditor from '$lib/components/admin/TareasEditor.svelte';
+import { configCentrosService } from '$lib/services/config-centros.svelte';
+import { databaseService } from '$lib/services/database.svelte';
+import { CUADRO_ELECTRICO_TEMPLATE } from '$lib/templates/cuadroElectrico';
+import type { InformeGuardado, GrupoCuatrimestre } from '$lib/types/informe.interface';
+import TareasEditor from '$lib/components/admin/TareasEditor.svelte';
+import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectricoModal.svelte';
 
   import './admin-page.css';
 
@@ -55,7 +58,10 @@
   });
 
   let informesGuardados = $derived(formPersistenceService.informesGuardados);
-  let cuatrimestres = $derived(cuatrimestreService.getInformesPorCuatrimestre(informesGuardados));
+  let informesMantenimiento = $derived(informesGuardados.filter(i => i.tipo === 'mantenimiento' || !i.tipo));
+  let informesCuadro = $derived(informesGuardados.filter(i => i.tipo === 'cuadro_electrico'));
+
+  let cuatrimestres = $derived(cuatrimestreService.getInformesPorCuatrimestre(informesMantenimiento));
 
   $effect(() => {
     if (cuatrimestres.length > 0 && !cuatrimestreSeleccionado) {
@@ -171,6 +177,10 @@
     await formPersistenceService.cargarHistorial();
   }
 
+  let showCrearCuadroModal = $state(false);
+  let selectedCuadroId = $state<number | null>(null);
+  let selectedCuadro = $derived(informesCuadro.find(i => i.id === selectedCuadroId) || null);
+
   async function eliminarCuatrimestre(cuatrimestre: string) {
     const ok = await cuatrimestreService.eliminarCuatrimestreConUI(cuatrimestre);
     if (ok) {
@@ -194,6 +204,41 @@
     }
   }
 
+  function crearInformeCuadro() {
+    showCrearCuadroModal = true;
+  }
+
+  async function editarInformeCuadro(inf: InformeGuardado) {
+    const result = await formPersistenceService.editarInforme(inf);
+    if (result) {
+      formInitService.setFormData(
+        result.obraForm,
+        result.fotosPorSeccionBase64,
+        result.seccionesColapsadas
+      );
+      await navService.irAFormulario(inf.cuatrimestre || '', inf.nombreObra, 'admin');
+    }
+  }
+
+  async function eliminarInformeCuadro(inf: InformeGuardado) {
+    const ok = await ui.confirm(
+      'Eliminar Informe',
+      `¿Eliminar el informe "${inf.nombreObra}"? Esta acción no se puede deshacer.`,
+      'Eliminar',
+      'Cancelar'
+    );
+    if (!ok) return;
+    try {
+      if (inf.id) {
+        await databaseService.eliminar(inf.id);
+        await formPersistenceService.cargarHistorial();
+        ui.success('Informe eliminado');
+      }
+    } catch (e: any) {
+      ui.error('Error al eliminar: ' + (e.message || 'Error desconocido'));
+    }
+  }
+
   function cerrarSesion() {
     adminService.setAdmin(false);
     goto('/');
@@ -204,7 +249,7 @@
   <title>Administración | GTM Mantenimiento</title>
 </svelte:head>
 
-<div class="admin-layout" class:root-layout={menuPrincipal === 'raiz' || menuPrincipal === 'cuadro_electrico'}>
+<div class="admin-layout" class:root-layout={menuPrincipal === 'raiz'}>
   {#if menuPrincipal === 'raiz'}
     <!-- Vista Principal de Bienvenida/Selección -->
     <div class="admin-root-menu">
@@ -243,8 +288,7 @@
             </div>
             <div class="card-info">
               <h2>Cuadro Eléctrico</h2>
-              <p>Diagramas unifilares, cálculo de cargas, fallos mecánicos e incidencias eléctricas.</p>
-              <span class="badge-soon">Próximamente</span>
+              <p>Gestión de informes de procesos de cuadros eléctricos. Edición de tareas, creación y control de obras.</p>
             </div>
             <div class="card-arrow">➔</div>
           </button>
@@ -256,49 +300,151 @@
       </div>
     </div>
   {:else if menuPrincipal === 'cuadro_electrico'}
-    <!-- Vista Cuadro Eléctrico Placeholder -->
-    <div class="electrical-placeholder-container">
-      <div class="placeholder-card">
-        <header class="placeholder-header">
-          <button class="btn-back-menu" onclick={() => menuPrincipal = 'raiz'}>
-            <span class="arrow">←</span> Volver al Menú
-          </button>
-          <div class="logo-corner">GTM</div>
-        </header>
+    <!-- Sidebar (desktop only) -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-logo">GTM</span>
+        <span class="brand-dot"></span>
+        <span class="brand-text">Cuadro Eléctrico</span>
+      </div>
 
-        <div class="placeholder-body">
-          <div class="placeholder-icon">⚡</div>
-          <h1>Módulo: Cuadro Eléctrico</h1>
-          <p class="subtitle">Este panel se encuentra actualmente en desarrollo</p>
-          
-          <div class="coming-soon-details">
-            <div class="detail-item">
-              <span class="detail-check">✓</span>
-              <div>
-                <h3>Planos y Esquemas</h3>
-                <p>Carga y visualización de esquemas unifilares interactivos por centro.</p>
+      <div class="sidebar-nav-back">
+        <button class="btn-back-to-menu" onclick={() => { menuPrincipal = 'raiz'; selectedCuadroId = null; }}>
+          <span class="icon">←</span> Volver al Menú
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Informes</div>
+        {#each informesCuadro as inf (inf.id)}
+          <button
+            class="nav-item"
+            class:active={selectedCuadroId === inf.id}
+            onclick={() => selectedCuadroId = inf.id != null ? (inf.id === selectedCuadroId ? null : inf.id) : null}>
+            <div class="nav-item-title">{ inf.nombreObra }</div>
+            <div class="nav-item-meta">
+              {#if inf.nOrdenCuadro}
+                Orden: {inf.nOrdenCuadro}
+              {:else}
+                {progresoDe(inf)}%
+              {/if}
+            </div>
+          </button>
+        {/each}
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick={cerrarSesion} title="Cerrar sesión">
+          Salir
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <header class="main-header">
+        <div class="header-title">
+          <button class="btn-back-header" onclick={() => { menuPrincipal = 'raiz'; selectedCuadroId = null; }} title="Volver al Menú Principal">←</button>
+          <div>
+            <h1>{ selectedCuadro?.nombreObra || 'Cuadro Eléctrico' }</h1>
+            <span class="header-subtitle">Gestión de informes de cuadros eléctricos</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <div class="action-group">
+            <button class="btn-icon-label primary" onclick={crearInformeCuadro} title="Nuevo informe">
+              <span class="icon">➕</span>
+              <span class="label">Nuevo Informe</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="desktop-content">
+        {#if selectedCuadro}
+          <div class="cuadro-detail-header">
+            <div class="cuadro-detail-icon">⚡</div>
+            <div class="cuadro-detail-info">
+              <h2>{ selectedCuadro.nombreObra }</h2>
+              <div class="cuadro-detail-meta">
+                {#if selectedCuadro.nProy}<span>Proy: {selectedCuadro.nProy}</span>{/if}
+                {#if selectedCuadro.nOrdenCuadro}<span>Orden: {selectedCuadro.nOrdenCuadro}</span>{/if}
+                {#if selectedCuadro.nOrdenInstalacion}<span>Inst: {selectedCuadro.nOrdenInstalacion}</span>{/if}
               </div>
             </div>
-            <div class="detail-item">
-              <span class="detail-check">✓</span>
-              <div>
-                <h3>Gestión de Fases y Potencias</h3>
-                <p>Monitoreo de amperajes, balance de fases y límites térmicos configurados.</p>
-              </div>
-            </div>
-            <div class="detail-item">
-              <span class="detail-check">✓</span>
-              <div>
-                <h3>Reportes de Averías</h3>
-                <p>Historial técnico de incidencias eléctricas y disparos de diferenciales.</p>
-              </div>
+            <div class="cuadro-detail-estado" style="color: {colorEstado(selectedCuadro)}">
+              { labelEstado(selectedCuadro) }
             </div>
           </div>
-          
-          <p class="footer-note">Estaremos implementando este panel con la información que nos indiques.</p>
-        </div>
+          <div class="cuadro-progreso-row">
+            <div class="cuadro-progreso-bar">
+              <div class="cuadro-progreso-fill" style="width: {progresoDe(selectedCuadro)}%"></div>
+            </div>
+            <span class="cuadro-progreso-texto">{progresoDe(selectedCuadro)}% completado</span>
+          </div>
+          <div class="cuadro-detail-actions">
+            <button class="btn-icon-label primary" onclick={() => editarInformeCuadro(selectedCuadro)}>
+              <span class="icon">✏️</span>
+              <span class="label">Editar Informe</span>
+            </button>
+            <button class="btn-icon-label danger" onclick={() => eliminarInformeCuadro(selectedCuadro)}>
+              <span class="icon">🗑️</span>
+              <span class="label">Eliminar</span>
+            </button>
+          </div>
+        {:else if informesCuadro.length > 0}
+          <div class="cuadro-grid">
+            {#each informesCuadro as inf (inf.id)}
+              <div class="cuadro-card" role="button" tabindex="0" onclick={() => selectedCuadroId = inf.id ?? null} onkeydown={(e) => e.key === 'Enter' && (selectedCuadroId = inf.id ?? null)}>
+                <div class="cuadro-card-header">
+                  <div class="cuadro-card-icon">⚡</div>
+                  <div class="cuadro-card-info">
+                    <h3 class="cuadro-card-title">{ inf.nombreObra }</h3>
+                    {#if inf.nProy}
+                      <span class="cuadro-card-meta">Proy: {inf.nProy}</span>
+                    {/if}
+                    {#if inf.nOrdenCuadro}
+                      <span class="cuadro-card-meta">Orden: {inf.nOrdenCuadro}</span>
+                    {/if}
+                  </div>
+                  <div class="cuadro-card-estado" style="color: {colorEstado(inf)}">
+                    { labelEstado(inf) }
+                  </div>
+                </div>
+                <div class="cuadro-card-body">
+                  <div class="cuadro-progreso">
+                    <div class="cuadro-progreso-bar">
+                      <div class="cuadro-progreso-fill" style="width: {progresoDe(inf)}%"></div>
+                    </div>
+                    <span class="cuadro-progreso-texto">{progresoDe(inf)}%</span>
+                  </div>
+                  <div class="cuadro-card-meta-row">
+                    <span>Modificado: {inf.ultimaModificacion || '—'}</span>
+                  </div>
+                </div>
+              </div>
+            {/each}
+          </div>
+        {:else}
+          <div class="empty-state">
+            <div class="cuadro-empty-icon" style="font-size: 48px; margin-bottom: 12px;">⚡</div>
+            <h2 style="margin: 0 0 8px; font-size: 18px;">No hay informes de Cuadro Eléctrico</h2>
+            <p style="margin: 0 0 20px; color: #64748b;">Crea un nuevo informe para comenzar.</p>
+            <button class="btn-icon-label primary" onclick={crearInformeCuadro}>
+              <span class="icon">➕</span>
+              <span class="label">Crear Primer Informe</span>
+            </button>
+          </div>
+        {/if}
       </div>
-    </div>
+    </main>
+
+    {#if showCrearCuadroModal}
+      <CrearCuadroElectricoModal
+        onClose={() => showCrearCuadroModal = false}
+        onCreated={() => { showCrearCuadroModal = false; selectedCuadroId = null; }}
+      />
+    {/if}
   {:else if menuPrincipal === 'mantenimiento_mercadona'}
     <!-- Sidebar (desktop only) -->
     <aside class="admin-sidebar">

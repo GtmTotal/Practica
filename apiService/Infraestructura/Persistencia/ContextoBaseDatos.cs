@@ -19,6 +19,7 @@ public class ContextoBaseDatos(DbContextOptions<ContextoBaseDatos> options) : Db
             e.ToTable("informes");
             e.HasKey(x => x.Id);
             e.Property(x => x.Id).HasColumnName("id");
+            e.Property(x => x.Tipo).HasColumnName("tipo");
             e.Property(x => x.NombreObra).HasColumnName("nombre_obra");
             e.Property(x => x.Fecha).HasColumnName("fecha");
             e.Property(x => x.Cuatrimestre).HasColumnName("cuatrimestre");
