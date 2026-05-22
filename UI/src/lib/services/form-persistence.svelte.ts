@@ -83,6 +83,31 @@ class ServicioPersistenciaFormulario {
     await databaseService.guardar(informeCompleto);
   }
 
+  async patchMetadata(id: number, obraForm: FormState): Promise<void> {
+    await databaseService.patchMetadata(id, {
+      tecnico: obraForm.tecnico,
+      conclusiones: obraForm.conclusiones,
+      protegido: obraForm.protegido,
+      fecha: obraForm.fecha
+    });
+  }
+
+  async patchSeccion(id: number, seccion: SeccionState): Promise<void> {
+    await databaseService.patchSeccion(id, Number(seccion.prefijo), {
+      observaciones: seccion.observaciones,
+      titulo: seccion.titulo
+    });
+  }
+
+  async patchTarea(id: number, prefijo: number, orden: number, tarea: TareaState): Promise<void> {
+    await databaseService.patchTarea(id, prefijo, orden, {
+      ok: tarea.ok,
+      noOk: tarea.noOk,
+      rev: tarea.rev,
+      notaTarea: tarea.notaTarea
+    });
+  }
+
   async editarInforme(inf: InformeGuardado): Promise<{
     obraForm: FormState;
     fotosPorSeccionBase64: Foto[][];

@@ -30,6 +30,42 @@ class ServicioBaseDeDatos {
     return res.json();
   }
 
+  async patchMetadata(id: number, metadata: any) {
+    const res = await fetch(`${this.apiBase}/informes/${id}/metadata`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...adminService.getAuthHeaders()
+      },
+      body: JSON.stringify(metadata)
+    });
+    if (!res.ok) throw new Error('Error al actualizar metadata');
+  }
+
+  async patchSeccion(id: number, prefijo: number, data: any) {
+    const res = await fetch(`${this.apiBase}/informes/${id}/seccion/${prefijo}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...adminService.getAuthHeaders()
+      },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Error al actualizar sección');
+  }
+
+  async patchTarea(id: number, prefijo: number, orden: number, data: any) {
+    const res = await fetch(`${this.apiBase}/informes/${id}/seccion/${prefijo}/tarea/${orden}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...adminService.getAuthHeaders()
+      },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Error al actualizar tarea');
+  }
+
   async obtenerTodos(): Promise<InformeGuardado[]> {
     const res = await fetch(`${this.apiBase}/informes`, {
       headers: getApiHeaders()
