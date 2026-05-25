@@ -26,8 +26,8 @@ export function getApiBaseUrl(): string {
     return `http://${hostname}:5000/api`;
   }
 
-  // Si estamos fuera de la red local → usar Dokploy
-  return 'https://reporteobras-api-x6lbu1.dokploy.com/api';
+  // Si estamos fuera de la red local → usar ngrok
+  return 'https://earthly-discard-tarmac.ngrok-free.dev/api';
 }
 
 /**
