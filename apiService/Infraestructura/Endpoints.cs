@@ -24,6 +24,9 @@ public sealed class SolicitudGuardarInforme
     public bool Protegido { get; set; }
     public string? Conclusiones { get; set; }
     public string? UltimaModificacion { get; set; }
+    public string? NProy { get; set; }
+    public string? NOrdenCuadro { get; set; }
+    public string? NOrdenInstalacion { get; set; }
     public JsonElement Datos { get; set; }
 }
 
@@ -78,6 +81,9 @@ public static class Endpoints
                     protegido = x.Protegido,
                     conclusiones = x.Conclusiones,
                     modificado = x.Modificado,
+                    n_proy = x.NProy,
+                    n_orden_cuadro = x.NOrdenCuadro,
+                    n_orden_instalacion = x.NOrdenInstalacion,
                     datos = new
                     {
                         protegido = x.Protegido,
@@ -110,6 +116,10 @@ public static class Endpoints
                 cuatrimestre = item.Cuatrimestre,
                 protegido = item.Protegido,
                 conclusiones = item.Conclusiones,
+                tipo = item.Tipo,
+                nProy = item.NProy,
+                nOrdenCuadro = item.NOrdenCuadro,
+                nOrdenInstalacion = item.NOrdenInstalacion,
                 secciones = item.Sistemas
                     .OrderBy(s => s.Orden)
                     .Select(s => new
@@ -152,22 +162,25 @@ public static class Endpoints
 
             if (entity is null)
             {
-                entity = new Informe { Id = id };
+                entity = new Informe { Id = id, Datos = JsonDocument.Parse("{}").RootElement };
                 db.Informes.Add(entity);
             }
 
-            var datos = req.Datos.ValueKind == JsonValueKind.Object ? req.Datos : default;
+            var datos = req.Datos.ValueKind == JsonValueKind.Object ? req.Datos : JsonDocument.Parse("{}").RootElement;
 
             entity.NombreObra = ObtenerString(datos, "nombreObra") ?? req.NombreObra ?? "Sin nombre";
             entity.Tipo = req.Tipo ?? "mantenimiento";
             entity.Tecnico = ObtenerString(datos, "tecnico") ?? req.Tecnico;
             entity.Cuatrimestre = ObtenerString(datos, "cuatrimestre") ?? req.Cuatrimestre;
-            if (string.IsNullOrWhiteSpace(entity.Cuatrimestre))
+            if (entity.Tipo != "cuadro_electrico" && string.IsNullOrWhiteSpace(entity.Cuatrimestre))
             {
                 return Results.BadRequest(new { message = "El informe debe tener un cuatrimestre asignado." });
             }
             entity.Protegido = ObtenerBool(datos, "protegido") ?? req.Protegido;
             entity.Conclusiones = ObtenerString(datos, "conclusiones") ?? req.Conclusiones;
+            entity.NProy = req.NProy ?? ObtenerString(datos, "nProy");
+            entity.NOrdenCuadro = req.NOrdenCuadro ?? ObtenerString(datos, "nOrdenCuadro");
+            entity.NOrdenInstalacion = req.NOrdenInstalacion ?? ObtenerString(datos, "nOrdenInstalacion");
             entity.Modificado = req.UltimaModificacion ?? DateTime.Now.ToString("s");
             var fechaTexto = ObtenerString(datos, "fecha") ?? req.Fecha;
             entity.Fecha = DateOnly.TryParse(fechaTexto, out var fecha) ? fecha : null;

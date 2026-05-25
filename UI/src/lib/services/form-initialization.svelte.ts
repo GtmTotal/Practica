@@ -15,12 +15,14 @@ export interface BombaState {
 
 export interface TareaState {
   descripcion: string;
+  rev: boolean;
   ok: boolean;
   noOk: boolean;
   notaTarea: string;
   orden?: number;
   campos: CampoState[];
   bombasQuimicas?: BombaState[];
+  grupo?: string;
 }
 
 export interface SeccionState {
@@ -121,14 +123,16 @@ class ServicioInicializacionFormulario {
         
         tareaGroup = {
           descripcion: tareaTemplate.descripcion,
-          ok: false, noOk: false, notaTarea: '',
+          rev: false, ok: false, noOk: false, notaTarea: '',
+          grupo: tareaTemplate.grupo,
           campos: (tareaTemplate.campos || []).map((c: any) => this.crearCampo(c)),
           bombasQuimicas
         };
       } else {
         tareaGroup = {
           descripcion: tareaTemplate.descripcion,
-          ok: false, noOk: false, notaTarea: '',
+          rev: false, ok: false, noOk: false, notaTarea: '',
+          grupo: tareaTemplate.grupo,
           campos: (tareaTemplate.campos || []).map((c: any) => this.crearCampo(c))
         };
       }

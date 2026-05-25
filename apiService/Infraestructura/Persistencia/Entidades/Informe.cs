@@ -12,6 +12,9 @@ public class Informe
     public string? Tecnico { get; set; }
     public string? Conclusiones { get; set; }
     public bool Protegido { get; set; }
+    public string? NProy { get; set; }
+    public string? NOrdenCuadro { get; set; }
+    public string? NOrdenInstalacion { get; set; }
     public JsonElement Datos { get; set; }
     
     public List<Sistema> Sistemas { get; set; } = [];

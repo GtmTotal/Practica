@@ -201,9 +201,11 @@ class ServicioPersistenciaFormulario {
     const tareas = (sec.tareas || []).map((t: any) => {
       const tareaGroup: TareaState = {
         descripcion: t.descripcion,
+        rev: t.rev || false,
         ok: t.ok || false,
         noOk: t.noOk || false,
         notaTarea: t.notaTarea || '',
+        grupo: t.grupo,
         campos: (t.campos || []).map((c: any) => ({
           clave: c.clave,
           valor: c.valor,

@@ -17,7 +17,6 @@
   let nProy = $state('');
   let nOrdenCuadro = $state('');
   let nOrdenInstalacion = $state('');
-  let cuatrimestre = $state('');
   let creando = $state(false);
 
   async function crear() {
@@ -48,7 +47,7 @@
         nOrdenInstalacion: nOrdenInstalacion.trim(),
         tecnico: '',
         fecha: hoy,
-        cuatrimestre: cuatrimestre.trim() || 'sin-cuatri',
+        cuatrimestre: '',
         protegido: true,
         secciones,
         conclusiones: '',
@@ -96,10 +95,6 @@
         <div class="field-group">
           <label for="campo-inst">Nº orden instalación</label>
           <input id="campo-inst" type="text" bind:value={nOrdenInstalacion} placeholder="Opcional" />
-        </div>
-        <div class="field-group">
-          <label for="campo-cuatri">Cuatrimestre</label>
-          <input id="campo-cuatri" type="text" bind:value={cuatrimestre} placeholder="Ej: 2026-C2 (opcional)" />
         </div>
       </div>
     </div>

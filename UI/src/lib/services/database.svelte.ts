@@ -14,6 +14,9 @@ class ServicioBaseDeDatos {
       nombreObra: informe.nombreObra || 'Sin nombre',
       fecha: informe.fecha || null,
       cuatrimestre: (informe.cuatrimestre || '').trim(),
+      nProy: informe.nProy || null,
+      nOrdenCuadro: informe.nOrdenCuadro || null,
+      nOrdenInstalacion: informe.nOrdenInstalacion || null,
       ultimaModificacion: informe.ultimaModificacion || new Date().toLocaleString(),
       datos: informe,
     };
@@ -82,6 +85,9 @@ class ServicioBaseDeDatos {
       protegido: item.datos?.protegido === true,
       progreso: item.datos?.progreso ?? 0,
       ultimaModificacion: item.modificado,
+      nProy: item.n_proy,
+      nOrdenCuadro: item.n_orden_cuadro,
+      nOrdenInstalacion: item.n_orden_instalacion,
     }));
   }
 
@@ -125,7 +131,8 @@ class ServicioBaseDeDatos {
       headers: adminService.getAuthHeaders()
     });
     if (!res.ok) throw new Error('Error al eliminar informe');
-    return res.json();
+    // DELETE returns 204 No Content, no body to parse
+    return { success: true };
   }
 
   async existeCuatrimestre(cuatrimestre: string): Promise<boolean> {

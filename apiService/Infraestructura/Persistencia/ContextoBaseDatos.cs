@@ -27,6 +27,9 @@ public class ContextoBaseDatos(DbContextOptions<ContextoBaseDatos> options) : Db
             e.Property(x => x.Tecnico).HasColumnName("tecnico");
             e.Property(x => x.Conclusiones).HasColumnName("conclusiones");
             e.Property(x => x.Protegido).HasColumnName("protegido");
+            e.Property(x => x.NProy).HasColumnName("n_proy");
+            e.Property(x => x.NOrdenCuadro).HasColumnName("n_orden_cuadro");
+            e.Property(x => x.NOrdenInstalacion).HasColumnName("n_orden_instalacion");
             e.Property(x => x.Datos).HasColumnName("datos").HasColumnType("jsonb");
         });
 
