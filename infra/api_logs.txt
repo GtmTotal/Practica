@@ -1,0 +1,679 @@
+time="2026-05-25T09:34:46+02:00" level=warning msg="The \"ADMIN_TOKEN_SECRET\" variable is not set. Defaulting to a blank string."
+time="2026-05-25T09:34:47+02:00" level=warning msg="C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\infra\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+reporte_api  | Cannot load library libgssapi_krb5.so.2 
+reporte_api  | Error: libgssapi_krb5.so.2: cannot open shared object file: No such file or directory
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (21ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT "MigrationId", "ProductVersion"
+reporte_api  |       FROM "__EFMigrationsHistory"
+reporte_api  |       ORDER BY "MigrationId";
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT 1
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+reporte_api  |           "MigrationId" character varying(150) NOT NULL,
+reporte_api  |           "ProductVersion" character varying(32) NOT NULL,
+reporte_api  |           CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+reporte_api  |       );
+reporte_api  | info: Microsoft.EntityFrameworkCore.Migrations[20411]
+reporte_api  |       Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT "MigrationId", "ProductVersion"
+reporte_api  |       FROM "__EFMigrationsHistory"
+reporte_api  |       ORDER BY "MigrationId";
+reporte_api  | info: Microsoft.EntityFrameworkCore.Migrations[20405]
+reporte_api  |       No migrations were applied. The database is already up to date.
+reporte_api  | warn: Microsoft.AspNetCore.Hosting.Diagnostics[15]
+reporte_api  |       Overriding HTTP_PORTS '8080' and HTTPS_PORTS ''. Binding to values defined by URLS instead 'http://+:8080'.
+reporte_api  | info: Microsoft.Hosting.Lifetime[14]
+reporte_api  |       Now listening on: http://[::]:8080
+reporte_api  | info: Microsoft.Hosting.Lifetime[0]
+reporte_api  |       Application started. Press Ctrl+C to shut down.
+reporte_api  | info: Microsoft.Hosting.Lifetime[0]
+reporte_api  |       Hosting environment: Production
+reporte_api  | info: Microsoft.Hosting.Lifetime[0]
+reporte_api  |       Content root path: /app
+reporte_api  | fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
+reporte_api  |       Failed executing DbCommand (141ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT i.id, i.tipo, i.nombre_obra, i.tecnico, i.fecha, i.cuatrimestre, i.protegido, i.conclusiones, i.modificado, CASE
+reporte_api  |           WHEN EXISTS (
+reporte_api  |               SELECT 1
+reporte_api  |               FROM sistemas AS s
+reporte_api  |               INNER JOIN tareas AS t ON s.id = t.sistema_id
+reporte_api  |               WHERE i.id = s.informe_id) THEN CAST(((
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s0
+reporte_api  |               INNER JOIN tareas AS t0 ON s0.id = t0.sistema_id
+reporte_api  |               WHERE i.id = s0.informe_id AND (t0.ok OR t0.no_ok))::double precision / (
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s1
+reporte_api  |               INNER JOIN tareas AS t1 ON s1.id = t1.sistema_id
+reporte_api  |               WHERE i.id = s1.informe_id)::double precision) * 100.0 AS integer)
+reporte_api  |           ELSE 0
+reporte_api  |       END AS progreso
+reporte_api  |       FROM informes AS i
+reporte_api  |       ORDER BY i.id DESC
+reporte_api  | fail: Microsoft.EntityFrameworkCore.Query[10100]
+reporte_api  |       An exception occurred while iterating over the results of a query for context type 'InformeObras.Infraestructura.Persistencia.ContextoBaseDatos'.
+reporte_api  |       Npgsql.PostgresException (0x80004005): 42703: column i.tipo does not exist
+reporte_api  |       
+reporte_api  |       POSITION: 14
+reporte_api  |          at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+reporte_api  |          at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |         Exception data:
+reporte_api  |           Severity: ERROR
+reporte_api  |           SqlState: 42703
+reporte_api  |           MessageText: column i.tipo does not exist
+reporte_api  |           Position: 14
+reporte_api  |           File: parse_relation.c
+reporte_api  |           Line: 3722
+reporte_api  |           Routine: errorMissingColumn
+reporte_api  |       Npgsql.PostgresException (0x80004005): 42703: column i.tipo does not exist
+reporte_api  |       
+reporte_api  |       POSITION: 14
+reporte_api  |          at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+reporte_api  |          at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |         Exception data:
+reporte_api  |           Severity: ERROR
+reporte_api  |           SqlState: 42703
+reporte_api  |           MessageText: column i.tipo does not exist
+reporte_api  |           Position: 14
+reporte_api  |           File: parse_relation.c
+reporte_api  |           Line: 3722
+reporte_api  |           Routine: errorMissingColumn
+reporte_api  | fail: Microsoft.AspNetCore.Server.Kestrel[13]
+reporte_api  |       Connection id "0HNLQ5879OC0A", Request id "0HNLQ5879OC0A:00000001": An unhandled exception was thrown by the application.
+reporte_api  |       Npgsql.PostgresException (0x80004005): 42703: column i.tipo does not exist
+reporte_api  |       
+reporte_api  |       POSITION: 14
+reporte_api  |          at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+reporte_api  |          at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+reporte_api  |          at InformeObras.Infraestructura.Endpoints.<>c.<<MapEndpoints>b__0_1>d.MoveNext() in /app/Infraestructura/Endpoints.cs:line 68
+reporte_api  |       --- End of stack trace from previous location ---
+reporte_api  |          at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+reporte_api  |          at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+reporte_api  |         Exception data:
+reporte_api  |           Severity: ERROR
+reporte_api  |           SqlState: 42703
+reporte_api  |           MessageText: column i.tipo does not exist
+reporte_api  |           Position: 14
+reporte_api  |           File: parse_relation.c
+reporte_api  |           Line: 3722
+reporte_api  |           Routine: errorMissingColumn
+reporte_api  | fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
+reporte_api  |       Failed executing DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT i.id, i.tipo, i.nombre_obra, i.tecnico, i.fecha, i.cuatrimestre, i.protegido, i.conclusiones, i.modificado, CASE
+reporte_api  |           WHEN EXISTS (
+reporte_api  |               SELECT 1
+reporte_api  |               FROM sistemas AS s
+reporte_api  |               INNER JOIN tareas AS t ON s.id = t.sistema_id
+reporte_api  |               WHERE i.id = s.informe_id) THEN CAST(((
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s0
+reporte_api  |               INNER JOIN tareas AS t0 ON s0.id = t0.sistema_id
+reporte_api  |               WHERE i.id = s0.informe_id AND (t0.ok OR t0.no_ok))::double precision / (
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s1
+reporte_api  |               INNER JOIN tareas AS t1 ON s1.id = t1.sistema_id
+reporte_api  |               WHERE i.id = s1.informe_id)::double precision) * 100.0 AS integer)
+reporte_api  |           ELSE 0
+reporte_api  |       END AS progreso
+reporte_api  |       FROM informes AS i
+reporte_api  |       ORDER BY i.id DESC
+reporte_api  | fail: Microsoft.EntityFrameworkCore.Query[10100]
+reporte_api  |       An exception occurred while iterating over the results of a query for context type 'InformeObras.Infraestructura.Persistencia.ContextoBaseDatos'.
+reporte_api  |       Npgsql.PostgresException (0x80004005): 42703: column i.tipo does not exist
+reporte_api  |       
+reporte_api  |       POSITION: 14
+reporte_api  |          at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+reporte_api  |          at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |         Exception data:
+reporte_api  |           Severity: ERROR
+reporte_api  |           SqlState: 42703
+reporte_api  |           MessageText: column i.tipo does not exist
+reporte_api  |           Position: 14
+reporte_api  |           File: parse_relation.c
+reporte_api  |           Line: 3722
+reporte_api  |           Routine: errorMissingColumn
+reporte_api  |       Npgsql.PostgresException (0x80004005): 42703: column i.tipo does not exist
+reporte_api  |       
+reporte_api  |       POSITION: 14
+reporte_api  |          at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+reporte_api  |          at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |         Exception data:
+reporte_api  |           Severity: ERROR
+reporte_api  |           SqlState: 42703
+reporte_api  |           MessageText: column i.tipo does not exist
+reporte_api  |           Position: 14
+reporte_api  |           File: parse_relation.c
+reporte_api  |           Line: 3722
+reporte_api  |           Routine: errorMissingColumn
+reporte_api  | fail: Microsoft.AspNetCore.Server.Kestrel[13]
+reporte_api  |       Connection id "0HNLQ5879OC0B", Request id "0HNLQ5879OC0B:00000001": An unhandled exception was thrown by the application.
+reporte_api  |       Npgsql.PostgresException (0x80004005): 42703: column i.tipo does not exist
+reporte_api  |       
+reporte_api  |       POSITION: 14
+reporte_api  |          at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+reporte_api  |          at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+reporte_api  |          at InformeObras.Infraestructura.Endpoints.<>c.<<MapEndpoints>b__0_1>d.MoveNext() in /app/Infraestructura/Endpoints.cs:line 68
+reporte_api  |       --- End of stack trace from previous location ---
+reporte_api  |          at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+reporte_api  |          at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+reporte_api  |         Exception data:
+reporte_api  |           Severity: ERROR
+reporte_api  |           SqlState: 42703
+reporte_api  |           MessageText: column i.tipo does not exist
+reporte_api  |           Position: 14
+reporte_api  |           File: parse_relation.c
+reporte_api  |           Line: 3722
+reporte_api  |           Routine: errorMissingColumn
+reporte_api  | fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
+reporte_api  |       Failed executing DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT i.id, i.tipo, i.nombre_obra, i.tecnico, i.fecha, i.cuatrimestre, i.protegido, i.conclusiones, i.modificado, CASE
+reporte_api  |           WHEN EXISTS (
+reporte_api  |               SELECT 1
+reporte_api  |               FROM sistemas AS s
+reporte_api  |               INNER JOIN tareas AS t ON s.id = t.sistema_id
+reporte_api  |               WHERE i.id = s.informe_id) THEN CAST(((
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s0
+reporte_api  |               INNER JOIN tareas AS t0 ON s0.id = t0.sistema_id
+reporte_api  |               WHERE i.id = s0.informe_id AND (t0.ok OR t0.no_ok))::double precision / (
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s1
+reporte_api  |               INNER JOIN tareas AS t1 ON s1.id = t1.sistema_id
+reporte_api  |               WHERE i.id = s1.informe_id)::double precision) * 100.0 AS integer)
+reporte_api  |           ELSE 0
+reporte_api  |       END AS progreso
+reporte_api  |       FROM informes AS i
+reporte_api  |       ORDER BY i.id DESC
+reporte_api  | fail: Microsoft.EntityFrameworkCore.Query[10100]
+reporte_api  |       An exception occurred while iterating over the results of a query for context type 'InformeObras.Infraestructura.Persistencia.ContextoBaseDatos'.
+reporte_api  |       Npgsql.PostgresException (0x80004005): 42703: column i.tipo does not exist
+reporte_api  |       
+reporte_api  |       POSITION: 14
+reporte_api  |          at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+reporte_api  |          at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |         Exception data:
+reporte_api  |           Severity: ERROR
+reporte_api  |           SqlState: 42703
+reporte_api  |           MessageText: column i.tipo does not exist
+reporte_api  |           Position: 14
+reporte_api  |           File: parse_relation.c
+reporte_api  |           Line: 3722
+reporte_api  |           Routine: errorMissingColumn
+reporte_api  |       Npgsql.PostgresException (0x80004005): 42703: column i.tipo does not exist
+reporte_api  |       
+reporte_api  |       POSITION: 14
+reporte_api  |          at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+reporte_api  |          at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |         Exception data:
+reporte_api  |           Severity: ERROR
+reporte_api  |           SqlState: 42703
+reporte_api  |           MessageText: column i.tipo does not exist
+reporte_api  |           Position: 14
+reporte_api  |           File: parse_relation.c
+reporte_api  |           Line: 3722
+reporte_api  |           Routine: errorMissingColumn
+reporte_api  | fail: Microsoft.AspNetCore.Server.Kestrel[13]
+reporte_api  |       Connection id "0HNLQ5879OC0E", Request id "0HNLQ5879OC0E:00000001": An unhandled exception was thrown by the application.
+reporte_api  |       Npgsql.PostgresException (0x80004005): 42703: column i.tipo does not exist
+reporte_api  |       
+reporte_api  |       POSITION: 14
+reporte_api  |          at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+reporte_api  |          at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+reporte_api  |          at InformeObras.Infraestructura.Endpoints.<>c.<<MapEndpoints>b__0_1>d.MoveNext() in /app/Infraestructura/Endpoints.cs:line 68
+reporte_api  |       --- End of stack trace from previous location ---
+reporte_api  |          at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+reporte_api  |          at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+reporte_api  |         Exception data:
+reporte_api  |           Severity: ERROR
+reporte_api  |           SqlState: 42703
+reporte_api  |           MessageText: column i.tipo does not exist
+reporte_api  |           Position: 14
+reporte_api  |           File: parse_relation.c
+reporte_api  |           Line: 3722
+reporte_api  |           Routine: errorMissingColumn
+reporte_api  | fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
+reporte_api  |       Failed executing DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT i.id, i.tipo, i.nombre_obra, i.tecnico, i.fecha, i.cuatrimestre, i.protegido, i.conclusiones, i.modificado, CASE
+reporte_api  |           WHEN EXISTS (
+reporte_api  |               SELECT 1
+reporte_api  |               FROM sistemas AS s
+reporte_api  |               INNER JOIN tareas AS t ON s.id = t.sistema_id
+reporte_api  |               WHERE i.id = s.informe_id) THEN CAST(((
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s0
+reporte_api  |               INNER JOIN tareas AS t0 ON s0.id = t0.sistema_id
+reporte_api  |               WHERE i.id = s0.informe_id AND (t0.ok OR t0.no_ok))::double precision / (
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s1
+reporte_api  |               INNER JOIN tareas AS t1 ON s1.id = t1.sistema_id
+reporte_api  |               WHERE i.id = s1.informe_id)::double precision) * 100.0 AS integer)
+reporte_api  |           ELSE 0
+reporte_api  |       END AS progreso
+reporte_api  |       FROM informes AS i
+reporte_api  |       ORDER BY i.id DESC
+reporte_api  | fail: Microsoft.EntityFrameworkCore.Query[10100]
+reporte_api  |       An exception occurred while iterating over the results of a query for context type 'InformeObras.Infraestructura.Persistencia.ContextoBaseDatos'.
+reporte_api  |       Npgsql.PostgresException (0x80004005): 42703: column i.tipo does not exist
+reporte_api  |       
+reporte_api  |       POSITION: 14
+reporte_api  |          at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+reporte_api  |          at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |         Exception data:
+reporte_api  |           Severity: ERROR
+reporte_api  |           SqlState: 42703
+reporte_api  |           MessageText: column i.tipo does not exist
+reporte_api  |           Position: 14
+reporte_api  |           File: parse_relation.c
+reporte_api  |           Line: 3722
+reporte_api  |           Routine: errorMissingColumn
+reporte_api  |       Npgsql.PostgresException (0x80004005): 42703: column i.tipo does not exist
+reporte_api  |       
+reporte_api  |       POSITION: 14
+reporte_api  |          at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+reporte_api  |          at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |         Exception data:
+reporte_api  |           Severity: ERROR
+reporte_api  |           SqlState: 42703
+reporte_api  |           MessageText: column i.tipo does not exist
+reporte_api  |           Position: 14
+reporte_api  |           File: parse_relation.c
+reporte_api  |           Line: 3722
+reporte_api  |           Routine: errorMissingColumn
+reporte_api  | fail: Microsoft.AspNetCore.Server.Kestrel[13]
+reporte_api  |       Connection id "0HNLQ5879OC0F", Request id "0HNLQ5879OC0F:00000001": An unhandled exception was thrown by the application.
+reporte_api  |       Npgsql.PostgresException (0x80004005): 42703: column i.tipo does not exist
+reporte_api  |       
+reporte_api  |       POSITION: 14
+reporte_api  |          at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+reporte_api  |          at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+reporte_api  |          at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+reporte_api  |          at InformeObras.Infraestructura.Endpoints.<>c.<<MapEndpoints>b__0_1>d.MoveNext() in /app/Infraestructura/Endpoints.cs:line 68
+reporte_api  |       --- End of stack trace from previous location ---
+reporte_api  |          at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+reporte_api  |          at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+reporte_api  |         Exception data:
+reporte_api  |           Severity: ERROR
+reporte_api  |           SqlState: 42703
+reporte_api  |           MessageText: column i.tipo does not exist
+reporte_api  |           Position: 14
+reporte_api  |           File: parse_relation.c
+reporte_api  |           Line: 3722
+reporte_api  |           Routine: errorMissingColumn
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (30ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT i.id, i.tipo, i.nombre_obra, i.tecnico, i.fecha, i.cuatrimestre, i.protegido, i.conclusiones, i.modificado, CASE
+reporte_api  |           WHEN EXISTS (
+reporte_api  |               SELECT 1
+reporte_api  |               FROM sistemas AS s
+reporte_api  |               INNER JOIN tareas AS t ON s.id = t.sistema_id
+reporte_api  |               WHERE i.id = s.informe_id) THEN CAST(((
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s0
+reporte_api  |               INNER JOIN tareas AS t0 ON s0.id = t0.sistema_id
+reporte_api  |               WHERE i.id = s0.informe_id AND (t0.ok OR t0.no_ok))::double precision / (
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s1
+reporte_api  |               INNER JOIN tareas AS t1 ON s1.id = t1.sistema_id
+reporte_api  |               WHERE i.id = s1.informe_id)::double precision) * 100.0 AS integer)
+reporte_api  |           ELSE 0
+reporte_api  |       END AS progreso
+reporte_api  |       FROM informes AS i
+reporte_api  |       ORDER BY i.id DESC
+reporte_api  | fail: Microsoft.EntityFrameworkCore.Query[10100]
+reporte_api  |       An exception occurred while iterating over the results of a query for context type 'InformeObras.Infraestructura.Persistencia.ContextoBaseDatos'.
+reporte_api  |       System.InvalidCastException: Column 'tipo' is null.
+reporte_api  |          at Npgsql.ThrowHelper.ThrowInvalidCastException_NoValue(FieldDescription field)
+reporte_api  |          at Npgsql.NpgsqlDataReader.DbNullValueOrThrow[T](Int32 ordinal)
+reporte_api  |          at Npgsql.NpgsqlDataReader.GetFieldValueCore[T](Int32 ordinal)
+reporte_api  |          at Npgsql.NpgsqlDataReader.GetString(Int32 ordinal)
+reporte_api  |          at lambda_method27(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |       System.InvalidCastException: Column 'tipo' is null.
+reporte_api  |          at Npgsql.ThrowHelper.ThrowInvalidCastException_NoValue(FieldDescription field)
+reporte_api  |          at Npgsql.NpgsqlDataReader.DbNullValueOrThrow[T](Int32 ordinal)
+reporte_api  |          at Npgsql.NpgsqlDataReader.GetFieldValueCore[T](Int32 ordinal)
+reporte_api  |          at Npgsql.NpgsqlDataReader.GetString(Int32 ordinal)
+reporte_api  |          at lambda_method27(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  | fail: Microsoft.AspNetCore.Server.Kestrel[13]
+reporte_api  |       Connection id "0HNLQ5879OC0G", Request id "0HNLQ5879OC0G:00000001": An unhandled exception was thrown by the application.
+reporte_api  |       System.InvalidCastException: Column 'tipo' is null.
+reporte_api  |          at Npgsql.ThrowHelper.ThrowInvalidCastException_NoValue(FieldDescription field)
+reporte_api  |          at Npgsql.NpgsqlDataReader.DbNullValueOrThrow[T](Int32 ordinal)
+reporte_api  |          at Npgsql.NpgsqlDataReader.GetFieldValueCore[T](Int32 ordinal)
+reporte_api  |          at Npgsql.NpgsqlDataReader.GetString(Int32 ordinal)
+reporte_api  |          at lambda_method27(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+reporte_api  |          at InformeObras.Infraestructura.Endpoints.<>c.<<MapEndpoints>b__0_1>d.MoveNext() in /app/Infraestructura/Endpoints.cs:line 68
+reporte_api  |       --- End of stack trace from previous location ---
+reporte_api  |          at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+reporte_api  |          at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT i.id, i.tipo, i.nombre_obra, i.tecnico, i.fecha, i.cuatrimestre, i.protegido, i.conclusiones, i.modificado, CASE
+reporte_api  |           WHEN EXISTS (
+reporte_api  |               SELECT 1
+reporte_api  |               FROM sistemas AS s
+reporte_api  |               INNER JOIN tareas AS t ON s.id = t.sistema_id
+reporte_api  |               WHERE i.id = s.informe_id) THEN CAST(((
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s0
+reporte_api  |               INNER JOIN tareas AS t0 ON s0.id = t0.sistema_id
+reporte_api  |               WHERE i.id = s0.informe_id AND (t0.ok OR t0.no_ok))::double precision / (
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s1
+reporte_api  |               INNER JOIN tareas AS t1 ON s1.id = t1.sistema_id
+reporte_api  |               WHERE i.id = s1.informe_id)::double precision) * 100.0 AS integer)
+reporte_api  |           ELSE 0
+reporte_api  |       END AS progreso
+reporte_api  |       FROM informes AS i
+reporte_api  |       ORDER BY i.id DESC
+reporte_api  | fail: Microsoft.EntityFrameworkCore.Query[10100]
+reporte_api  |       An exception occurred while iterating over the results of a query for context type 'InformeObras.Infraestructura.Persistencia.ContextoBaseDatos'.
+reporte_api  |       System.InvalidCastException: Column 'tipo' is null.
+reporte_api  |          at Npgsql.ThrowHelper.ThrowInvalidCastException_NoValue(FieldDescription field)
+reporte_api  |          at Npgsql.NpgsqlDataReader.DbNullValueOrThrow[T](Int32 ordinal)
+reporte_api  |          at Npgsql.NpgsqlDataReader.GetFieldValueCore[T](Int32 ordinal)
+reporte_api  |          at Npgsql.NpgsqlDataReader.GetString(Int32 ordinal)
+reporte_api  |          at lambda_method27(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |       System.InvalidCastException: Column 'tipo' is null.
+reporte_api  |          at Npgsql.ThrowHelper.ThrowInvalidCastException_NoValue(FieldDescription field)
+reporte_api  |          at Npgsql.NpgsqlDataReader.DbNullValueOrThrow[T](Int32 ordinal)
+reporte_api  |          at Npgsql.NpgsqlDataReader.GetFieldValueCore[T](Int32 ordinal)
+reporte_api  |          at Npgsql.NpgsqlDataReader.GetString(Int32 ordinal)
+reporte_api  |          at lambda_method27(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  | fail: Microsoft.AspNetCore.Server.Kestrel[13]
+reporte_api  |       Connection id "0HNLQ5879OC0H", Request id "0HNLQ5879OC0H:00000001": An unhandled exception was thrown by the application.
+reporte_api  |       System.InvalidCastException: Column 'tipo' is null.
+reporte_api  |          at Npgsql.ThrowHelper.ThrowInvalidCastException_NoValue(FieldDescription field)
+reporte_api  |          at Npgsql.NpgsqlDataReader.DbNullValueOrThrow[T](Int32 ordinal)
+reporte_api  |          at Npgsql.NpgsqlDataReader.GetFieldValueCore[T](Int32 ordinal)
+reporte_api  |          at Npgsql.NpgsqlDataReader.GetString(Int32 ordinal)
+reporte_api  |          at lambda_method27(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+reporte_api  |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+reporte_api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+reporte_api  |          at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+reporte_api  |          at InformeObras.Infraestructura.Endpoints.<>c.<<MapEndpoints>b__0_1>d.MoveNext() in /app/Infraestructura/Endpoints.cs:line 68
+reporte_api  |       --- End of stack trace from previous location ---
+reporte_api  |          at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+reporte_api  |          at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT i.id, i.tipo, i.nombre_obra, i.tecnico, i.fecha, i.cuatrimestre, i.protegido, i.conclusiones, i.modificado, CASE
+reporte_api  |           WHEN EXISTS (
+reporte_api  |               SELECT 1
+reporte_api  |               FROM sistemas AS s
+reporte_api  |               INNER JOIN tareas AS t ON s.id = t.sistema_id
+reporte_api  |               WHERE i.id = s.informe_id) THEN CAST(((
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s0
+reporte_api  |               INNER JOIN tareas AS t0 ON s0.id = t0.sistema_id
+reporte_api  |               WHERE i.id = s0.informe_id AND (t0.ok OR t0.no_ok))::double precision / (
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s1
+reporte_api  |               INNER JOIN tareas AS t1 ON s1.id = t1.sistema_id
+reporte_api  |               WHERE i.id = s1.informe_id)::double precision) * 100.0 AS integer)
+reporte_api  |           ELSE 0
+reporte_api  |       END AS progreso
+reporte_api  |       FROM informes AS i
+reporte_api  |       ORDER BY i.id DESC
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT i.id, i.tipo, i.nombre_obra, i.tecnico, i.fecha, i.cuatrimestre, i.protegido, i.conclusiones, i.modificado, CASE
+reporte_api  |           WHEN EXISTS (
+reporte_api  |               SELECT 1
+reporte_api  |               FROM sistemas AS s
+reporte_api  |               INNER JOIN tareas AS t ON s.id = t.sistema_id
+reporte_api  |               WHERE i.id = s.informe_id) THEN CAST(((
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s0
+reporte_api  |               INNER JOIN tareas AS t0 ON s0.id = t0.sistema_id
+reporte_api  |               WHERE i.id = s0.informe_id AND (t0.ok OR t0.no_ok))::double precision / (
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s1
+reporte_api  |               INNER JOIN tareas AS t1 ON s1.id = t1.sistema_id
+reporte_api  |               WHERE i.id = s1.informe_id)::double precision) * 100.0 AS integer)
+reporte_api  |           ELSE 0
+reporte_api  |       END AS progreso
+reporte_api  |       FROM informes AS i
+reporte_api  |       ORDER BY i.id DESC
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT i.id, i.tipo, i.nombre_obra, i.tecnico, i.fecha, i.cuatrimestre, i.protegido, i.conclusiones, i.modificado, CASE
+reporte_api  |           WHEN EXISTS (
+reporte_api  |               SELECT 1
+reporte_api  |               FROM sistemas AS s
+reporte_api  |               INNER JOIN tareas AS t ON s.id = t.sistema_id
+reporte_api  |               WHERE i.id = s.informe_id) THEN CAST(((
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s0
+reporte_api  |               INNER JOIN tareas AS t0 ON s0.id = t0.sistema_id
+reporte_api  |               WHERE i.id = s0.informe_id AND (t0.ok OR t0.no_ok))::double precision / (
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s1
+reporte_api  |               INNER JOIN tareas AS t1 ON s1.id = t1.sistema_id
+reporte_api  |               WHERE i.id = s1.informe_id)::double precision) * 100.0 AS integer)
+reporte_api  |           ELSE 0
+reporte_api  |       END AS progreso
+reporte_api  |       FROM informes AS i
+reporte_api  |       ORDER BY i.id DESC
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT i.id, i.tipo, i.nombre_obra, i.tecnico, i.fecha, i.cuatrimestre, i.protegido, i.conclusiones, i.modificado, CASE
+reporte_api  |           WHEN EXISTS (
+reporte_api  |               SELECT 1
+reporte_api  |               FROM sistemas AS s
+reporte_api  |               INNER JOIN tareas AS t ON s.id = t.sistema_id
+reporte_api  |               WHERE i.id = s.informe_id) THEN CAST(((
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s0
+reporte_api  |               INNER JOIN tareas AS t0 ON s0.id = t0.sistema_id
+reporte_api  |               WHERE i.id = s0.informe_id AND (t0.ok OR t0.no_ok))::double precision / (
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s1
+reporte_api  |               INNER JOIN tareas AS t1 ON s1.id = t1.sistema_id
+reporte_api  |               WHERE i.id = s1.informe_id)::double precision) * 100.0 AS integer)
+reporte_api  |           ELSE 0
+reporte_api  |       END AS progreso
+reporte_api  |       FROM informes AS i
+reporte_api  |       ORDER BY i.id DESC
+reporte_api  | fail: Microsoft.AspNetCore.Server.Kestrel[13]
+reporte_api  |       Connection id "0HNLQ5879OC0K", Request id "0HNLQ5879OC0K:00000004": An unhandled exception was thrown by the application.
+reporte_api  |       System.InvalidOperationException: Admin token secret is not configured.
+reporte_api  |          at InformeObras.Infraestructura.ServicioAutenticacionAdmin.Firmar(String payload) in /app/Infraestructura/ServicioAutenticacionAdmin.cs:line 58
+reporte_api  |          at InformeObras.Infraestructura.ServicioAutenticacionAdmin.CrearToken() in /app/Infraestructura/ServicioAutenticacionAdmin.cs:line 19
+reporte_api  |          at InformeObras.Infraestructura.Endpoints.<>c.<MapEndpoints>b__0_13(SolicitudLoginAdmin req, IConfiguration config, ServicioAutenticacionAdmin auth) in /app/Infraestructura/Endpoints.cs:line 356
+reporte_api  |          at lambda_method4(Closure, Object, HttpContext, Object)
+reporte_api  |          at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+reporte_api  |       --- End of stack trace from previous location ---
+reporte_api  |          at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (6ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT i.id, i.tipo, i.nombre_obra, i.tecnico, i.fecha, i.cuatrimestre, i.protegido, i.conclusiones, i.modificado, CASE
+reporte_api  |           WHEN EXISTS (
+reporte_api  |               SELECT 1
+reporte_api  |               FROM sistemas AS s
+reporte_api  |               INNER JOIN tareas AS t ON s.id = t.sistema_id
+reporte_api  |               WHERE i.id = s.informe_id) THEN CAST(((
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s0
+reporte_api  |               INNER JOIN tareas AS t0 ON s0.id = t0.sistema_id
+reporte_api  |               WHERE i.id = s0.informe_id AND (t0.ok OR t0.no_ok))::double precision / (
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s1
+reporte_api  |               INNER JOIN tareas AS t1 ON s1.id = t1.sistema_id
+reporte_api  |               WHERE i.id = s1.informe_id)::double precision) * 100.0 AS integer)
+reporte_api  |           ELSE 0
+reporte_api  |       END AS progreso
+reporte_api  |       FROM informes AS i
+reporte_api  |       ORDER BY i.id DESC
+reporte_api  | info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+reporte_api  |       Executed DbCommand (179ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+reporte_api  |       SELECT i.id, i.tipo, i.nombre_obra, i.tecnico, i.fecha, i.cuatrimestre, i.protegido, i.conclusiones, i.modificado, CASE
+reporte_api  |           WHEN EXISTS (
+reporte_api  |               SELECT 1
+reporte_api  |               FROM sistemas AS s
+reporte_api  |               INNER JOIN tareas AS t ON s.id = t.sistema_id
+reporte_api  |               WHERE i.id = s.informe_id) THEN CAST(((
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s0
+reporte_api  |               INNER JOIN tareas AS t0 ON s0.id = t0.sistema_id
+reporte_api  |               WHERE i.id = s0.informe_id AND (t0.ok OR t0.no_ok))::double precision / (
+reporte_api  |               SELECT count(*)::int
+reporte_api  |               FROM sistemas AS s1
+reporte_api  |               INNER JOIN tareas AS t1 ON s1.id = t1.sistema_id
+reporte_api  |               WHERE i.id = s1.informe_id)::double precision) * 100.0 AS integer)
+reporte_api  |           ELSE 0
+reporte_api  |       END AS progreso
+reporte_api  |       FROM informes AS i
+reporte_api  |       ORDER BY i.id DESC
+reporte_api  | fail: Microsoft.AspNetCore.Server.Kestrel[13]
+reporte_api  |       Connection id "0HNLQ5879OC0O", Request id "0HNLQ5879OC0O:00000003": An unhandled exception was thrown by the application.
+reporte_api  |       System.InvalidOperationException: Admin token secret is not configured.
+reporte_api  |          at InformeObras.Infraestructura.ServicioAutenticacionAdmin.Firmar(String payload) in /app/Infraestructura/ServicioAutenticacionAdmin.cs:line 58
+reporte_api  |          at InformeObras.Infraestructura.ServicioAutenticacionAdmin.CrearToken() in /app/Infraestructura/ServicioAutenticacionAdmin.cs:line 19
+reporte_api  |          at InformeObras.Infraestructura.Endpoints.<>c.<MapEndpoints>b__0_13(SolicitudLoginAdmin req, IConfiguration config, ServicioAutenticacionAdmin auth) in /app/Infraestructura/Endpoints.cs:line 356
+reporte_api  |          at lambda_method4(Closure, Object, HttpContext, Object)
+reporte_api  |          at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+reporte_api  |       --- End of stack trace from previous location ---
+reporte_api  |          at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication`1 application)
