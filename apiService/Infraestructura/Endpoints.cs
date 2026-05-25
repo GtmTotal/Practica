@@ -181,6 +181,30 @@ public static class Endpoints
             entity.NProy = req.NProy ?? ObtenerString(datos, "nProy");
             entity.NOrdenCuadro = req.NOrdenCuadro ?? ObtenerString(datos, "nOrdenCuadro");
             entity.NOrdenInstalacion = req.NOrdenInstalacion ?? ObtenerString(datos, "nOrdenInstalacion");
+
+            // Validar unicidad de nProy y nOrdenCuadro para informes de cuadro eléctrico
+            if (entity.Tipo == "cuadro_electrico")
+            {
+                if (!string.IsNullOrWhiteSpace(entity.NProy))
+                {
+                    var existeNProy = await db.Informes
+                        .AnyAsync(i => i.Id != entity.Id && i.Tipo == "cuadro_electrico" && i.NProy == entity.NProy);
+                    if (existeNProy)
+                    {
+                        return Results.BadRequest(new { message = $"Ya existe un informe con el número de proyecto '{entity.NProy}'." });
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(entity.NOrdenCuadro))
+                {
+                    var existeNOrdenCuadro = await db.Informes
+                        .AnyAsync(i => i.Id != entity.Id && i.Tipo == "cuadro_electrico" && i.NOrdenCuadro == entity.NOrdenCuadro);
+                    if (existeNOrdenCuadro)
+                    {
+                        return Results.BadRequest(new { message = $"Ya existe un informe con el número de orden de cuadro '{entity.NOrdenCuadro}'." });
+                    }
+                }
+            }
             entity.Modificado = req.UltimaModificacion ?? DateTime.Now.ToString("s");
             var fechaTexto = ObtenerString(datos, "fecha") ?? req.Fecha;
             entity.Fecha = DateOnly.TryParse(fechaTexto, out var fecha) ? fecha : null;

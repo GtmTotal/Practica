@@ -201,6 +201,7 @@ class ServicioPersistenciaFormulario {
     const tareas = (sec.tareas || []).map((t: any) => {
       const tareaGroup: TareaState = {
         descripcion: t.descripcion,
+        titulo: t.titulo,
         rev: t.rev || false,
         ok: t.ok || false,
         noOk: t.noOk || false,
@@ -246,6 +247,7 @@ class ServicioPersistenciaFormulario {
   private crearSeccionDesdeTemplate(template: any): SeccionState {
     const tareas = template.tareas.map((tareaTemplate: any) => ({
       descripcion: tareaTemplate.descripcion,
+      titulo: tareaTemplate.titulo,
       ok: false,
       noOk: false,
       notaTarea: '',

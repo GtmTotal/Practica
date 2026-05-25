@@ -30,7 +30,14 @@
 <div class="inspeccion-item">
   <div class="tarea-main-row">
     <span class="tarea-indice">{ prefijo }.{ idxTarea + 1 }</span>
-    <p class="tarea-texto">{ tarea.descripcion }</p>
+    <div class="tarea-texto-wrapper">
+      {#if tarea.titulo}
+        <p class="tarea-titulo">{ tarea.titulo }</p>
+        <p class="tarea-subtitulo">{ tarea.descripcion }</p>
+      {:else}
+        <p class="tarea-texto">{ tarea.descripcion }</p>
+      {/if}
+    </div>
   </div>
 
   <div class="inspeccion-controles">
@@ -93,6 +100,29 @@
     font-size: 0.8rem;
     min-width: 48px;
     text-align: center;
+  }
+
+  .tarea-texto-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tarea-titulo {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    font-weight: 700;
+    margin: 0;
+    color: #0f172a;
+  }
+
+  .tarea-subtitulo {
+    font-size: 0.85rem;
+    line-height: 1.3;
+    font-weight: 400;
+    margin: 0;
+    color: #475569;
   }
 
   .tarea-texto {

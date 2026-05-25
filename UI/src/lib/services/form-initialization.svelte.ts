@@ -15,6 +15,7 @@ export interface BombaState {
 
 export interface TareaState {
   descripcion: string;
+  titulo?: string;
   rev: boolean;
   ok: boolean;
   noOk: boolean;
@@ -123,6 +124,7 @@ class ServicioInicializacionFormulario {
         
         tareaGroup = {
           descripcion: tareaTemplate.descripcion,
+          titulo: tareaTemplate.titulo,
           rev: false, ok: false, noOk: false, notaTarea: '',
           grupo: tareaTemplate.grupo,
           campos: (tareaTemplate.campos || []).map((c: any) => this.crearCampo(c)),
@@ -131,6 +133,7 @@ class ServicioInicializacionFormulario {
       } else {
         tareaGroup = {
           descripcion: tareaTemplate.descripcion,
+          titulo: tareaTemplate.titulo,
           rev: false, ok: false, noOk: false, notaTarea: '',
           grupo: tareaTemplate.grupo,
           campos: (tareaTemplate.campos || []).map((c: any) => this.crearCampo(c))

@@ -29,7 +29,11 @@ class ServicioBaseDeDatos {
       },
       body: JSON.stringify(payload)
     });
-    if (!res.ok) throw new Error('Error al guardar en BD');
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null);
+      const mensaje = errorData?.message || `Error ${res.status}: ${res.statusText}`;
+      throw new Error(mensaje);
+    }
     return res.json();
   }
 
