@@ -18,7 +18,12 @@ export function getApiBaseUrl(): string {
 
   // Si estamos en localhost o red local → usar IP directa
   if (isPrivateIP(hostname)) {
-    return 'http://192.168.1.135:5000/api';
+    // Si estás en desarrollo local (localhost), conéctate a la API local de tu propia máquina
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:5000/api';
+    }
+    // Si estás en la oficina accediendo al servidor directamente por su IP local, usa esa misma IP dinámicamente
+    return `http://${hostname}:5000/api`;
   }
 
   // Si estamos fuera de la red local → usar ngrok

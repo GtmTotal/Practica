@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "2h3txsQ0bAU=",
+  "dgSpecHash": "uvzyQypwQbI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiservice\\InformeObras.csproj",
+  "projectFilePath": "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiService\\InformeObras.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\alepe\\.nuget\\packages\\awssdk.core\\4.0.4\\awssdk.core.4.0.4.nupkg.sha512",
     "C:\\Users\\alepe\\.nuget\\packages\\awssdk.s3\\4.0.22.1\\awssdk.s3.4.0.22.1.nupkg.sha512",
