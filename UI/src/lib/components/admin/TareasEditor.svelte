@@ -32,12 +32,38 @@
   let currentInforme = $state<any | null>(null);
   let loading = $state(false);
   let saving = $state(false);
+  let showSelectInformes = $state(false);
+  let selectedInformes = $state<Record<number, boolean>>({});
+  let showApplyOptions = $state(false);
 
-  async function selectCenter(id: number) {
-    selectedCenterId = id;
+  let centrosUnicos = $derived.by(() => {
+    const visto = new Set<string>();
+    return informes.filter(inf => {
+      if (!inf.nombreObra || visto.has(inf.nombreObra)) return false;
+      visto.add(inf.nombreObra);
+      return true;
+    });
+  });
+
+  let informesDelCentro = $derived(
+    currentInforme 
+      ? informes
+          .filter(inf => inf.nombreObra === currentInforme.nombreObra)
+          .sort((a, b) => (a.cuatrimestre || '').localeCompare(b.cuatrimestre || ''))
+      : []
+  );
+
+  async function selectCenter(nombreObra: string) {
     loading = true;
     try {
-      const data = await databaseService.obtenerPorId(id);
+      const primerInf = informes.find(inf => inf.nombreObra === nombreObra);
+      if (!primerInf || !primerInf.id) {
+        ui.error('No se encontró ningún informe para este centro');
+        loading = false;
+        return;
+      }
+      selectedCenterId = primerInf.id;
+      const data = await databaseService.obtenerPorId(primerInf.id);
       if (!data) {
         ui.error('No se pudo cargar la información del centro');
         return;
@@ -53,14 +79,95 @@
     }
   }
 
+  function aplicarNuevaPlantilla(informe: any, template: any) {
+    const nuevasSecciones = JSON.parse(JSON.stringify(template.secciones));
+    
+    nuevasSecciones.forEach((nuevaSec: any) => {
+      const oldSec = informe.secciones?.find((s: any) => s.prefijo === nuevaSec.prefijo || s.titulo === nuevaSec.titulo);
+      if (!oldSec) return;
+      
+      nuevaSec.tareas = nuevaSec.tareas.map((nuevaTarea: any) => {
+        const oldTarea = oldSec.tareas?.find((t: any) => 
+          (nuevaTarea.indice && t.indice === nuevaTarea.indice) || 
+          (nuevaTarea.descripcion && t.descripcion === nuevaTarea.descripcion)
+        );
+        if (!oldTarea) return nuevaTarea;
+        
+        return {
+          ...nuevaTarea,
+          ok: oldTarea.ok ?? false,
+          noOk: oldTarea.noOk ?? false,
+          notaTarea: oldTarea.notaTarea ?? ''
+        };
+      });
+    });
+    
+    informe.secciones = nuevasSecciones;
+  }
+
+  function selectAllInformes() {
+    informesDelCentro.forEach(inf => {
+      if (inf.id !== undefined && inf.id !== currentInforme.id) {
+        selectedInformes[inf.id] = true;
+      }
+    });
+  }
+
+  function deselectAllInformes() {
+    selectedInformes = {};
+  }
+
   async function saveChanges() {
+    if (!currentInforme) return;
+    const tieneOtrosCuatrimestres = informes.some(inf => 
+      inf.nombreObra === currentInforme.nombreObra && 
+      inf.id !== undefined && 
+      inf.id !== currentInforme.id
+    );
+    if (!showApplyOptions && !showSelectInformes && tieneOtrosCuatrimestres) {
+      showApplyOptions = true;
+      return;
+    }
+    await finalGuardar();
+  }
+
+  function cancelSave() {
+    showApplyOptions = false;
+    showSelectInformes = false;
+    onClose();
+  }
+
+  function aplicarATodos() {
+    selectAllInformes();
+    finalGuardar();
+  }
+
+  async function finalGuardar() {
     if (!currentInforme) return;
     saving = true;
     try {
+      // Guardar el informe actual (que actúa como plantilla)
       await databaseService.guardar(currentInforme);
+      
+      const idsParaAplicar = Object.entries(selectedInformes)
+        .filter(([_, checked]) => checked)
+        .map(([id]) => Number(id));
+        
+      if (idsParaAplicar.length > 0) {
+        for (const id of idsParaAplicar) {
+          if (id === currentInforme.id) continue;
+          const inf = await databaseService.obtenerPorId(id);
+          if (inf) {
+            aplicarNuevaPlantilla(inf, currentInforme);
+            await databaseService.guardar(inf);
+          }
+        }
+        ui.success(`Cambios guardados y aplicados a ${idsParaAplicar.length} cuatrimestre(s)`);
+      } else {
+        ui.success('Cambios guardados en el cuatrimestre seleccionado');
+      }
+      
       await formPersistenceService.cargarHistorial();
-
-      ui.success('Tareas actualizadas en el cuatrimestre seleccionado');
       onClose();
     } catch (e: any) {
       ui.error('Error al guardar los cambios: ' + (e.message || 'Error desconocido'));
@@ -95,6 +202,15 @@
     if (!currentInforme) return;
     currentInforme.secciones.splice(sistemaIdx, 1);
   }
+
+  function formatCuatrimestreLabel(cuatrimestre?: string): string {
+    if (!cuatrimestre) return 'Sin cuatrimestre';
+    const parts = cuatrimestre.split('-C');
+    if (parts.length === 2) {
+      return `Cuatrimestre ${parts[1]}º - ${parts[0]}`;
+    }
+    return cuatrimestre;
+  }
 </script>
 
 <div class="tareas-editor-overlay" transition:fade>
@@ -110,11 +226,11 @@
     <div class="editor-body">
       {#if !selectedCenterId}
         <div class="center-selector">
-          <label for="center-select">Selecciona el centro a modificar:</label>
-          <select id="center-select" onchange={(e) => selectCenter(Number(e.currentTarget.value))}>
+          <label for="center-select">Selecciona un centro para editar sus tareas:</label>
+          <select id="center-select" onchange={(e) => selectCenter(e.currentTarget.value)}>
             <option value="">-- Elegir Centro --</option>
-            {#each informes as inf}
-              <option value={inf.id}>{inf.nombreObra}</option>
+            {#each centrosUnicos as centro}
+              <option value={centro.nombreObra}>{centro.nombreObra}</option>
             {/each}
           </select>
         </div>
@@ -123,13 +239,64 @@
           <div class="spinner"></div>
           <p>Cargando secciones y tareas...</p>
         </div>
+      {:else if showApplyOptions}
+        <div class="apply-options-view" transition:fade>
+          <h3>¿Aplicar cambios a los cuatrimestres de {currentInforme.nombreObra}?</h3>
+          <p class="select-info">Has modificado la estructura de tareas. ¿A qué cuatrimestres deseas aplicar estos cambios?</p>
+          
+          <div class="apply-options-buttons">
+            <button class="btn-apply-option" onclick={aplicarATodos}>
+              <span class="option-icon">✓✓</span>
+              <span class="option-text">
+                <strong>Aplicar a todos</strong>
+                <small>Actualizar los {informesDelCentro.length} cuatrimestres (incluyendo el actual)</small>
+              </span>
+            </button>
+            <button class="btn-apply-option" onclick={() => { showApplyOptions = false; showSelectInformes = true; }}>
+              <span class="option-icon">☐☐</span>
+              <span class="option-text">
+                <strong>Seleccionar cuáles</strong>
+                <small>Elegir manualmente los cuatrimestres a actualizar</small>
+              </span>
+            </button>
+            <button class="btn-apply-option cancel" onclick={cancelSave}>
+              <span class="option-icon">✕</span>
+              <span class="option-text">
+                <strong>Cancelar</strong>
+                <small>No guardar los cambios y salir</small>
+              </span>
+            </button>
+          </div>
+        </div>
+      {:else if showSelectInformes}
+        <div class="select-informes-view" transition:fade>
+          <h3>Selecciona los cuatrimestres de {currentInforme.nombreObra} a actualizar</h3>
+          <p class="select-info">Conservaremos sus estados de check y notas donde coincidan.</p>
+          
+          <div class="selection-actions">
+            <button class="btn-action-small" onclick={selectAllInformes}>Seleccionar Todos</button>
+            <button class="btn-action-small" onclick={deselectAllInformes}>Ninguno</button>
+          </div>
+
+          <div class="informes-list">
+            {#each informesDelCentro as inf}
+              {#if inf.id !== undefined}
+                <label class="informe-item-checkbox">
+                  <input type="checkbox" bind:checked={selectedInformes[inf.id]} />
+                  <span class="custom-chk"></span>
+                  <span class="inf-name">{formatCuatrimestreLabel(inf.cuatrimestre)}</span>
+                </label>
+              {/if}
+            {/each}
+          </div>
+        </div>
       {:else if currentInforme}
         <div class="tasks-container">
           <div class="selected-center-info">
             <strong>Centro:</strong> {currentInforme.nombreObra}
-            <button class="btn-change-center" onclick={() => { selectedCenterId = null; currentInforme = null; }}>Cambiar centro</button>
+            <button class="btn-change-center" onclick={() => { selectedCenterId = null; currentInforme = null; showSelectInformes = false; showApplyOptions = false; }}>Cambiar centro</button>
           </div>
-
+ 
           {#each currentInforme.secciones as seccion, sIdx}
             <div class="seccion-card">
               <div class="seccion-header">
@@ -140,18 +307,18 @@
                 </div>
                 <button class="btn-delete-seccion" onclick={() => removeSeccion(sIdx)} title="Eliminar sección">✕</button>
               </div>
-
+ 
               {#each seccion.tareas as tarea, tIdx}
                 <div class="tarea-row">
                   <input type="text" bind:value={tarea.descripcion} placeholder="Descripción de la tarea" />
                   <button class="btn-delete-task" onclick={() => removeTarea(sIdx, tIdx)} title="Eliminar tarea">✕</button>
                 </div>
               {/each}
-
+ 
               <button class="btn-add-task" onclick={() => addTarea(sIdx)}>+ Añadir tarea</button>
             </div>
           {/each}
-
+ 
           <button class="btn-add-seccion" onclick={addSeccion}>+ Añadir sección</button>
         </div>
       {/if}
@@ -159,10 +326,19 @@
 
     {#if selectedCenterId && currentInforme}
       <footer class="editor-footer">
-        <button class="btn-cancel" onclick={onClose}>Cancelar</button>
-        <button class="btn-save" onclick={saveChanges} disabled={saving}>
-          {saving ? 'Guardando...' : 'Guardar Cambios'}
-        </button>
+        {#if showSelectInformes}
+          <button class="btn-cancel" onclick={() => { showSelectInformes = false; showApplyOptions = true; }}>Atrás</button>
+          <button class="btn-save" onclick={finalGuardar} disabled={saving}>
+            {saving ? 'Guardando...' : 'Aplicar y Guardar'}
+          </button>
+        {:else if showApplyOptions}
+          <!-- Opciones en el cuerpo, no se necesita footer -->
+        {:else}
+          <button class="btn-cancel" onclick={onClose}>Cancelar</button>
+          <button class="btn-save" onclick={saveChanges} disabled={saving}>
+            {saving ? 'Guardando...' : 'Guardar Cambios'}
+          </button>
+        {/if}
       </footer>
     {/if}
   </div>
@@ -311,6 +487,185 @@
     font-size: 0.85rem;
     font-weight: 600;
     text-decoration: underline;
+  }
+
+  .select-informes-view {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .select-informes-view h3 {
+    font-size: 1.2rem;
+    color: #0f172a;
+    margin: 0 0 10px 0;
+  }
+
+  .select-info {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .selection-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    justify-content: flex-end;
+  }
+
+  .btn-action-small {
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-action-small:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+  }
+
+  .informes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 350px;
+    overflow-y: auto;
+    background: white;
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .informe-item-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .informe-item-checkbox:hover {
+    background: #f1f5f9;
+  }
+
+  .informe-item-checkbox input {
+    display: none;
+  }
+
+  .custom-chk {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #cbd5e1;
+    border-radius: 6px;
+    display: inline-block;
+    position: relative;
+    transition: all 0.15s;
+  }
+
+  .informe-item-checkbox input:checked + .custom-chk {
+    background: #0f172a;
+    border-color: #0f172a;
+  }
+
+  .informe-item-checkbox input:checked + .custom-chk::after {
+    content: "✓";
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .inf-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e293b;
+    flex: 1;
+  }
+
+  .apply-options-view {
+    padding: 40px 20px;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .apply-options-view h3 {
+    font-size: 1.25rem;
+    color: #0f172a;
+    margin: 0 0 8px 0;
+  }
+
+  .apply-options-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .btn-apply-option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    width: 100%;
+  }
+
+  .btn-apply-option:hover {
+    border-color: #3b82f6;
+    background: #f8faff;
+    transform: translateY(-1px);
+  }
+
+  .btn-apply-option.cancel:hover {
+    border-color: #ef4444;
+    background: #fef2f2;
+  }
+
+  .option-icon {
+    font-size: 1.3rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .option-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .option-text strong {
+    font-size: 0.95rem;
+    color: #0f172a;
+  }
+
+  .option-text small {
+    font-size: 0.8rem;
+    color: #64748b;
   }
 
   .seccion-card {

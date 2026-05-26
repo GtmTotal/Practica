@@ -7,7 +7,6 @@
   import { formInitService } from '$lib/services/form-initialization.svelte';
   import { navService } from '$lib/services/navigation.svelte';
   import { ui } from '$lib/services/ui.svelte';
-import { configCentrosService } from '$lib/services/config-centros.svelte';
 import { databaseService } from '$lib/services/database.svelte';
 import { CUADRO_ELECTRICO_TEMPLATE } from '$lib/templates/cuadroElectrico';
 import type { InformeGuardado, GrupoCuatrimestre } from '$lib/types/informe.interface';
@@ -18,14 +17,10 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
   import './admin-page.css';
 
   let isAdmin = $derived(adminService.isAdmin);
-  let isSyncing = $state(false);
   let vistaPanel = $state(true);
-  let vistaActual = $state<'centros'>('centros');
   let showTareasEditor = $state(false);
   let cuatrimestreSeleccionado = $state('');
   let menuPrincipal = $state<'raiz' | 'mantenimiento_mercadona' | 'cuadro_electrico'>('raiz');
-
-  let excelInput = $state<HTMLInputElement>();
 
   onMount(async () => {
     if (!isAdmin) {
@@ -67,14 +62,9 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
 
   let cuatrimestres = $derived(cuatrimestreService.getInformesPorCuatrimestre(informesMantenimiento));
 
-  $effect(() => {
-    if (cuatrimestres.length > 0 && !cuatrimestreSeleccionado) {
-      cuatrimestreSeleccionado = cuatrimestres[0].clave;
-    }
-  });
-
   let grupoSeleccionado = $derived.by(() => {
-    return cuatrimestres.find(g => g.clave === cuatrimestreSeleccionado) || cuatrimestres[0];
+    if (!cuatrimestreSeleccionado) return null;
+    return cuatrimestres.find(g => g.clave === cuatrimestreSeleccionado) || null;
   });
 
   let metricas = $derived.by(() => {
@@ -138,44 +128,6 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
     return 'PENDIENTE';
   }
 
-  async function onSubirExcel(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-    isSyncing = true;
-    try {
-      const res = await adminService.sincronizarExcelDesdeArchivo(file);
-      const msg = res.message || 'Excel sincronizado correctamente';
-      if (res.log) console.log('[Sync log]\n', res.log);
-      ui.success(msg);
-
-      configCentrosService.invalidateCache();
-      await formPersistenceService.cargarHistorial();
-    } catch (err: any) {
-      ui.error('Error subiendo Excel: ' + (err.error?.detail || err.message));
-    } finally {
-      isSyncing = false;
-      input.value = '';
-    }
-  }
-
-  async function descargarExcel() {
-    try {
-      const blob = await adminService.descargarExcel();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Reporte_GTM_${new Date().toISOString().split('T')[0]}.xlsx`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      ui.success('Excel descargado correctamente');
-    } catch (err: any) {
-      ui.error('Error descargando Excel: ' + (err.error?.detail || err.message));
-    }
-  }
-
   async function crearCuatrimestre() {
     await cuatrimestreService.crearCuatrimestreConUI(informesGuardados);
     await formPersistenceService.cargarHistorial();
@@ -232,6 +184,23 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
     }
   }
 
+  async function eliminarInformeIndividual(inf: InformeGuardado) {
+    const ok = await ui.confirm(
+      'Eliminar informe',
+      `¿Eliminar el informe de "${inf.nombreObra}"? Esta acción no se puede deshacer.`,
+      'Eliminar',
+      'Cancelar'
+    );
+    if (!ok || !inf.id) return;
+    try {
+      await databaseService.eliminar(inf.id);
+      await formPersistenceService.cargarHistorial();
+      ui.success('Informe eliminado');
+    } catch (e: any) {
+      ui.error('Error al eliminar: ' + (e.message || 'Error desconocido'));
+    }
+  }
+
   async function editarInforme(inf: InformeGuardado) {
     const result = await formPersistenceService.editarInforme(inf);
     if (result) {
@@ -246,6 +215,10 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
 
   function crearInformeCuadro() {
     showCrearCuadroModal = true;
+  }
+
+  function seleccionarCuadro(id: number | undefined) {
+    if (id !== undefined) selectedCuadroId = id;
   }
 
   async function editarInformeCuadro(inf: InformeGuardado) {
@@ -327,7 +300,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
               </svg>
             </div>
             <div class="card-info">
-              <h2>Cuadro Eléctrico</h2>
+              <h2>Cuadros Eléctricos</h2>
               <p>Gestión de informes de procesos de cuadros eléctricos. Edición de tareas, creación y control de obras.</p>
             </div>
             <div class="card-arrow">➔</div>
@@ -350,7 +323,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
 
       <div class="sidebar-nav-back">
         <button class="btn-back-to-menu" onclick={() => { menuPrincipal = 'raiz'; selectedCuadroId = null; }}>
-          <span class="icon">←</span> Volver al Menú
+          <span class="icon">←</span> Volver al panel de administración
         </button>
       </div>
 
@@ -408,6 +381,155 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
         </div>
       </header>
 
+      <!-- ===== MOBILE: PANEL VIEW ===== -->
+      <div class="mobile-view mobile-panel-view" class:active={selectedCuadroId === null}>
+        <div class="mobile-panel-header">
+          <div class="mobile-brand-row">
+            <button class="admin-back-link" onclick={() => { menuPrincipal = 'raiz'; selectedCuadroId = null; }}>‹ Menú</button>
+            <div class="mobile-brand">
+              <span class="mobile-brand-arrow">▶</span>
+              <span class="mobile-brand-name">GTM</span>
+            </div>
+          </div>
+          <h1 class="mobile-panel-title">Cuadros Eléctrico</h1>
+          <p class="mobile-panel-subtitle">Gestión de informes de cuadros eléctricos</p>
+        </div>
+
+        <div class="mobile-panel-body">
+          <div class="mobile-section-label">ACCIONES</div>
+          <div class="mobile-actions-grid">
+            <button class="mobile-action-card" onclick={crearInformeCuadro}>
+              <div class="mac-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+              </div>
+              <div class="mac-title">Nuevo Informe</div>
+              <div class="mac-desc">Crear nuevo informe de cuadro eléctrico</div>
+            </button>
+            <button class="mobile-action-card" onclick={() => showTareasEditorCuadros = true}>
+              <div class="mac-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+              </div>
+              <div class="mac-title">Editar Tareas</div>
+              <div class="mac-desc">Editar plantilla de tareas predeterminada</div>
+            </button>
+          </div>
+
+          <div class="mobile-section-label">MÉTRICAS</div>
+          <div class="mobile-panel-metrics">
+            <button class="pm-card" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>
+              <div class="pm-value">{ metricasCuadro.total }</div>
+              <div class="pm-label">CUADROS</div>
+            </button>
+            <button class="pm-card pm-green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>
+              <div class="pm-value">{ metricasCuadro.completados }</div>
+              <div class="pm-label">COMPLETADOS</div>
+            </button>
+            <button class="pm-card pm-orange" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>
+              <div class="pm-value">{ metricasCuadro.enProgreso }</div>
+              <div class="pm-label">PROGRESO</div>
+            </button>
+            <button class="pm-card pm-red" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>
+              <div class="pm-value">{ metricasCuadro.pendientes }</div>
+              <div class="pm-label">PENDIENTES</div>
+            </button>
+          </div>
+
+          <div class="mobile-section-label">INFORMES</div>
+          <div class="mobile-cuatrimestres-list">
+            {#each informesCuadroFiltrados as inf (inf.id)}
+              <div class="mobile-cuatrimestre-item">
+                <button class="mci-main" onclick={() => seleccionarCuadro(inf.id)}>
+                  <div class="mci-info">
+                    <div class="mci-title">{ inf.nombreObra }</div>
+                    <div class="mci-meta">{ labelEstado(inf) } · {progresoDe(inf)}%</div>
+                  </div>
+                  <div class="mci-count">{ progresoDe(inf) }%</div>
+                </button>
+                <button
+                  class="btn-mci-delete"
+                  onclick={() => eliminarInformeCuadro(inf)}
+                  title="Eliminar informe"
+                >🗑️</button>
+              </div>
+            {/each}
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MOBILE: DETAIL VIEW ===== -->
+      <div class="mobile-view mobile-detail-view" class:active={selectedCuadroId !== null}>
+        <div class="mobile-cuatrimestre-header">
+          <div class="mobile-brand-row">
+            <button class="admin-back-link" onclick={() => { selectedCuadroId = null; }}>‹ Cuadros</button>
+            <div class="mobile-brand">
+              <span class="mobile-brand-arrow">▶</span>
+              <span class="mobile-brand-name">GTM</span>
+            </div>
+          </div>
+          <div class="mobile-cuatri-row">
+            <span class="mobile-cuatri-title">{ selectedCuadro?.nombreObra || 'Cuadro Eléctrico' }</span>
+          </div>
+          <p class="mobile-subtitle">Cuadro Eléctrico · detalle de informe</p>
+        </div>
+
+        <div class="mobile-cuatrimestre-body">
+          {#if selectedCuadro}
+            <div style="padding: 12px 16px 0; display: flex; gap: 8px;">
+              {#if selectedCuadro.nProy}<span style="font-size:12px;color:#64748b;background:#f1f5f9;padding:4px 10px;border-radius:100px;">Proy: {selectedCuadro.nProy}</span>{/if}
+              {#if selectedCuadro.nOrdenCuadro}<span style="font-size:12px;color:#64748b;background:#f1f5f9;padding:4px 10px;border-radius:100px;">Orden: {selectedCuadro.nOrdenCuadro}</span>{/if}
+              {#if selectedCuadro.nOrdenInstalacion}<span style="font-size:12px;color:#64748b;background:#f1f5f9;padding:4px 10px;border-radius:100px;">Inst: {selectedCuadro.nOrdenInstalacion}</span>{/if}
+            </div>
+
+            <div style="padding: 16px;">
+              <div class="cuadro-progreso-row">
+                <div class="cuadro-progreso-bar" style="height:8px;">
+                  <div class="cuadro-progreso-fill" style="width:{progresoDe(selectedCuadro)}%"></div>
+                </div>
+                <span class="cuadro-progreso-texto">{progresoDe(selectedCuadro)}%</span>
+              </div>
+
+              <div style="display:flex;gap:8px;margin-bottom:20px;">
+                <button class="btn-icon-label primary" onclick={() => editarInformeCuadro(selectedCuadro)} style="flex:1;justify-content:center;">
+                  <span class="icon">✏️</span>
+                  <span class="label">Editar</span>
+                </button>
+                <button class="btn-icon-label danger" onclick={() => eliminarInformeCuadro(selectedCuadro)} style="flex:1;justify-content:center;">
+                  <span class="icon">🗑️</span>
+                  <span class="label">Eliminar</span>
+                </button>
+              </div>
+
+              <h3 class="cuadro-sections-title">Progreso por Fase</h3>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                {#each obtenerSeccionesDetalle(selectedCuadro) as sec, index}
+                  <div class="section-progreso-card" role="button" tabindex="0" onclick={() => editarInformeCuadro(selectedCuadro)} onkeydown={(e) => e.key === 'Enter' && editarInformeCuadro(selectedCuadro)}>
+                    <div class="section-card-header">
+                      <span class="section-num" style="background: {sec.progreso === 100 ? '#e6f4ea' : sec.progreso > 0 ? '#fef3c7' : '#f1f5f9'}; color: {sec.progreso === 100 ? '#137333' : sec.progreso > 0 ? '#b06000' : '#475569'}">{index}</span>
+                      <span class="section-title">{sec.titulo.replace(/^\d+\.\s*/, '')}</span>
+                    </div>
+                    <div class="section-card-body">
+                      <div class="section-stats">
+                        <span class="section-tasks">{sec.hechas} / {sec.total} tareas</span>
+                        <span class="section-percent" style="color: {sec.progreso === 100 ? '#137333' : sec.progreso > 0 ? '#b06000' : '#64748b'}">{sec.progreso}%</span>
+                      </div>
+                      <div class="section-mini-progress">
+                        <div class="section-mini-fill" style="width: {sec.progreso}%; background: {sec.progreso === 100 ? '#059669' : sec.progreso > 0 ? '#d97706' : '#cbd5e1'}"></div>
+                      </div>
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            </div>
+          {/if}
+        </div>
+      </div>
+
+      <!-- ===== DESKTOP CONTENT ===== -->
       <div class="desktop-content">
         {#if selectedCuadro}
           <div class="cuadro-detail-header-premium">
@@ -561,20 +683,27 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
 
       <div class="sidebar-nav-back">
         <button class="btn-back-to-menu" onclick={() => { menuPrincipal = 'raiz'; cuatrimestreSeleccionado = ''; }}>
-          <span class="icon">←</span> Volver al Menú
+          <span class="icon">←</span> Volver al panel de administración
         </button>
       </div>
 
       <nav class="sidebar-nav">
         <div class="nav-label">Cuatrimestre</div>
         {#each cuatrimestres as grupo (grupo.clave)}
-          <button
-            class="nav-item"
-            class:active={cuatrimestreSeleccionado === grupo.clave}
-            onclick={() => seleccionarCuatrimestre(grupo.clave)}>
-            <div class="nav-item-title">{ grupo.label }</div>
-            <div class="nav-item-meta">{ grupo.informes.length } centros</div>
-          </button>
+          <div class="nav-item-wrap">
+            <button
+              class="nav-item"
+              class:active={cuatrimestreSeleccionado === grupo.clave}
+              onclick={() => seleccionarCuatrimestre(grupo.clave)}>
+              <div class="nav-item-title">{ grupo.label }</div>
+              <div class="nav-item-meta">{ grupo.informes.length } centros</div>
+            </button>
+            <button
+              class="btn-sidebar-delete"
+              onclick={() => eliminarCuatrimestre(grupo.clave)}
+              title="Eliminar cuatrimestre"
+            >🗑️</button>
+          </div>
         {/each}
       </nav>
 
@@ -590,43 +719,22 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
       <!-- Desktop Top Bar -->
       <header class="main-header">
         <div class="header-title">
-          <button class="btn-back-header" onclick={() => { menuPrincipal = 'raiz'; cuatrimestreSeleccionado = ''; }} title="Volver al Menú Principal">←</button>
           <div>
             <h1>{ grupoSeleccionado?.label || 'Administración' }</h1>
-            <span class="header-subtitle">Informes de mantenimiento</span>
+            {#if grupoSeleccionado}
+              <span class="header-subtitle">Informes de mantenimiento</span>
+            {:else}
+              <span class="header-subtitle">Selecciona un cuatrimestre en el panel lateral</span>
+            {/if}
           </div>
         </div>
         <div class="header-actions">
-          <!-- Selector de Vista -->
-          <div class="action-group">
-            <span class="btn-view-toggle active">Centros</span>
-          </div>
-
-          <!-- Grupo Excel -->
-          <div class="action-group">
-            <input type="file" bind:this={excelInput} accept=".xlsx" hidden onchange={onSubirExcel} />
-            <button class="btn-icon-label secondary" onclick={() => excelInput!.click()} disabled={isSyncing} title="Subir archivo Excel">
-              <span class="icon">📤</span>
-              <span class="label">{ isSyncing ? 'Subiendo...' : 'Subir Excel' }</span>
-            </button>
-            <button class="btn-icon-label secondary" onclick={descargarExcel} title="Descargar último Excel">
-              <span class="icon">📥</span>
-              <span class="label">Descargar</span>
-            </button>
-          </div>
-
           <!-- Grupo Gestión -->
           <div class="action-group">
             <button class="btn-icon-label primary" onclick={() => showTareasEditor = true} title="Editar tareas de centros">
               <span class="icon">🛠️</span>
               <span class="label">Editar Tareas</span>
             </button>
-            {#if cuatrimestreSeleccionado}
-              <button class="btn-icon-label danger" onclick={() => eliminarCuatrimestre(cuatrimestreSeleccionado)} title="Eliminar este cuatrimestre">
-                <span class="icon">🗑️</span>
-                <span class="label">Eliminar</span>
-              </button>
-            {/if}
             <button class="btn-icon-label primary" onclick={crearCuatrimestre} title="Crear nuevo cuatrimestre">
               <span class="icon">➕</span>
               <span class="label">Nuevo Cuatrimestre</span>
@@ -645,7 +753,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
               <span class="mobile-brand-name">GTM</span>
             </div>
           </div>
-          <h1 class="mobile-panel-title">Panel de administración</h1>
+          <h1 class="mobile-panel-title">Mantenimiento Mercadona</h1>
           <p class="mobile-panel-subtitle">Gestiona datos base y estructura de cuatrimestres</p>
         </div>
         
@@ -664,45 +772,25 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
               <div class="mac-title">Crear cuatrimestre</div>
               <div class="mac-desc">Nuevo cuatrimestre de seguimiento</div>
             </button>
-            <button class="mobile-action-card" onclick={() => excelInput!.click()}>
-              <div class="mac-icon">
-                <div class="excel-icon-wrap">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2289.75 2130">
-                    <path fill="#185C37" d="M1437.75 1011.75 532.5 852v1180.393c0 53.907 43.7 97.607 97.607 97.607h1562.036c53.907 0 97.607-43.7 97.607-97.607V1597.5z"/>
-                    <path fill="#21A366" d="M1437.75 0H630.107C576.2 0 532.5 43.7 532.5 97.607V532.5L1437.75 1065 1917 1224.75 2289.75 1065V532.5z"/>
-                    <path fill="#107C41" d="M532.5 532.5h905.25V1065H532.5z"/>
-                    <path fill="#33C481" d="M2192.143 0H1437.75v532.5h852V97.607C2289.75 43.7 2246.05 0 2192.143 0z"/>
-                    <path fill="#107C41" d="M1437.75 1065h852v532.5h-852z"/>
-                    <path fill="#fff" d="m302.3 1382.264 205.332-318.169L319.5 747.683h151.336l102.666 202.35c9.479 19.223 15.975 33.494 19.49 42.919h1.331c6.745-15.336 13.845-30.228 21.3-44.677L725.371 747.79H864.3l-192.925 314.548L869.2 1382.263H721.378L602.79 1160.158c-5.586-9.45-10.326-19.376-14.164-29.66h-1.757c-3.474 10.075-8.083 19.722-13.739 28.755L451.028 1382.264Z"/>
-                  </svg>
-                </div>
-              </div>
-              <div class="mac-title">Subir Excel</div>
-              <div class="mac-desc">Importar datos de centros</div>
-            </button>
-            <button class="mobile-action-card" onclick={descargarExcel}>
-              <div class="mac-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7 10 12 15 17 10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-              </div>
-              <div class="mac-title">Descargar Excel</div>
-              <div class="mac-desc">Descargar último archivo</div>
-            </button>
           </div>
 
           <div class="mobile-section-label">CUATRIMESTRES</div>
           <div class="mobile-cuatrimestres-list">
             {#each cuatrimestres as grupo (grupo.clave)}
-              <button class="mobile-cuatrimestre-item" onclick={() => seleccionarCuatrimestre(grupo.clave)}>
-                <div class="mci-info">
-                  <div class="mci-title">{ grupo.label }</div>
-                  <div class="mci-meta">{ grupo.informes.length } centros</div>
-                </div>
-                <div class="mci-count">{ grupo.informes.length }</div>
-              </button>
+              <div class="mobile-cuatrimestre-item">
+                <button class="mci-main" onclick={() => seleccionarCuatrimestre(grupo.clave)}>
+                  <div class="mci-info">
+                    <div class="mci-title">{ grupo.label }</div>
+                    <div class="mci-meta">{ grupo.informes.length } centros</div>
+                  </div>
+                  <div class="mci-count">{ grupo.informes.length }</div>
+                </button>
+                <button
+                  class="btn-mci-delete"
+                  onclick={() => eliminarCuatrimestre(grupo.clave)}
+                  title="Eliminar cuatrimestre"
+                >🗑️</button>
+              </div>
             {/each}
           </div>
         </div>
@@ -770,12 +858,6 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
               </div>
             {/each}
           </section>
-
-          {#if cuatrimestreSeleccionado}
-            <button class="mobile-delete-cuatrimestre" onclick={() => eliminarCuatrimestre(cuatrimestreSeleccionado)}>
-              <span class="mdi">🗑</span> Eliminar cuatrimestre
-            </button>
-          {/if}
         </div>
       </div>
 
@@ -829,9 +911,13 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
               </div>
             {/each}
           </section>
+        {:else if cuatrimestres.length > 0}
+          <div class="empty-state">
+            Selecciona un cuatrimestre en el panel lateral para ver sus centros.
+          </div>
         {:else}
           <div class="empty-state">
-            No hay cuatrimestres registrados.
+            No hay cuatrimestres registrados. Crea uno nuevo con el botón "Nuevo Cuatrimestre".
           </div>
         {/if}
       </div>
@@ -839,7 +925,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
 
     {#if showTareasEditor}
       <TareasEditor 
-        informes={informesFiltrados} 
+        informes={informesMantenimiento} 
         onClose={() => showTareasEditor = false} 
       />
     {/if}

@@ -224,14 +224,14 @@
             class:active={tabActual === 'mantenimiento'}
             onclick={() => switchTab('mantenimiento')}>
             <span class="tab-icon">📋</span>
-            <span class="tab-text">Mantenimiento</span>
+            <span class="tab-text">Mantenimientos Mercadona</span>
           </button>
           <button
             class="tab-btn"
             class:active={tabActual === 'cuadros'}
             onclick={() => switchTab('cuadros')}>
             <span class="tab-icon">⚡</span>
-            <span class="tab-text">Cuadro Eléctrico</span>
+            <span class="tab-text">Cuadros Eléctricos</span>
           </button>
         </div>
       </div>
