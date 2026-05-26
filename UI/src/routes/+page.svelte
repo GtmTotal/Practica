@@ -287,11 +287,6 @@
             <div class="empty-state">
               <div style="font-size: 48px; margin-bottom: 12px;">⚡</div>
               <p>No hay informes de Cuadro Eléctrico{filtroCuadro !== 'todos' ? ` con estado "${filtroCuadro}"` : ''}.</p>
-              {#if filtroCuadro === 'todos'}
-                <button class="btn-nuevo-cuadro" onclick={() => showCrearCuadroModal = true}>
-                  <span>＋</span> Crear Primer Informe
-                </button>
-              {/if}
             </div>
           {:else}
             <div class="cuadro-cards-grid">
@@ -344,39 +339,39 @@
           <span class="dash-cuatri-title">{ grupoSeleccionado?.label || '' }</span>
         </div>
         <p class="dash-subtitle">Mercadona · informes de mantenimiento</p>
-        <div class="dash-metrics">
-          <button 
-            class="mm-card" 
-            class:active={filtroSeleccionado === 'todos'} 
-            onclick={() => filtroSeleccionado = 'todos'}>
-            <div class="mm-value">{ metricas.total }</div>
-            <div class="mm-label">CENTROS</div>
-          </button>
-          <button 
-            class="mm-card mm-green" 
-            class:active={filtroSeleccionado === 'completado'} 
-            onclick={() => filtroSeleccionado = 'completado'}>
-            <div class="mm-value">{ metricas.completados }</div>
-            <div class="mm-label">COMPLETADOS</div>
-          </button>
-          <button 
-            class="mm-card mm-orange" 
-            class:active={filtroSeleccionado === 'en-progreso'} 
-            onclick={() => filtroSeleccionado = 'en-progreso'}>
-            <div class="mm-value">{ metricas.enProgreso }</div>
-            <div class="mm-label">EN PROGRESO</div>
-          </button>
-          <button 
-            class="mm-card mm-red" 
-            class:active={filtroSeleccionado === 'pendiente'} 
-            onclick={() => filtroSeleccionado = 'pendiente'}>
-            <div class="mm-value">{ metricas.pendientes }</div>
-            <div class="mm-label">PENDIENTES</div>
-          </button>
-        </div>
       </div>
 
       <div class="dash-cuatrimestre-body">
+        <div class="cuadro-tab-metrics" style="margin-bottom: 8px;">
+          <button
+            class="cuadro-metric"
+            class:active={filtroSeleccionado === 'todos'}
+            onclick={() => filtroSeleccionado = 'todos'}>
+            <span class="cuadro-metric-val">{ metricas.total }</span>
+            <span class="cuadro-metric-lbl">CENTROS</span>
+          </button>
+          <button
+            class="cuadro-metric cuadro-metric--green"
+            class:active={filtroSeleccionado === 'completado'}
+            onclick={() => filtroSeleccionado = 'completado'}>
+            <span class="cuadro-metric-val">{ metricas.completados }</span>
+            <span class="cuadro-metric-lbl">COMPLETADOS</span>
+          </button>
+          <button
+            class="cuadro-metric cuadro-metric--orange"
+            class:active={filtroSeleccionado === 'en-progreso'}
+            onclick={() => filtroSeleccionado = 'en-progreso'}>
+            <span class="cuadro-metric-val">{ metricas.enProgreso }</span>
+            <span class="cuadro-metric-lbl">EN PROGRESO</span>
+          </button>
+          <button
+            class="cuadro-metric cuadro-metric--red"
+            class:active={filtroSeleccionado === 'pendiente'}
+            onclick={() => filtroSeleccionado = 'pendiente'}>
+            <span class="cuadro-metric-val">{ metricas.pendientes }</span>
+            <span class="cuadro-metric-lbl">PENDIENTES</span>
+          </button>
+        </div>
         <div class="centros-label">CENTROS</div>
         <section class="centros-grid">
           {#each informesFiltrados as inf (inf.id)}
@@ -611,64 +606,6 @@
 }
 
 /* Metrics */
-.dash-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-top: 24px;
-  max-width: 1000px;
-}
-
-.mm-card {
-  background: rgba(255,255,255,0.08);
-  border: 2px solid transparent;
-  border-radius: 12px;
-  padding: 20px 16px;
-  text-align: center;
-  transition: all 0.2s;
-  cursor: pointer;
-  color: white;
-  width: 100%;
-}
-
-.mm-card:hover {
-  background: rgba(255,255,255,0.12);
-  transform: translateY(-2px);
-}
-
-.mm-card.active {
-  background: rgba(255,255,255,0.2);
-  border-color: rgba(255,255,255,0.4);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.mm-value {
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1;
-  margin-bottom: 6px;
-}
-
-.mm-orange .mm-value { color: #fbbf24; }
-.mm-green .mm-value { color: #10b981; }
-.mm-red .mm-value { color: #fca5a5; }
-
-.mm-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-@media (max-width: 768px) {
-  .dash-metrics { 
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px; 
-  }
-  .mm-card { padding: 14px 10px; }
-  .mm-value { font-size: 22px; }
-}
 
 
 .dash-cuatri-row {

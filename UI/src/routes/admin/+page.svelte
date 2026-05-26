@@ -252,8 +252,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
     }
   }
 
-  function cerrarSesion() {
-    adminService.setAdmin(false);
+  function volverAlDashboard() {
     goto('/');
   }
 </script>
@@ -308,7 +307,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
         </div>
 
         <div class="root-menu-footer">
-          <button class="btn-root-logout" onclick={cerrarSesion}>Cerrar Sesión</button>
+          <button class="btn-root-logout" onclick={volverAlDashboard}>Volver al Dashboard</button>
         </div>
       </div>
     </div>
@@ -347,8 +346,8 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
       </nav>
 
       <div class="sidebar-footer">
-        <button class="btn-logout" onclick={cerrarSesion} title="Cerrar sesión">
-          Salir
+        <button class="btn-logout" onclick={volverAlDashboard} title="Volver al dashboard de usuario">
+          Volver al Dashboard
         </button>
       </div>
     </aside>
@@ -708,8 +707,8 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
       </nav>
 
       <div class="sidebar-footer">
-        <button class="btn-logout" onclick={cerrarSesion} title="Cerrar sesión">
-          Salir
+        <button class="btn-logout" onclick={volverAlDashboard} title="Volver al dashboard de usuario">
+          Volver al Dashboard
         </button>
       </div>
     </aside>
@@ -810,28 +809,28 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
             <span class="mobile-cuatri-title">{ grupoSeleccionado?.label }</span>
           </div>
           <p class="mobile-subtitle">Mercadona · informes de mantenimiento</p>
-          <div class="mobile-metrics">
-            <button class="mm-card" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>
-              <div class="mm-value">{ metricas.total }</div>
-              <div class="mm-label">CENTROS</div>
-            </button>
-            <button class="mm-card mm-green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>
-              <div class="mm-value">{ metricas.completados }</div>
-              <div class="mm-label">COMPLETADOS</div>
-            </button>
-            <button class="mm-card mm-orange" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>
-              <div class="mm-value">{ metricas.enProgreso }</div>
-              <div class="mm-label">PROGRESO</div>
-            </button>
-            <button class="mm-card mm-red" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>
-              <div class="mm-value">{ metricas.pendientes }</div>
-              <div class="mm-label">PENDIENTES</div>
-            </button>
-          </div>
         </div>
 
         <div class="mobile-cuatrimestre-body">
-          <div class="centros-label">CENTROS ({informesFiltrados.length})</div>
+          <div class="mobile-metrics" style="padding: 16px 16px 0;">
+            <button class="pm-card" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>
+              <div class="pm-value">{ metricas.total }</div>
+              <div class="pm-label">CENTROS</div>
+            </button>
+            <button class="pm-card pm-green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>
+              <div class="pm-value">{ metricas.completados }</div>
+              <div class="pm-label">COMPLETADOS</div>
+            </button>
+            <button class="pm-card pm-orange" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>
+              <div class="pm-value">{ metricas.enProgreso }</div>
+              <div class="pm-label">PROGRESO</div>
+            </button>
+            <button class="pm-card pm-red" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>
+              <div class="pm-value">{ metricas.pendientes }</div>
+              <div class="pm-label">PENDIENTES</div>
+            </button>
+          </div>
+          <div class="centros-label" style="padding-top: 12px;">CENTROS ({informesFiltrados.length})</div>
           <section class="centros-grid">
             {#each informesFiltrados as inf (inf.id)}
               <!-- svelte-ignore a11y_click_events_have_key_events -->
