@@ -40,12 +40,19 @@ class ServicioNavegacion {
     this.vistaActual = 'inicio';
     this.centroSeleccionado = '';
     
-    const target = origen === 'admin' ? '/admin' : '/';
-    const qs = c ? `?c=${encodeURIComponent(c)}` : '';
-    await goto(`${target}${qs}`);
-    
-    if (origen === 'admin') this.vistaOrigen = 'dashboard';
-    this.persist();
+    if (origen === 'admin_cuadro') {
+      this.vistaOrigen = 'dashboard';
+      this.persist();
+      await goto('/admin?menu=cuadro_electrico');
+    } else if (origen === 'admin') {
+      const qs = c ? `?c=${encodeURIComponent(c)}` : '';
+      this.vistaOrigen = 'dashboard';
+      this.persist();
+      await goto(`/admin${qs}`);
+    } else {
+      this.persist();
+      await goto('/');
+    }
   }
 
   async seleccionarCentro(nombre: string, cuatrimestre?: string): Promise<void> {

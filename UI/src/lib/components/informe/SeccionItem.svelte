@@ -15,6 +15,7 @@
     onEliminarFoto,
     onDescargarFoto,
     onActualizarDescripcion,
+    tipoFormulario = 'mantenimiento'
   }: {
     seccion: SeccionState;
     idxSeccion: number;
@@ -25,6 +26,7 @@
     onEliminarFoto: (fotoIdx: number) => void;
     onDescargarFoto: (foto: Foto) => void;
     onActualizarDescripcion: (fotoIdx: number, desc: string) => void;
+    tipoFormulario?: string;
   } = $props();
 
   let fileInput: HTMLInputElement | null = $state(null);
@@ -59,6 +61,7 @@
         tareasArray={seccion.tareas}
         prefijo={seccion.prefijo}
         {idxSeccion}
+        tipo={tipoFormulario}
       />
 
       <div class="fotos-seccion">
@@ -85,7 +88,6 @@
           {onActualizarDescripcion}
         />
       </div>
-
       <textarea
         bind:value={seccion.observaciones}
         placeholder="Observaciones generales de la sección..."

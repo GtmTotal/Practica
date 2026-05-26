@@ -6,12 +6,16 @@
     tarea,
     idxTarea,
     prefijo,
-    idxSeccion
+    idxSeccion,
+    tipo,
+    mostrarTitulo = true
   }: {
     tarea: TareaState;
     idxTarea: number;
     prefijo: string;
     idxSeccion: number;
+    tipo: string;
+    mostrarTitulo?: boolean;
   } = $props();
 
   function toggleOk() {
@@ -27,31 +31,37 @@
   }
 </script>
 
-<div class="inspeccion-item">
+<div class="inspeccion-item" class:notice-item={!tarea.indice && tarea.sinCheck}>
+  {#if tarea.titulo && mostrarTitulo}
+    <div class="tarea-header-titulo">{ tarea.titulo }</div>
+  {/if}
   <div class="tarea-main-row">
-    <span class="tarea-indice">{ prefijo }.{ idxTarea + 1 }</span>
+    {#if tarea.indice}
+      <span class="tarea-indice">{ tarea.indice }</span>
+    {/if}
     <div class="tarea-texto-wrapper">
-      {#if tarea.titulo}
-        <p class="tarea-titulo">{ tarea.titulo }</p>
+      {#if tarea.titulo && mostrarTitulo}
         <p class="tarea-subtitulo">{ tarea.descripcion }</p>
       {:else}
-        <p class="tarea-texto">{ tarea.descripcion }</p>
+        <p class="tarea-texto" class:is-notice={!tarea.indice && tarea.sinCheck}>{ tarea.descripcion }</p>
       {/if}
     </div>
   </div>
 
-  <div class="inspeccion-controles">
-    <label class="check-inspeccion ok" class:checked={tarea.ok}>
-      <input type="checkbox" bind:checked={tarea.ok} onchange={toggleOk}>
-      <span class="box-icon">✓</span>
-      <span class="box-label">OK</span>
-    </label>
-    <label class="check-inspeccion nook" class:checked={tarea.noOk}>
-      <input type="checkbox" bind:checked={tarea.noOk} onchange={toggleNoOk}>
-      <span class="box-icon">✕</span>
-      <span class="box-label">NO OK</span>
-    </label>
-  </div>
+  {#if !tarea.sinCheck}
+    <div class="inspeccion-controles">
+      <label class="check-inspeccion ok" class:checked={tarea.ok}>
+        <input type="checkbox" bind:checked={tarea.ok} onchange={toggleOk}>
+        <span class="box-icon">✓</span>
+        <span class="box-label">OK</span>
+      </label>
+      <label class="check-inspeccion nook" class:checked={tarea.noOk}>
+        <input type="checkbox" bind:checked={tarea.noOk} onchange={toggleNoOk}>
+        <span class="box-icon">⚠</span>
+        <span class="box-label">{#if tipo === 'cuadro_electrico'}REVISAR{:else}NO OK{/if}</span>
+      </label>
+    </div>
+  {/if}
 
   <div class="tarea-extra-row">
     <div class="campos-medicion-inline">
@@ -84,6 +94,11 @@
     border-color: var(--gray-300, #d1d5db);
   }
 
+  .inspeccion-item.notice-item {
+    background: #f1f5f9;
+    border-left: 4px solid var(--primary, #1e3a5f);
+  }
+
   .tarea-main-row {
     display: flex;
     align-items: flex-start;
@@ -109,12 +124,14 @@
     gap: 2px;
   }
 
-  .tarea-titulo {
-    font-size: 0.9rem;
-    line-height: 1.4;
+  .tarea-header-titulo {
+    font-size: 0.85rem;
     font-weight: 700;
-    margin: 0;
-    color: #0f172a;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    line-height: 1.4;
   }
 
   .tarea-subtitulo {
@@ -129,8 +146,14 @@
     flex: 1;
     font-size: 0.9rem;
     line-height: 1.4;
-    font-weight: 500;
+    font-weight: 400;
     margin: 0;
+  }
+
+  .tarea-texto.is-notice {
+    font-weight: 700;
+    color: var(--primary, #1e3a5f);
+    font-size: 0.85rem;
   }
 
   .inspeccion-controles {
@@ -140,6 +163,8 @@
     margin-top: 10px;
     margin-bottom: 10px;
   }
+
+
 
   .check-inspeccion {
     display: inline-flex;

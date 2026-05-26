@@ -24,6 +24,17 @@ export interface TareaState {
   campos: CampoState[];
   bombasQuimicas?: BombaState[];
   grupo?: string;
+  subtareas?: SubTareaState[];
+  indice?: string;
+  sinCheck?: boolean;
+}
+
+export interface SubTareaState {
+  descripcion: string;
+  ok: boolean;
+  noOk: boolean;
+  notaTarea: string;
+  sinCheck?: boolean;
 }
 
 export interface SeccionState {
@@ -128,7 +139,16 @@ class ServicioInicializacionFormulario {
           rev: false, ok: false, noOk: false, notaTarea: '',
           grupo: tareaTemplate.grupo,
           campos: (tareaTemplate.campos || []).map((c: any) => this.crearCampo(c)),
-          bombasQuimicas
+          bombasQuimicas,
+          subtareas: (tareaTemplate.subtareas || []).map((st: any) => ({
+            descripcion: st.descripcion,
+            ok: false,
+            noOk: false,
+            notaTarea: '',
+            sinCheck: st.sinCheck
+          })),
+          indice: tareaTemplate.indice,
+          sinCheck: tareaTemplate.sinCheck
         };
       } else {
         tareaGroup = {
@@ -136,7 +156,16 @@ class ServicioInicializacionFormulario {
           titulo: tareaTemplate.titulo,
           rev: false, ok: false, noOk: false, notaTarea: '',
           grupo: tareaTemplate.grupo,
-          campos: (tareaTemplate.campos || []).map((c: any) => this.crearCampo(c))
+          campos: (tareaTemplate.campos || []).map((c: any) => this.crearCampo(c)),
+          subtareas: (tareaTemplate.subtareas || []).map((st: any) => ({
+            descripcion: st.descripcion,
+            ok: false,
+            noOk: false,
+            notaTarea: '',
+            sinCheck: st.sinCheck
+          })),
+          indice: tareaTemplate.indice,
+          sinCheck: tareaTemplate.sinCheck
         };
       }
       return tareaGroup;

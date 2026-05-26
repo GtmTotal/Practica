@@ -33,7 +33,19 @@
       const id = Date.now();
       const hoy = new Date().toISOString().split('T')[0];
 
-      const secciones = CUADRO_ELECTRICO_TEMPLATE.secciones.map(sec => ({
+      let baseTemplate = CUADRO_ELECTRICO_TEMPLATE;
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('CUADRO_ELECTRICO_TEMPLATE_CUSTOM');
+        if (saved) {
+          try {
+            baseTemplate = JSON.parse(saved);
+          } catch (e) {
+            console.error('Error parsing custom template', e);
+          }
+        }
+      }
+
+      const secciones = baseTemplate.secciones.map(sec => ({
         ...sec,
         tareas: sec.tareas.map(t => ({ ...t, ok: false, noOk: false, notaTarea: '' }))
       }));

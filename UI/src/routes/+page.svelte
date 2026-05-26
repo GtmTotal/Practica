@@ -8,7 +8,12 @@
   import { cuatrimestreService } from '$lib/services/cuatrimestre.svelte';
   import { formPersistenceService } from '$lib/services/form-persistence.svelte';
   import { formInitService } from '$lib/services/form-initialization.svelte';
+  import { databaseService } from '$lib/services/database.svelte';
+  import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectricoModal.svelte';
   import type { InformeGuardado } from '$lib/types/informe.interface';
+
+  // Tab state
+  let tabActual = $state<'mantenimiento' | 'cuadros'>('mantenimiento');
 
   // Derived state
   let isAdmin = $derived(adminService.isAdmin);
@@ -17,7 +22,23 @@
 
   let informesGuardados = $derived(formPersistenceService.informesGuardados);
   let informesMantenimiento = $derived(informesGuardados.filter(i => i.tipo === 'mantenimiento' || !i.tipo));
+  let informesCuadro = $derived(informesGuardados.filter(i => i.tipo === 'cuadro_electrico'));
   let cuatrimestres = $derived(cuatrimestreService.getInformesPorCuatrimestre(informesMantenimiento));
+
+  // Cuadro Eléctrico state
+  let showCrearCuadroModal = $state(false);
+  let filtroCuadro = $state('todos');
+  let informesCuadroFiltrados = $derived.by(() => {
+    if (filtroCuadro === 'todos') return informesCuadro;
+    return informesCuadro.filter(inf => estadoDe(inf) === filtroCuadro);
+  });
+  let metricasCuadro = $derived.by(() => {
+    const total = informesCuadro.length;
+    const completados = informesCuadro.filter(i => estadoDe(i) === 'completado').length;
+    const enProgreso = informesCuadro.filter(i => estadoDe(i) === 'en-progreso').length;
+    const pendientes = total - completados - enProgreso;
+    return { total, completados, enProgreso, pendientes };
+  });
   
   let grupoSeleccionado = $derived(cuatrimestres.find(g => g.clave === cuatrimestreSeleccionado));
   let informesActuales = $derived(grupoSeleccionado?.informes || []);
@@ -114,6 +135,48 @@
     }
   }
 
+  async function editarInformeCuadro(inf: InformeGuardado) {
+    const result = await formPersistenceService.editarInforme(inf);
+    if (result) {
+      formInitService.setFormData(
+        result.obraForm,
+        result.fotosPorSeccionBase64,
+        result.seccionesColapsadas
+      );
+      await navService.irAFormulario(inf.cuatrimestre || '', inf.nombreObra);
+    }
+  }
+
+  async function eliminarInformeCuadro(inf: InformeGuardado) {
+    const ok = await ui.confirm(
+      'Eliminar Informe',
+      `¿Eliminar el informe "${inf.nombreObra}"? Esta acción no se puede deshacer.`,
+      'Eliminar',
+      'Cancelar'
+    );
+    if (!ok) return;
+    try {
+      if (inf.id) {
+        await databaseService.eliminar(inf.id);
+        await formPersistenceService.cargarHistorial();
+        ui.success('Informe eliminado');
+      }
+    } catch (e: any) {
+      ui.error('Error al eliminar: ' + (e.message || 'Error desconocido'));
+    }
+  }
+
+  function switchTab(tab: 'mantenimiento' | 'cuadros') {
+    tabActual = tab;
+    filtroCuadro = 'todos';
+    filtroSeleccionado = 'todos';
+    // Reset cuatrimestre selection when switching tabs
+    if (tab === 'cuadros') {
+      navService.cuatrimestreSeleccionado = '';
+      navService.persist();
+    }
+  }
+
   onMount(async () => {
     await formPersistenceService.cargarHistorial();
   });
@@ -147,30 +210,125 @@
 
   <!-- Main Content -->
   <main class="main-content">
-    <!-- View 1: Panel de Selección de Cuatrimestres -->
+    <!-- View 1: Panel de Selección (con pestañas) -->
     <div class="dash-view dash-panel-view" class:active={vistaPanel}>
       <div class="dash-panel-header">
         <button class="dash-admin-gear mobile-only" onclick={toggleAdmin} title="Administración">⚙</button>
         <h1 class="dash-panel-title">Control total del mantenimiento.</h1>
         <p class="dash-panel-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
+
+        <!-- Tab Switcher -->
+        <div class="tab-switcher">
+          <button
+            class="tab-btn"
+            class:active={tabActual === 'mantenimiento'}
+            onclick={() => switchTab('mantenimiento')}>
+            <span class="tab-icon">📋</span>
+            <span class="tab-text">Mantenimiento</span>
+          </button>
+          <button
+            class="tab-btn"
+            class:active={tabActual === 'cuadros'}
+            onclick={() => switchTab('cuadros')}>
+            <span class="tab-icon">⚡</span>
+            <span class="tab-text">Cuadro Eléctrico</span>
+          </button>
+        </div>
       </div>
 
       <div class="dash-panel-body">
-        <div class="dash-section-label">CUATRIMESTRES</div>
-        {#if cuatrimestres.length === 0}
-          <div class="empty-state">No hay informes guardados.</div>
+        {#if tabActual === 'mantenimiento'}
+          <!-- ===== TAB MANTENIMIENTO ===== -->
+          <div class="dash-section-label">CUATRIMESTRES</div>
+          {#if cuatrimestres.length === 0}
+            <div class="empty-state">No hay informes guardados.</div>
+          {:else}
+            <div class="dash-cuatrimestres-list">
+              {#each cuatrimestres as grupo (grupo.clave)}
+                <button class="dash-cuatrimestre-item" onclick={() => seleccionarCuatrimestre(grupo.clave)}>
+                  <div class="dci-info">
+                    <div class="dci-title">{ grupo.label }</div>
+                    <div class="dci-meta">{ grupo.informes.length } centros</div>
+                  </div>
+                  <div class="dci-count">{ grupo.informes.length }</div>
+                </button>
+              {/each}
+            </div>
+          {/if}
         {:else}
-          <div class="dash-cuatrimestres-list">
-            {#each cuatrimestres as grupo (grupo.clave)}
-              <button class="dash-cuatrimestre-item" onclick={() => seleccionarCuatrimestre(grupo.clave)}>
-                <div class="dci-info">
-                  <div class="dci-title">{ grupo.label }</div>
-                  <div class="dci-meta">{ grupo.informes.length } centros</div>
-                </div>
-                <div class="dci-count">{ grupo.informes.length }</div>
-              </button>
-            {/each}
+          <!-- ===== TAB CUADROS ELÉCTRICOS ===== -->
+          <div class="cuadro-tab-metrics">
+            <button class="cuadro-metric" class:active={filtroCuadro === 'todos'} onclick={() => filtroCuadro = 'todos'}>
+              <span class="cuadro-metric-val">{ metricasCuadro.total }</span>
+              <span class="cuadro-metric-lbl">TOTAL</span>
+            </button>
+            <button class="cuadro-metric cuadro-metric--green" class:active={filtroCuadro === 'completado'} onclick={() => filtroCuadro = 'completado'}>
+              <span class="cuadro-metric-val">{ metricasCuadro.completados }</span>
+              <span class="cuadro-metric-lbl">COMPLETADOS</span>
+            </button>
+            <button class="cuadro-metric cuadro-metric--orange" class:active={filtroCuadro === 'en-progreso'} onclick={() => filtroCuadro = 'en-progreso'}>
+              <span class="cuadro-metric-val">{ metricasCuadro.enProgreso }</span>
+              <span class="cuadro-metric-lbl">EN PROGRESO</span>
+            </button>
+            <button class="cuadro-metric cuadro-metric--red" class:active={filtroCuadro === 'pendiente'} onclick={() => filtroCuadro = 'pendiente'}>
+              <span class="cuadro-metric-val">{ metricasCuadro.pendientes }</span>
+              <span class="cuadro-metric-lbl">PENDIENTES</span>
+            </button>
           </div>
+
+          <div class="cuadro-tab-header-row">
+            <div class="dash-section-label">CUADROS ({informesCuadroFiltrados.length})</div>
+            <button class="btn-nuevo-cuadro" onclick={() => showCrearCuadroModal = true}>
+              <span>＋</span> Nuevo Cuadro
+            </button>
+          </div>
+
+          {#if informesCuadroFiltrados.length === 0}
+            <div class="empty-state">
+              <div style="font-size: 48px; margin-bottom: 12px;">⚡</div>
+              <p>No hay informes de Cuadro Eléctrico{filtroCuadro !== 'todos' ? ` con estado "${filtroCuadro}"` : ''}.</p>
+              {#if filtroCuadro === 'todos'}
+                <button class="btn-nuevo-cuadro" onclick={() => showCrearCuadroModal = true}>
+                  <span>＋</span> Crear Primer Informe
+                </button>
+              {/if}
+            </div>
+          {:else}
+            <div class="cuadro-cards-grid">
+              {#each informesCuadroFiltrados as inf (inf.id)}
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
+                <div
+                  class="cuadro-card-tech"
+                  style="--dot-color: {colorEstado(inf)}"
+                  data-estado={estadoDe(inf)}
+                  onclick={() => editarInformeCuadro(inf)}>
+                  <div class="cuadro-card-tech-top">
+                    <div class="cuadro-card-tech-icon" style="background: {progresoDe(inf) === 100 ? '#e6f4ea' : progresoDe(inf) > 0 ? '#fffbeb' : '#f1f5f9'}; color: {progresoDe(inf) === 100 ? '#059669' : progresoDe(inf) > 0 ? '#d97706' : '#64748b'}">
+                      ⚡
+                    </div>
+                    <div class="cuadro-card-tech-info">
+                      <h3>{ inf.nombreObra }</h3>
+                      <div class="cuadro-card-tech-meta">
+                        {#if inf.nOrdenCuadro}<span>Orden: {inf.nOrdenCuadro}</span>{/if}
+                        {#if inf.nProy}<span>Proy: {inf.nProy}</span>{/if}
+                      </div>
+                    </div>
+                    <span class="cuadro-card-tech-estado" style="color: {colorEstado(inf)}">{ labelEstado(inf) }</span>
+                  </div>
+                  <div class="cuadro-card-tech-bottom">
+                    <div class="cuadro-card-tech-progress">
+                      <div class="cuadro-progress-bar">
+                        <div class="cuadro-progress-fill" style="width: {progresoDe(inf)}%; background: {colorEstado(inf)}"></div>
+                      </div>
+                      <span class="cuadro-progress-text">{progresoDe(inf)}%</span>
+                    </div>
+                    <span class="cuadro-card-tech-date">{ inf.ultimaModificacion || '—' }</span>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          {/if}
         {/if}
       </div>
     </div>
@@ -246,6 +404,13 @@
     </div>
   </main>
 </div>
+
+{#if showCrearCuadroModal}
+  <CrearCuadroElectricoModal
+    onClose={() => showCrearCuadroModal = false}
+    onCreated={() => { showCrearCuadroModal = false; }}
+  />
+{/if}
 
 <style>
 /* ===== LAYOUT ===== */
@@ -710,5 +875,262 @@
   text-align: center;
   color: #94a3b8;
   font-size: 16px;
+}
+
+/* ===== TAB SWITCHER ===== */
+.tab-switcher {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  background: rgba(255,255,255,0.08);
+  padding: 6px;
+  border-radius: 14px;
+  max-width: 480px;
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
+}
+
+.tab-btn.active {
+  background: #ffffff;
+  color: #1e3a5f;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.tab-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* ===== CUADRO ELÉCTRICO TAB ===== */
+.cuadro-tab-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 768px) {
+  .cuadro-tab-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.cuadro-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 12px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.cuadro-metric:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+.cuadro-metric.active {
+  border-color: #1e3a5f;
+  background: #f8fafc;
+}
+
+.cuadro-metric-val {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1e293b;
+  line-height: 1;
+}
+
+.cuadro-metric-lbl {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cuadro-metric--green .cuadro-metric-val { color: #059669; }
+.cuadro-metric--orange .cuadro-metric-val { color: #d97706; }
+.cuadro-metric--red .cuadro-metric-val { color: #ef4444; }
+
+.cuadro-tab-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.btn-nuevo-cuadro {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  background: #1e3a5f;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-nuevo-cuadro:hover {
+  background: #152942;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(30,58,95,0.25);
+}
+
+.cuadro-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .cuadro-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cuadro-card-tech {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px 22px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cuadro-card-tech:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 12px 24px -6px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.cuadro-card-tech-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.cuadro-card-tech-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.cuadro-card-tech-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cuadro-card-tech-info h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cuadro-card-tech-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.cuadro-card-tech-meta span {
+  background: #f1f5f9;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.cuadro-card-tech-estado {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: #f1f5f9;
+  white-space: nowrap;
+}
+
+.cuadro-card-tech-bottom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.cuadro-card-tech-progress {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cuadro-progress-bar {
+  flex: 1;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.cuadro-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.cuadro-progress-text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  min-width: 36px;
+  text-align: right;
+}
+
+.cuadro-card-tech-date {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  white-space: nowrap;
 }
 </style>

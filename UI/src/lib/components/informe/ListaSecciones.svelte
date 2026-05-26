@@ -11,7 +11,8 @@
     agregarFoto,
     eliminarFoto,
     descargarFoto,
-    actualizarDescripcion
+    actualizarDescripcion,
+    tipo
   }: {
     obraForm: FormState;
     seccionesColapsadas: boolean[];
@@ -21,6 +22,7 @@
     eliminarFoto: (secIdx: number, fotoIdx: number) => void;
     descargarFoto: (foto: Foto) => void;
     actualizarDescripcion: (secIdx: number, fotoIdx: number, descripcion: string) => void;
+    tipo: string;
   } = $props();
 
 </script>
@@ -38,6 +40,7 @@
         onEliminarFoto={(fotoIdx) => eliminarFoto(idx, fotoIdx)}
         onDescargarFoto={descargarFoto}
         onActualizarDescripcion={(fotoIdx, desc) => actualizarDescripcion(idx, fotoIdx, desc)}
+        tipoFormulario={tipo}
       />
     {/each}
   {/if}

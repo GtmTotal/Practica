@@ -1,6 +1,7 @@
 import { databaseService } from './database.svelte';
 import { navService } from './navigation.svelte';
 import { configCentrosService } from './config-centros.svelte';
+import { CUADRO_ELECTRICO_TEMPLATE } from '$lib/templates/cuadroElectrico';
 import { pdfDataBuilder } from './form-persistence/pdf-data-builder.svelte';
 import { pdfReportService } from './form-persistence/pdf-report.svelte';
 import { formInitService } from './form-initialization.svelte';
@@ -141,9 +142,26 @@ class ServicioPersistenciaFormulario {
       const fotosPorSeccionBase64: Foto[][] = [];
       const seccionesColapsadas: boolean[] = [];
 
+      let templateCuadro: any = null;
+      if (completo.tipo === 'cuadro_electrico') {
+        if (typeof window !== 'undefined') {
+          const saved = localStorage.getItem('CUADRO_ELECTRICO_TEMPLATE_CUSTOM');
+          if (saved) {
+            try {
+              templateCuadro = JSON.parse(saved);
+            } catch (e) {
+              console.error('Error parsing custom template', e);
+            }
+          }
+        }
+        if (!templateCuadro) {
+          templateCuadro = CUADRO_ELECTRICO_TEMPLATE;
+        }
+      }
+
       if (completo.secciones?.length) {
         completo.secciones.forEach((sec: any) => {
-          const { seccionGroup, fotos } = this.restaurarSeccionGuardada(sec);
+          const { seccionGroup, fotos } = this.restaurarSeccionGuardada(sec, templateCuadro);
           obraForm.secciones.push(seccionGroup);
           fotosPorSeccionBase64.push(fotos);
           seccionesColapsadas.push(true);
@@ -197,11 +215,45 @@ class ServicioPersistenciaFormulario {
     await this.cargarHistorial();
   }
 
-  private restaurarSeccionGuardada(sec: any): { seccionGroup: SeccionState; fotos: Foto[] } {
-    const tareas = (sec.tareas || []).map((t: any) => {
+  private restaurarSeccionGuardada(sec: any, templateCuadro?: any): { seccionGroup: SeccionState; fotos: Foto[] } {
+    const templateSec = templateCuadro?.secciones?.find((s: any) => String(s.prefijo) === String(sec.prefijo));
+
+    const tareas = (sec.tareas || []).map((t: any, idx: number) => {
+
+      let matchedTitulo = t.titulo;
+      // Match template tarea by index first, then by description
+      const templateTarea = templateSec?.tareas
+        ? (templateSec.tareas[idx] || templateSec.tareas.find((tt: any) => tt.descripcion === t.descripcion))
+        : null;
+      if (!matchedTitulo && templateTarea) {
+        matchedTitulo = templateTarea.titulo;
+      }
+
+      // Restore subtareas: use saved data if available, otherwise restore from template
+      let subtareas: any[] = [];
+      if (t.subtareas && t.subtareas.length > 0) {
+        // Saved data has subtareas — use them
+        subtareas = t.subtareas.map((st: any) => ({
+          descripcion: st.descripcion,
+          ok: st.ok || false,
+          noOk: st.noOk || false,
+          notaTarea: st.notaTarea || '',
+          sinCheck: st.sinCheck
+        }));
+      } else if (templateTarea?.subtareas?.length) {
+        // No saved subtareas — restore structure from template
+        subtareas = templateTarea.subtareas.map((st: any) => ({
+          descripcion: st.descripcion,
+          ok: false,
+          noOk: false,
+          notaTarea: st.notaTarea || '',
+          sinCheck: st.sinCheck
+        }));
+      }
+
       const tareaGroup: TareaState = {
         descripcion: t.descripcion,
-        titulo: t.titulo,
+        titulo: matchedTitulo,
         rev: t.rev || false,
         ok: t.ok || false,
         noOk: t.noOk || false,
@@ -211,7 +263,10 @@ class ServicioPersistenciaFormulario {
           clave: c.clave,
           valor: c.valor,
           sufijo: c.sufijo
-        }))
+        })),
+        subtareas,
+        indice: t.indice || templateTarea?.indice,
+        sinCheck: t.sinCheck !== undefined ? t.sinCheck : templateTarea?.sinCheck
       };
 
       if (t.bombasQuimicas) {
@@ -255,7 +310,16 @@ class ServicioPersistenciaFormulario {
         clave: campo.clave,
         valor: null,
         sufijo: campo.sufijo
-      }))
+      })),
+      subtareas: (tareaTemplate.subtareas || []).map((st: any) => ({
+        descripcion: st.descripcion,
+        ok: false,
+        noOk: false,
+        notaTarea: '',
+        sinCheck: st.sinCheck
+      })),
+      indice: tareaTemplate.indice,
+      sinCheck: tareaTemplate.sinCheck
     }));
 
     return {

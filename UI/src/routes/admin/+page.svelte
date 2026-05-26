@@ -12,6 +12,7 @@ import { databaseService } from '$lib/services/database.svelte';
 import { CUADRO_ELECTRICO_TEMPLATE } from '$lib/templates/cuadroElectrico';
 import type { InformeGuardado, GrupoCuatrimestre } from '$lib/types/informe.interface';
 import TareasEditor from '$lib/components/admin/TareasEditor.svelte';
+import TareasEditorCuadros from '$lib/components/admin/TareasEditorCuadros.svelte';
 import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectricoModal.svelte';
 
   import './admin-page.css';
@@ -24,7 +25,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
   let cuatrimestreSeleccionado = $state('');
   let menuPrincipal = $state<'raiz' | 'mantenimiento_mercadona' | 'cuadro_electrico'>('raiz');
 
-  let excelInput: HTMLInputElement;
+  let excelInput = $state<HTMLInputElement>();
 
   onMount(async () => {
     if (!isAdmin) {
@@ -40,7 +41,10 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const cParam = urlParams.get('c');
-      if (cParam) {
+      const menuParam = urlParams.get('menu');
+      if (menuParam === 'cuadro_electrico') {
+        menuPrincipal = 'cuadro_electrico';
+      } else if (cParam) {
         cuatrimestreSeleccionado = cParam;
         vistaPanel = false;
         menuPrincipal = 'mantenimiento_mercadona';
@@ -178,8 +182,44 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
   }
 
   let showCrearCuadroModal = $state(false);
+  let showTareasEditorCuadros = $state(false);
   let selectedCuadroId = $state<number | null>(null);
   let selectedCuadro = $derived(informesCuadro.find(i => i.id === selectedCuadroId) || null);
+
+  // Derivaciones para filtros y métricas en Cuadro Eléctrico
+  let metricasCuadro = $derived.by(() => {
+    const total = informesCuadro.length;
+    const completados = informesCuadro.filter(i => estadoDe(i) === 'completado').length;
+    const enProgreso = informesCuadro.filter(i => estadoDe(i) === 'en-progreso').length;
+    const pendientes = total - completados - enProgreso;
+    return { total, completados, enProgreso, pendientes };
+  });
+
+  let informesCuadroFiltrados = $derived.by(() => {
+    if (filtroSeleccionado === 'todos') return informesCuadro;
+    return informesCuadro.filter(inf => estadoDe(inf) === filtroSeleccionado);
+  });
+
+  // Reiniciar filtro al alternar entre secciones principales
+  $effect(() => {
+    const _ = menuPrincipal;
+    filtroSeleccionado = 'todos';
+  });
+
+  function obtenerSeccionesDetalle(informe: InformeGuardado) {
+    if (!informe.secciones) return [];
+    return informe.secciones.map(sec => {
+      const total = sec.tareas?.length || 0;
+      const hechas = sec.tareas?.filter((t: any) => t.ok || t.noOk).length || 0;
+      const progreso = total > 0 ? Math.round((hechas / total) * 100) : 0;
+      return {
+        titulo: sec.titulo || 'Sección',
+        total,
+        hechas,
+        progreso
+      };
+    });
+  }
 
   async function eliminarCuatrimestre(cuatrimestre: string) {
     const ok = await cuatrimestreService.eliminarCuatrimestreConUI(cuatrimestre);
@@ -216,7 +256,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
         result.fotosPorSeccionBase64,
         result.seccionesColapsadas
       );
-      await navService.irAFormulario(inf.cuatrimestre || '', inf.nombreObra, 'admin');
+      await navService.irAFormulario(inf.cuatrimestre || '', inf.nombreObra, 'admin_cuadro');
     }
   }
 
@@ -320,7 +360,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
           <button
             class="nav-item"
             class:active={selectedCuadroId === inf.id}
-            onclick={() => selectedCuadroId = inf.id != null ? (inf.id === selectedCuadroId ? null : inf.id) : null}>
+            onclick={() => editarInformeCuadro(inf)}>
             <div class="nav-item-title">{ inf.nombreObra }</div>
             <div class="nav-item-meta">
               {#if inf.nOrdenCuadro}
@@ -344,7 +384,11 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
     <main class="admin-main">
       <header class="main-header">
         <div class="header-title">
-          <button class="btn-back-header" onclick={() => { menuPrincipal = 'raiz'; selectedCuadroId = null; }} title="Volver al Menú Principal">←</button>
+          {#if selectedCuadroId !== null}
+            <button class="btn-back-proyectos" onclick={() => { selectedCuadroId = null; }} title="Volver al Listado de Proyectos">
+              <span class="icon">←</span> Volver a Proyectos
+            </button>
+          {/if}
           <div>
             <h1>{ selectedCuadro?.nombreObra || 'Cuadro Eléctrico' }</h1>
             <span class="header-subtitle">Gestión de informes de cuadros eléctricos</span>
@@ -352,6 +396,10 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
         </div>
         <div class="header-actions">
           <div class="action-group">
+            <button class="btn-icon-label primary" onclick={() => showTareasEditorCuadros = true} title="Editar plantilla predeterminada de tareas para futuros cuadros">
+              <span class="icon">🛠️</span>
+              <span class="label">Editar Tareas Plantilla</span>
+            </button>
             <button class="btn-icon-label primary" onclick={crearInformeCuadro} title="Nuevo informe">
               <span class="icon">➕</span>
               <span class="label">Nuevo Informe</span>
@@ -362,42 +410,87 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
 
       <div class="desktop-content">
         {#if selectedCuadro}
-          <div class="cuadro-detail-header">
-            <div class="cuadro-detail-icon">⚡</div>
-            <div class="cuadro-detail-info">
+          <div class="cuadro-detail-header-premium">
+            <div class="cuadro-detail-icon-wrap">⚡</div>
+            <div class="cuadro-detail-info-wrap">
               <h2>{ selectedCuadro.nombreObra }</h2>
-              <div class="cuadro-detail-meta">
+              <div class="cuadro-detail-meta-wrap">
                 {#if selectedCuadro.nProy}<span>Proy: {selectedCuadro.nProy}</span>{/if}
                 {#if selectedCuadro.nOrdenCuadro}<span>Orden: {selectedCuadro.nOrdenCuadro}</span>{/if}
                 {#if selectedCuadro.nOrdenInstalacion}<span>Inst: {selectedCuadro.nOrdenInstalacion}</span>{/if}
               </div>
             </div>
-            <div class="cuadro-detail-estado" style="color: {colorEstado(selectedCuadro)}">
-              { labelEstado(selectedCuadro) }
+            <div class="cuadro-detail-right">
+              <div class="cuadro-detail-status-pill" style="border-left: 4px solid {colorEstado(selectedCuadro)}; color: {colorEstado(selectedCuadro)}">
+                { labelEstado(selectedCuadro) }
+              </div>
             </div>
           </div>
-          <div class="cuadro-progreso-row">
-            <div class="cuadro-progreso-bar">
-              <div class="cuadro-progreso-fill" style="width: {progresoDe(selectedCuadro)}%"></div>
+
+          <div class="cuadro-detail-stats-panel">
+            <div class="cuadro-progreso-row">
+              <div class="cuadro-progreso-bar">
+                <div class="cuadro-progreso-fill" style="width: {progresoDe(selectedCuadro)}%"></div>
+              </div>
+              <span class="cuadro-progreso-texto">{progresoDe(selectedCuadro)}% completado</span>
             </div>
-            <span class="cuadro-progreso-texto">{progresoDe(selectedCuadro)}% completado</span>
+            
+            <div class="cuadro-detail-actions">
+              <button class="btn-icon-label danger" onclick={() => eliminarInformeCuadro(selectedCuadro)}>
+                <span class="icon">🗑️</span>
+                <span class="label">Eliminar</span>
+              </button>
+            </div>
           </div>
-          <div class="cuadro-detail-actions">
-            <button class="btn-icon-label primary" onclick={() => editarInformeCuadro(selectedCuadro)}>
-              <span class="icon">✏️</span>
-              <span class="label">Editar Informe</span>
-            </button>
-            <button class="btn-icon-label danger" onclick={() => eliminarInformeCuadro(selectedCuadro)}>
-              <span class="icon">🗑️</span>
-              <span class="label">Eliminar</span>
-            </button>
+
+          <h3 class="cuadro-sections-title">Progreso Desglosado por Fase</h3>
+          <div class="cuadro-sections-grid">
+            {#each obtenerSeccionesDetalle(selectedCuadro) as sec, index}
+              <div class="section-progreso-card" role="button" tabindex="0" onclick={() => editarInformeCuadro(selectedCuadro)} onkeydown={(e) => e.key === 'Enter' && editarInformeCuadro(selectedCuadro)}>
+                <div class="section-card-header">
+                  <span class="section-num" style="background: {sec.progreso === 100 ? '#e6f4ea' : sec.progreso > 0 ? '#fef3c7' : '#f1f5f9'}; color: {sec.progreso === 100 ? '#137333' : sec.progreso > 0 ? '#b06000' : '#475569'}">{index}</span>
+                  <span class="section-title">{sec.titulo.replace(/^\d+\.\s*/, '')}</span>
+                </div>
+                <div class="section-card-body">
+                  <div class="section-stats">
+                    <span class="section-tasks">{sec.hechas} / {sec.total} tareas</span>
+                    <span class="section-percent" style="color: {sec.progreso === 100 ? '#137333' : sec.progreso > 0 ? '#b06000' : '#64748b'}">{sec.progreso}%</span>
+                  </div>
+                  <div class="section-mini-progress">
+                    <div class="section-mini-fill" style="width: {sec.progreso}%; background: {sec.progreso === 100 ? '#059669' : sec.progreso > 0 ? '#d97706' : '#cbd5e1'}"></div>
+                  </div>
+                </div>
+              </div>
+            {/each}
           </div>
         {:else if informesCuadro.length > 0}
+          <!-- Métricas e Interacción de Cuadros -->
+          <section class="metrics-row">
+            <button class="metric-card" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>
+              <div class="metric-value">{ metricasCuadro.total }</div>
+              <div class="metric-label">CUADROS</div>
+            </button>
+            <button class="metric-card metric-green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>
+              <div class="metric-value">{ metricasCuadro.completados }</div>
+              <div class="metric-label">COMPLETADOS</div>
+            </button>
+            <button class="metric-card metric-orange" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>
+              <div class="metric-value">{ metricasCuadro.enProgreso }</div>
+              <div class="metric-label">EN PROGRESO</div>
+            </button>
+            <button class="metric-card metric-red" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>
+              <div class="metric-value">{ metricasCuadro.pendientes }</div>
+              <div class="metric-label">PENDIENTES</div>
+            </button>
+          </section>
+
+          <div class="centros-label">CUADROS ({informesCuadroFiltrados.length})</div>
+
           <div class="cuadro-grid">
-            {#each informesCuadro as inf (inf.id)}
-              <div class="cuadro-card" role="button" tabindex="0" onclick={() => selectedCuadroId = inf.id ?? null} onkeydown={(e) => e.key === 'Enter' && (selectedCuadroId = inf.id ?? null)}>
+            {#each informesCuadroFiltrados as inf (inf.id)}
+                <div class="cuadro-card" role="button" tabindex="0" onclick={() => editarInformeCuadro(inf)} onkeydown={(e) => e.key === 'Enter' && editarInformeCuadro(inf)}>
                 <div class="cuadro-card-header">
-                  <div class="cuadro-card-icon">⚡</div>
+                  <div class="cuadro-card-icon" style="background: {progresoDe(inf) === 100 ? '#e6f4ea' : progresoDe(inf) > 0 ? '#fffbeb' : '#f1f5f9'}; color: {progresoDe(inf) === 100 ? '#059669' : progresoDe(inf) > 0 ? '#d97706' : '#64748b'}">⚡</div>
                   <div class="cuadro-card-info">
                     <h3 class="cuadro-card-title">{ inf.nombreObra }</h3>
                     {#if inf.nProy}
@@ -414,12 +507,18 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
                 <div class="cuadro-card-body">
                   <div class="cuadro-progreso">
                     <div class="cuadro-progreso-bar">
-                      <div class="cuadro-progreso-fill" style="width: {progresoDe(inf)}%"></div>
+                      <div class="cuadro-progreso-fill" style="width: {progresoDe(inf)}%; background: {colorEstado(inf)}"></div>
                     </div>
                     <span class="cuadro-progreso-texto">{progresoDe(inf)}%</span>
                   </div>
                   <div class="cuadro-card-meta-row">
                     <span>Modificado: {inf.ultimaModificacion || '—'}</span>
+                  </div>
+                  <!-- Acciones Rápidas al pasar el cursor (Hover) -->
+                  <div class="cuadro-card-actions">
+                    <button class="btn-card-action delete" onclick={(e) => { e.stopPropagation(); eliminarInformeCuadro(inf); }} title="Eliminar">
+                      🗑️
+                    </button>
                   </div>
                 </div>
               </div>
@@ -443,6 +542,12 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
       <CrearCuadroElectricoModal
         onClose={() => showCrearCuadroModal = false}
         onCreated={() => { showCrearCuadroModal = false; selectedCuadroId = null; }}
+      />
+    {/if}
+
+    {#if showTareasEditorCuadros}
+      <TareasEditorCuadros
+        onClose={() => showTareasEditorCuadros = false}
       />
     {/if}
   {:else if menuPrincipal === 'mantenimiento_mercadona'}
@@ -500,7 +605,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
           <!-- Grupo Excel -->
           <div class="action-group">
             <input type="file" bind:this={excelInput} accept=".xlsx" hidden onchange={onSubirExcel} />
-            <button class="btn-icon-label secondary" onclick={() => excelInput.click()} disabled={isSyncing} title="Subir archivo Excel">
+            <button class="btn-icon-label secondary" onclick={() => excelInput!.click()} disabled={isSyncing} title="Subir archivo Excel">
               <span class="icon">📤</span>
               <span class="label">{ isSyncing ? 'Subiendo...' : 'Subir Excel' }</span>
             </button>
@@ -559,7 +664,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
               <div class="mac-title">Crear cuatrimestre</div>
               <div class="mac-desc">Nuevo cuatrimestre de seguimiento</div>
             </button>
-            <button class="mobile-action-card" onclick={() => excelInput.click()}>
+            <button class="mobile-action-card" onclick={() => excelInput!.click()}>
               <div class="mac-icon">
                 <div class="excel-icon-wrap">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2289.75 2130">
