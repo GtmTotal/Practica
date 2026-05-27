@@ -1,13 +1,13 @@
-import { databaseService } from './database.svelte';
-import { navService } from './navigation.svelte';
-import { configCentrosService } from './config-centros.svelte';
+import { databaseService } from '../api/database.svelte';
+import { navService } from '../stores/navigation.svelte';
+import { configCentrosService } from '../stores/config-centros.svelte';
 import { obtenerTemplateCuadroElectrico } from './template-service';
 import type { CuadroSeccionTemplate, CuadroTareaTemplate, CuadroSubTareaTemplate } from './template-service';
 import { pdfDataBuilder } from './form-persistence/pdf-data-builder.svelte';
 import { pdfReportService } from './form-persistence/pdf-report.svelte';
 import { formInitService } from './form-initialization.svelte';
 import { progresoFormulario } from '$lib/utils/informe-utils';
-import { ui } from './ui.svelte';
+import { ui } from '../stores/ui.svelte';
 import type { InformeGuardado } from '$lib/types/informe.interface';
 import type { Foto } from '$lib/types/foto.interface';
 import type { FormState, SeccionState, TareaState, SubTareaState, CampoState, BombaState } from './form-initialization.svelte';
@@ -277,6 +277,7 @@ class ServicioPersistenciaFormulario {
     const tareas = template.tareas.map((tareaTemplate: TareaTemplate) => ({
       descripcion: tareaTemplate.descripcion,
       titulo: tareaTemplate.titulo,
+      rev: false,
       ok: false,
       noOk: false,
       notaTarea: '',
@@ -299,7 +300,7 @@ class ServicioPersistenciaFormulario {
     return {
       titulo: template.titulo,
       tipo: template.tipo,
-      prefijo: template.prefijo,
+      prefijo: template.prefijo.toString(),
       tareas: tareas,
       observaciones: ''
     };

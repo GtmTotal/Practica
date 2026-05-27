@@ -1,9 +1,10 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import { databaseService } from '$lib/services/database.svelte';
-  import { formPersistenceService } from '$lib/services/form-persistence.svelte';
-  import { obtenerTemplateCuadroElectrico } from '$lib/services/template-service';
-  import { ui } from '$lib/services/ui.svelte';
+  import { databaseService } from '$lib/services/api/database.svelte';
+  import { formPersistenceService } from '$lib/services/domain/form-persistence.svelte';
+  import { obtenerTemplateCuadroElectrico } from '$lib/services/domain/template-service';
+  import type { CuadroSeccionTemplate, CuadroTareaTemplate } from '$lib/services/domain/template-service';
+  import { ui } from '$lib/services/stores/ui.svelte';
   import { fade } from 'svelte/transition';
 
   let {
@@ -74,9 +75,9 @@
 
       let baseTemplate = obtenerTemplateCuadroElectrico();
 
-      const secciones = baseTemplate.secciones.map(sec => ({
+      const secciones = baseTemplate.secciones.map((sec: CuadroSeccionTemplate) => ({
         ...sec,
-        tareas: sec.tareas.map(t => ({ ...t, ok: false, noOk: false, notaTarea: '' }))
+        tareas: sec.tareas.map((t: CuadroTareaTemplate) => ({ ...t, ok: false, noOk: false, notaTarea: '' }))
       }));
 
       const informe = {

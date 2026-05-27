@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { DocumentDto } from '$lib/types/document.interface';
-  import { adminService } from '$lib/services/admin.svelte';
-  import { ui } from '$lib/services/ui.svelte';
+  import { adminService } from '$lib/services/stores/admin.svelte';
+  import { ui } from '$lib/services/stores/ui.svelte';
 
   let { documents } = $props<{ documents: DocumentDto[] }>();
 

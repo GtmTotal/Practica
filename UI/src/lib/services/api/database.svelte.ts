@@ -1,5 +1,5 @@
-import { getApiBaseUrl, getApiHeaders } from '../api-config';
-import { adminService } from './admin.svelte';
+import { getApiBaseUrl, getApiHeaders } from '../../api-config';
+import { adminService } from '../stores/admin.svelte';
 import { mapInformeFromApi, mapKeysToCamel } from '$lib/utils/api-mapper';
 import type { InformeGuardado } from '$lib/types/informe.interface';
 

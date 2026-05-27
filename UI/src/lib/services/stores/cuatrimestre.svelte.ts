@@ -1,4 +1,4 @@
-import { databaseService } from './database.svelte';
+import { databaseService } from '../api/database.svelte';
 import { configCentrosService } from './config-centros.svelte';
 import { ui } from './ui.svelte';
 import type { GrupoCuatrimestre, InformeGuardado } from '$lib/types/informe.interface';

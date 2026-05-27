@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { BombaState } from '$lib/services/form-initialization.svelte';
+  import type { BombaState } from '$lib/services/domain/form-initialization.svelte';
 
   let {
     bombas

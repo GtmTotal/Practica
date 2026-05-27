@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { FormState } from '$lib/services/form-initialization.svelte';
+  import type { FormState } from '$lib/services/domain/form-initialization.svelte';
   import type { Foto } from '$lib/types/foto.interface';
   import SeccionItem from './SeccionItem.svelte';
 

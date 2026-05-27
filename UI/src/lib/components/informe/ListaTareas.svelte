@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TareaState } from '$lib/services/form-initialization.svelte';
+  import type { TareaState } from '$lib/services/domain/form-initialization.svelte';
   import TareaItem from './TareaItem.svelte';
   import TareaPadreItem from './TareaPadreItem.svelte';
 

@@ -19,6 +19,7 @@ export interface CuadroTareaTemplate {
 export interface CuadroSubTareaTemplate {
   descripcion: string;
   notaTarea?: string;
+  sinCheck?: boolean;
 }
 
 export function obtenerTemplateCuadroElectrico() {

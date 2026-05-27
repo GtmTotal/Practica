@@ -1,11 +1,10 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
-  import type { TareaState } from '$lib/services/form-initialization.svelte';
+  import type { TareaState } from '$lib/services/domain/form-initialization.svelte';
   import SubTareaItem from './SubTareaItem.svelte';
-  import './tarea-shared.css';
 
   let {
-    tarea,
+    tarea = $bindable(),
     idxTarea,
     prefijo,
     idxSeccion,
@@ -211,4 +210,67 @@
 
 
 
+  .tarea-header-titulo {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .tarea-extra-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--gray-200, #e5e7eb);
+  }
+
+  .input-nota-tarea {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    background: var(--gray-100, #f3f4f6);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+
+  .input-nota-tarea:focus {
+    outline: none;
+    background: white;
+    border-color: var(--primary, #1e3a5f);
+    box-shadow: 0 4px 12px rgba(30, 60, 114, 0.08);
+  }
+
+  .campo-mini {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: white;
+    border: 1px solid var(--gray-200, #e5e7eb);
+    border-radius: 100px;
+    padding: 4px 12px;
+  }
+
+  .campo-mini input {
+    width: 55px;
+    border: none;
+    background: transparent;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: center;
+    outline: none;
+  }
+
+  .mini-sufijo {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--gray-600, #4b5563);
+  }
 </style>

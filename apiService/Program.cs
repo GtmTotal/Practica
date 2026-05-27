@@ -56,7 +56,10 @@ using (var scope = app.Services.CreateScope())
 
 app.UseCors("frontend");
 app.MapOpenApi();
-app.MapEndpoints();
+app.MapArchivosEndpoints();
+app.MapAdminEndpoints();
+app.MapDocumentosEndpoints();
+app.MapInformesEndpoints();
 
 app.Run();
 

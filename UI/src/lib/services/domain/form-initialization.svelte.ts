@@ -1,4 +1,4 @@
-import { configCentrosService } from './config-centros.svelte';
+import { configCentrosService } from '../stores/config-centros.svelte';
 import type { CampoMedicion } from '$lib/types/config.interface';
 import type { Foto } from '$lib/types/foto.interface';
 

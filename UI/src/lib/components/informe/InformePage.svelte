@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import { navService } from '$lib/services/navigation.svelte';
-  import { formInitService, type FormState } from '$lib/services/form-initialization.svelte';
-  import { formPersistenceService } from '$lib/services/form-persistence.svelte';
+  import { navService } from '$lib/services/stores/navigation.svelte';
+  import { formInitService, type FormState } from '$lib/services/domain/form-initialization.svelte';
+  import { formPersistenceService } from '$lib/services/domain/form-persistence.svelte';
   import { progresoFormulario } from '$lib/utils/informe-utils';
-  import { fotoManagerService } from '$lib/services/foto-manager.svelte';
-  import { ui } from '$lib/services/ui.svelte';
+  import { fotoManagerService } from '$lib/services/domain/foto-manager.svelte';
+  import { ui } from '$lib/services/stores/ui.svelte';
   import type { Foto } from '$lib/types/foto.interface';
   import type { InformeGuardado } from '$lib/types/informe.interface';
 

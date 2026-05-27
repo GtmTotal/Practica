@@ -1,4 +1,4 @@
-import { getApiBaseUrl, getApiHeaders } from '../api-config';
+import { getApiBaseUrl, getApiHeaders } from '../../api-config';
 import type { DocumentDto, UpdateDocumentDto } from '$lib/types/document.interface';
 
 class ServicioAdmin {

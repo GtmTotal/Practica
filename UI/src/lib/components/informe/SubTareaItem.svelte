@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { SubTareaState } from '$lib/services/form-initialization.svelte';
+  import type { SubTareaState } from '$lib/services/domain/form-initialization.svelte';
 
   let {
-    subtarea,
+    subtarea = $bindable(),
     indiceCompleto
   }: {
     subtarea: SubTareaState;

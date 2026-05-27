@@ -1,6 +1,5 @@
 <script lang="ts">
-  import type { FormState } from '$lib/services/form-initialization.svelte';
-  import './header-form.css';
+  import type { FormState } from '$lib/services/domain/form-initialization.svelte';
 
   let {
     centro,
@@ -87,3 +86,238 @@
     </div>
   {/if}
 </header>
+
+<style>
+.form-header {
+  background: white;
+  padding: 24px 20px 12px;
+  border-bottom: 1px solid var(--gray-200);
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.header-main-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.logo-empresa {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+
+.header-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2px;
+}
+
+.header-info h1 {
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 1;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.btn-back-minimal {
+  background: var(--gray-100);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--gray-600);
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.btn-back-minimal:hover {
+  background: var(--gray-200);
+  transform: scale(1.05);
+}
+
+.progreso-container-mini {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 7px;
+  background: rgba(226, 232, 240, 0.9);
+  z-index: 100;
+  box-shadow: inset 0 -1px 0 rgba(15, 23, 42, 0.08);
+}
+
+.progreso-bar-fill {
+  background: linear-gradient(90deg, var(--primary), var(--success), #34d399);
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s ease;
+  border-radius: 0 999px 999px 0;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+}
+
+.header-status-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.auto-save-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.auto-save-status[data-status="ocioso"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.auto-save-status[data-status="guardando"] {
+  color: var(--primary);
+  opacity: 1;
+}
+
+.auto-save-status[data-status="guardado"] {
+  color: var(--success);
+  opacity: 1;
+}
+
+.auto-save-status[data-status="error"] {
+  color: var(--danger);
+  opacity: 1;
+}
+
+.icon-spin {
+  display: inline-block;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.header-inputs-inline {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-100);
+}
+
+.input-field-inline {
+  display: flex;
+  align-items: center;
+  background: var(--gray-50);
+  border-radius: 8px;
+  padding: 4px 12px;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.input-field-inline:focus-within {
+  background: white;
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(30, 60, 114, 0.08);
+}
+
+.input-icon {
+  font-size: 14px;
+  margin-right: 8px;
+  opacity: 0.6;
+}
+
+.input-field-inline input {
+  border: none;
+  background: transparent;
+  height: 32px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-800);
+  outline: none;
+  width: 100%;
+}
+
+.input-field-inline input::placeholder {
+  color: var(--gray-400);
+}
+
+.input-field-inline input[type="date"] {
+  font-family: inherit;
+  color: var(--gray-700);
+}
+
+.cuadro-extra-fields {
+  border-top: 1px dashed var(--gray-200);
+  margin-top: 8px;
+  padding-top: 12px;
+}
+
+@media (max-width: 600px) {
+  .form-header {
+    padding: 8px 12px;
+  }
+
+  .header-main-row {
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+
+  .logo-empresa {
+    height: 32px;
+  }
+
+  .header-info h1 {
+    font-size: 1.1rem;
+  }
+
+  .progreso-container-mini {
+    height: 8px;
+  }
+
+  .header-inputs-inline {
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  .input-field-inline {
+    width: 100%;
+  }
+
+  .header-status-row {
+    margin-top: 2px;
+  }
+
+  .auto-save-status {
+    font-size: 0.7rem;
+    min-width: 100px;
+  }
+}
+</style>

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { databaseService } from '$lib/services/database.svelte';
-  import { formPersistenceService } from '$lib/services/form-persistence.svelte';
-  import { ui } from '$lib/services/ui.svelte';
+  import { databaseService } from '$lib/services/api/database.svelte';
+  import { formPersistenceService } from '$lib/services/domain/form-persistence.svelte';
+  import { ui } from '$lib/services/stores/ui.svelte';
   import { fade } from 'svelte/transition';
 
   interface Tarea {
@@ -38,7 +38,7 @@
 
   let centrosUnicos = $derived.by(() => {
     const visto = new Set<string>();
-    return informes.filter(inf => {
+    return informes.filter((inf: any) => {
       if (!inf.nombreObra || visto.has(inf.nombreObra)) return false;
       visto.add(inf.nombreObra);
       return true;
@@ -48,15 +48,15 @@
   let informesDelCentro = $derived(
     currentInforme 
       ? informes
-          .filter(inf => inf.nombreObra === currentInforme.nombreObra)
-          .sort((a, b) => (a.cuatrimestre || '').localeCompare(b.cuatrimestre || ''))
+          .filter((inf: any) => inf.nombreObra === currentInforme.nombreObra)
+          .sort((a: any, b: any) => (a.cuatrimestre || '').localeCompare(b.cuatrimestre || ''))
       : []
   );
 
   async function selectCenter(nombreObra: string) {
     loading = true;
     try {
-      const primerInf = informes.find(inf => inf.nombreObra === nombreObra);
+      const primerInf = informes.find((inf: any) => inf.nombreObra === nombreObra);
       if (!primerInf || !primerInf.id) {
         ui.error('No se encontró ningún informe para este centro');
         loading = false;
@@ -106,7 +106,7 @@
   }
 
   function selectAllInformes() {
-    informesDelCentro.forEach(inf => {
+    informesDelCentro.forEach((inf: any) => {
       if (inf.id !== undefined && inf.id !== currentInforme.id) {
         selectedInformes[inf.id] = true;
       }
@@ -119,7 +119,7 @@
 
   async function saveChanges() {
     if (!currentInforme) return;
-    const tieneOtrosCuatrimestres = informes.some(inf => 
+    const tieneOtrosCuatrimestres = informes.some((inf: any) => 
       inf.nombreObra === currentInforme.nombreObra && 
       inf.id !== undefined && 
       inf.id !== currentInforme.id

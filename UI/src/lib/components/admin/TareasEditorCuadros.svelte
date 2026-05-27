@@ -1,10 +1,10 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
-  import { ui } from '$lib/services/ui.svelte';
+  import { ui } from '$lib/services/stores/ui.svelte';
   import { CUADRO_ELECTRICO_TEMPLATE } from '$lib/templates/cuadroElectrico';
-  import { formPersistenceService } from '$lib/services/form-persistence.svelte';
-  import { databaseService } from '$lib/services/database.svelte';
-  import { obtenerTemplateCuadroElectrico, guardarTemplateCuadroElectrico } from '$lib/services/template-service';
+  import { formPersistenceService } from '$lib/services/domain/form-persistence.svelte';
+  import { databaseService } from '$lib/services/api/database.svelte';
+  import { obtenerTemplateCuadroElectrico, guardarTemplateCuadroElectrico } from '$lib/services/domain/template-service';
 
   let {
     onClose

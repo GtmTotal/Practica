@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ui } from '../services/ui.svelte';
+  import { ui } from '../services/stores/ui.svelte';
   import { fade, scale } from 'svelte/transition';
 
   let inputVal = $state('');

@@ -1,5 +1,5 @@
 import type { InformeGuardado } from '$lib/types/informe.interface';
-import type { FormState } from '$lib/services/form-initialization.svelte';
+import type { FormState } from '$lib/services/domain/form-initialization.svelte';
 
 export function progresoFormulario(form: FormState): number {
   if (!form.secciones?.length) return 0;

@@ -1,4 +1,4 @@
-import { getApiBaseUrl, getApiHeaders } from '../api-config';
+import { getApiBaseUrl, getApiHeaders } from '../../api-config';
 import type { ConfigCentro } from '$lib/types/config.interface';
 
 class ServicioConfiguracionCentros {

@@ -1,6 +1,6 @@
-import { getApiBaseUrl } from '../api-config';
-import { adminService } from './admin.svelte';
-import { ui } from './ui.svelte';
+import { getApiBaseUrl } from '../../api-config';
+import { adminService } from '../stores/admin.svelte';
+import { ui } from '../stores/ui.svelte';
 import type { Foto } from '$lib/types/foto.interface';
 
 class ServicioGestionFotografias {
