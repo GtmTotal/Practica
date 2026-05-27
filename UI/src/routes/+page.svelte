@@ -14,7 +14,6 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 import type { InformeGuardado } from '$lib/types/informe.interface';
 import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/informe-utils';
 
-
   // Tab state
   let tabActual = $state<'mantenimiento' | 'cuadros'>('mantenimiento');
 
@@ -42,7 +41,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
     const pendientes = total - completados - enProgreso;
     return { total, completados, enProgreso, pendientes };
   });
-  
+
   let grupoSeleccionado = $derived(cuatrimestres.find(g => g.clave === cuatrimestreSeleccionado));
   let informesActuales = $derived(grupoSeleccionado?.informes || []);
 
@@ -67,14 +66,14 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
     navService.cuatrimestreSeleccionado = clave;
     navService.persist();
   }
-  
+
   function cerrarDetalle() {
     navService.cuatrimestreSeleccionado = '';
     navService.persist();
     filtroSeleccionado = 'todos';
     goto('/');
   }
-  
+
   function switchTab(tab: 'mantenimiento' | 'cuadros') {
     tabActual = tab;
     filtroCuadro = 'todos';
@@ -84,7 +83,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
       navService.persist();
     }
   }
-  
+
   async function toggleAdmin() {
     if (isAdmin) {
       await navService.irAAdmin();
@@ -100,7 +99,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
       }
     }
   }
-  
+
   async function editarInforme(inf: InformeGuardado) {
     const result = await formPersistenceService.editarInforme(inf);
     if (result) {
@@ -112,7 +111,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
       await navService.irAFormulario(inf.cuatrimestre, inf.nombreObra);
     }
   }
-  
+
   async function editarInformeCuadro(inf: InformeGuardado) {
     const result = await formPersistenceService.editarInforme(inf);
     if (result) {
@@ -124,7 +123,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
       await navService.irAFormulario(inf.cuatrimestre || '', inf.nombreObra);
     }
   }
-  
+
   async function eliminarInformeCuadro(inf: InformeGuardado) {
     const ok = await ui.confirm(
       'Eliminar Informe',
@@ -143,7 +142,6 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
       ui.error('Error al eliminar: ' + (e.message || 'Error desconocido'));
     }
   }
-
 
   onMount(async () => {
     await formPersistenceService.cargarHistorial();
@@ -165,24 +163,24 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 </svelte:head>
 
 <div class="main-layout">
-  <!-- Sidebar (desktop) -->
+  <!-- Sidebar (desktop only) -->
   <aside class="main-sidebar">
     <div class="sidebar-top">
       <img src="gtmCompleto.png" alt="GTM" class="brand-logo" />
       <h1 class="sidebar-title">Control total del mantenimiento.</h1>
       <p class="sidebar-subtitle">Seguimiento de centros, cuatrimestres y estados en un solo lugar.</p>
     </div>
-       <button class="btn-admin-gear" onclick={toggleAdmin} title="Administración" aria-label="Administración">
-         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-           <circle cx="12" cy="12" r="3"/>
-           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-         </svg>
-       </button>
+    <button class="btn-admin-gear" onclick={toggleAdmin} title="Administración" aria-label="Administración">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
   </aside>
 
   <!-- Main Content -->
   <main class="main-content">
-    <!-- View 1: Panel de Selección (con pestañas) -->
+    <!-- ===== VIEW 1: PANEL (cuatrimestre list + tabs) ===== -->
     <div class="dash-view dash-panel-view" class:active={vistaPanel}>
       <div class="dash-panel-header">
         <button class="dash-admin-gear mobile-only" onclick={toggleAdmin} title="Administración" aria-label="Administración"><span aria-hidden="true">⚙</span></button>
@@ -191,30 +189,30 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 
         <!-- Tab Switcher -->
         <div class="tab-switcher">
-           <button
-             class="tab-btn"
-             class:active={tabActual === 'mantenimiento'}
-             onclick={() => switchTab('mantenimiento')}>
-             <span class="tab-icon">
-               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Mantenimiento"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
-             </span>
-             <span class="tab-text">Mantenimientos Mercadona</span>
-           </button>
-           <button
-             class="tab-btn"
-             class:active={tabActual === 'cuadros'}
-             onclick={() => switchTab('cuadros')}>
-             <span class="tab-icon">
-               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Cuadros Eléctricos"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-             </span>
-             <span class="tab-text">Cuadros Eléctricos</span>
-           </button>
+          <button
+            class="tab-btn"
+            class:active={tabActual === 'mantenimiento'}
+            onclick={() => switchTab('mantenimiento')}>
+            <span class="tab-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Mantenimiento"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+            </span>
+            <span class="tab-text">Mantenimientos Mercadona</span>
+          </button>
+          <button
+            class="tab-btn"
+            class:active={tabActual === 'cuadros'}
+            onclick={() => switchTab('cuadros')}>
+            <span class="tab-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Cuadros Eléctricos"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </span>
+            <span class="tab-text">Cuadros Eléctricos</span>
+          </button>
         </div>
       </div>
 
       <div class="dash-panel-body">
         {#if tabActual === 'mantenimiento'}
-          <!-- ===== TAB MANTENIMIENTO ===== -->
+          <!-- ===== MANTENIMIENTO: Cuatrimestre list ===== -->
           <div class="dash-section-label">CUATRIMESTRES</div>
           {#if cuatrimestres.length === 0}
             <div class="empty-state">No hay informes guardados.</div>
@@ -232,68 +230,72 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
             </div>
           {/if}
         {:else}
-          <!-- ===== TAB CUADROS ELÉCTRICOS ===== -->
-          <div class="cuadro-tab-metrics">
-            <button class="cuadro-metric" class:active={filtroCuadro === 'todos'} onclick={() => filtroCuadro = 'todos'}>
-              <span class="cuadro-metric-val">{ metricasCuadro.total }</span>
-              <span class="cuadro-metric-lbl">TOTAL</span>
-            </button>
-            <button class="cuadro-metric cuadro-metric--green" class:active={filtroCuadro === 'completado'} onclick={() => filtroCuadro = 'completado'}>
-              <span class="cuadro-metric-val">{ metricasCuadro.completados }</span>
-              <span class="cuadro-metric-lbl">COMPLETADOS</span>
-            </button>
-            <button class="cuadro-metric cuadro-metric--orange" class:active={filtroCuadro === 'en-progreso'} onclick={() => filtroCuadro = 'en-progreso'}>
-              <span class="cuadro-metric-val">{ metricasCuadro.enProgreso }</span>
-              <span class="cuadro-metric-lbl">EN PROGRESO</span>
-            </button>
-            <button class="cuadro-metric cuadro-metric--red" class:active={filtroCuadro === 'pendiente'} onclick={() => filtroCuadro = 'pendiente'}>
-              <span class="cuadro-metric-val">{ metricasCuadro.pendientes }</span>
-              <span class="cuadro-metric-lbl">PENDIENTES</span>
-            </button>
-          </div>
+          <!-- ===== CUADROS ELÉCTRICOS ===== -->
+          <div class="dash-section-label">CUADROS ELÉCTRICOS</div>
 
-          <div class="cuadro-tab-header-row">
-            <div class="dash-section-label">CUADROS ({informesCuadroFiltrados.length})</div>
-             <button class="btn-nuevo-cuadro" onclick={() => showCrearCuadroModal = true}>
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Añadir"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuevo Cuadro
-             </button>
-          </div>
-
-          {#if informesCuadroFiltrados.length === 0}
-            <div class="empty-state">
-              <div style="font-size: 48px; margin-bottom: 12px;">⚡</div>
-              <p>No hay informes de Cuadro Eléctrico{filtroCuadro !== 'todos' ? ` con estado "${filtroCuadro}"` : ''}.</p>
+          <!-- Metrics -->
+          <div class="dcv-metrics" style="margin-bottom: 20px;">
+            <div class="dcv-metric" class:dcv-metric--active={filtroCuadro === 'todos'} onclick={() => filtroCuadro = 'todos'} role="button" tabindex="0">
+              <span class="dcv-metric-value">{ metricasCuadro.total }</span>
+              <span class="dcv-metric-label">Cuadros</span>
             </div>
+            <div class="dcv-metric dcv-metric--green" class:dcv-metric--active={filtroCuadro === 'completado'} onclick={() => filtroCuadro = 'completado'} role="button" tabindex="0">
+              <span class="dcv-metric-value">{ metricasCuadro.completados }</span>
+              <span class="dcv-metric-label">Completados</span>
+            </div>
+            <div class="dcv-metric dcv-metric--blue" class:dcv-metric--active={filtroCuadro === 'en-progreso'} onclick={() => filtroCuadro = 'en-progreso'} role="button" tabindex="0">
+              <span class="dcv-metric-value">{ metricasCuadro.enProgreso }</span>
+              <span class="dcv-metric-label">En progreso</span>
+            </div>
+            <div class="dcv-metric dcv-metric--amber" class:dcv-metric--active={filtroCuadro === 'pendiente'} onclick={() => filtroCuadro = 'pendiente'} role="button" tabindex="0">
+              <span class="dcv-metric-value">{ metricasCuadro.pendientes }</span>
+              <span class="dcv-metric-label">Pendientes</span>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="dcv-pills">
+            <button class="dcv-pill" class:active={filtroCuadro === 'todos'} onclick={() => filtroCuadro = 'todos'}>Todos</button>
+            <button class="dcv-pill dcv-pill--green" class:active={filtroCuadro === 'completado'} onclick={() => filtroCuadro = 'completado'}>Completado</button>
+            <button class="dcv-pill dcv-pill--blue" class:active={filtroCuadro === 'en-progreso'} onclick={() => filtroCuadro = 'en-progreso'}>En progreso</button>
+            <button class="dcv-pill dcv-pill--amber" class:active={filtroCuadro === 'pendiente'} onclick={() => filtroCuadro = 'pendiente'}>Pendiente</button>
+          </div>
+
+          <!-- Header row -->
+          <div class="ce-header-row">
+            <span class="ce-count">{informesCuadroFiltrados.length} cuadro{informesCuadroFiltrados.length !== 1 ? 's' : ''}</span>
+            <button class="btn-nuevo-cuadro" onclick={() => showCrearCuadroModal = true}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Añadir"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuevo Cuadro
+            </button>
+          </div>
+
+          <!-- Cards -->
+          {#if informesCuadroFiltrados.length === 0}
+            <div class="empty-state">No hay informes para este filtro.</div>
           {:else}
-            <div class="cuadro-cards-grid">
+            <div class="dcv-grid">
               {#each informesCuadroFiltrados as inf (inf.id)}
-                <div
-                  class="cuadro-card-tech"
-                  role="button"
-                  tabindex="0"
-                  style="--dot-color: {colorEstado(inf)}"
-                  data-estado={estadoDe(inf)}
-                  onclick={() => editarInformeCuadro(inf)}
-                  onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInformeCuadro(inf); } }}>
-                  <div class="cuadro-card-tech-top">
-                    <div class="cuadro-card-tech-icon" style="background: {progresoDe(inf) === 100 ? '#e6f4ea' : progresoDe(inf) > 0 ? '#fffbeb' : '#f1f5f9'}; color: {progresoDe(inf) === 100 ? '#059669' : progresoDe(inf) > 0 ? '#d97706' : '#64748b'}">
-                      ⚡
-                    </div>
-                    <div class="cuadro-card-tech-info">
-                      <h3>{ inf.nombreObra }</h3>
-                      <div class="cuadro-card-tech-meta">
-                        {#if inf.nOrdenCuadro}<span>Orden: {inf.nOrdenCuadro}</span>{/if}
-                        {#if inf.nProy}<span>Proy: {inf.nProy}</span>{/if}
+                <div class="dcv-card" style="--accent: {colorEstado(inf)}" data-estado={estadoDe(inf)} role="button" tabindex="0" onclick={() => editarInformeCuadro(inf)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInformeCuadro(inf); } }}>
+                  <div class="dcv-card-accent"></div>
+                  <div class="dcv-card-body">
+                    <div class="dcv-card-top">
+                      <div class="dcv-card-name-row">
+                        <span class="dcv-card-icon">⚡</span>
+                        <span class="dcv-card-name">{ inf.nombreObra }</span>
                       </div>
+                      <span class="dcv-card-badge" style="background: {colorEstado(inf) === '#059669' ? '#E1F5EE' : colorEstado(inf) === '#d97706' ? '#E6F1FB' : '#f1f5f9'}; color: {colorEstado(inf)}">{ labelEstado(inf) }</span>
                     </div>
-                    <span class="cuadro-card-tech-estado" style="color: {colorEstado(inf)}">{ labelEstado(inf) }</span>
-                  </div>
-                  <div class="cuadro-card-tech-bottom">
-                      <div class="cuadro-card-tech-progress">
-                        <ProgressBar value={progresoDe(inf)} color={colorEstado(inf)} />
-                        <span class="cuadro-progress-text">{progresoDe(inf)}%</span>
+                    <div class="dcv-card-meta">
+                      {#if inf.nOrdenCuadro}<span class="dcv-card-tag">Ord: {inf.nOrdenCuadro}</span>{/if}
+                      {#if inf.nProy}<span class="dcv-card-tag">Proy: {inf.nProy}</span>{/if}
+                    </div>
+                    <div class="dcv-card-progress-row">
+                      <div class="dcv-card-progress">
+                        <div class="dcv-card-progress-bar" style="width: {progresoDe(inf)}%; background: {colorEstado(inf)}"></div>
                       </div>
-                    <span class="cuadro-card-tech-date">{ inf.ultimaModificacion || '—' }</span>
+                      <span class="dcv-card-pct">{progresoDe(inf)}%</span>
+                    </div>
+                    <span class="dcv-card-date">{ inf.ultimaModificacion || '—' }</span>
                   </div>
                 </div>
               {/each}
@@ -303,76 +305,73 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
       </div>
     </div>
 
-    <!-- View 2: Detalle de Cuatrimestre -->
+    <!-- ===== VIEW 2: Cuatrimestre detail (centro cards) ===== -->
     <div class="dash-view dash-cuatrimestre-view" class:active={!vistaPanel}>
-      <div class="dash-cuatrimestre-header">
-        <div class="dash-brand-row">
-           <button class="dash-back-link" onclick={cerrarDetalle}>
-             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Volver"><path d="m15 18-6-6 6-6"/></svg> Cuatrimestre
-           </button>
-          <img src="gtmCompleto.png" alt="GTM" class="dash-brand-logo mobile-only" />
-        </div>
-        <div class="dash-cuatri-row">
-          <span class="dash-cuatri-title">{ grupoSeleccionado?.label || '' }</span>
-        </div>
-        <p class="dash-subtitle">Mercadona · informes de mantenimiento</p>
+      <div class="dcv-header">
+        <button class="dcv-back" onclick={cerrarDetalle}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Volver"><path d="m15 18-6-6 6-6"/></svg> Cuatrimestre
+        </button>
+        <span class="dcv-sublabel">INFORMES DE MANTENIMIENTO</span>
+        <h2 class="dcv-title">{ grupoSeleccionado?.label || '' }</h2>
+        <div class="dcv-divider"></div>
       </div>
 
-      <div class="dash-cuatrimestre-body">
-        <div class="cuadro-tab-metrics" style="margin-bottom: 8px;">
-          <button
-            class="cuadro-metric"
-            class:active={filtroSeleccionado === 'todos'}
-            onclick={() => filtroSeleccionado = 'todos'}>
-            <span class="cuadro-metric-val">{ metricas.total }</span>
-            <span class="cuadro-metric-lbl">CENTROS</span>
-          </button>
-          <button
-            class="cuadro-metric cuadro-metric--green"
-            class:active={filtroSeleccionado === 'completado'}
-            onclick={() => filtroSeleccionado = 'completado'}>
-            <span class="cuadro-metric-val">{ metricas.completados }</span>
-            <span class="cuadro-metric-lbl">COMPLETADOS</span>
-          </button>
-          <button
-            class="cuadro-metric cuadro-metric--orange"
-            class:active={filtroSeleccionado === 'en-progreso'}
-            onclick={() => filtroSeleccionado = 'en-progreso'}>
-            <span class="cuadro-metric-val">{ metricas.enProgreso }</span>
-            <span class="cuadro-metric-lbl">EN PROGRESO</span>
-          </button>
-          <button
-            class="cuadro-metric cuadro-metric--red"
-            class:active={filtroSeleccionado === 'pendiente'}
-            onclick={() => filtroSeleccionado = 'pendiente'}>
-            <span class="cuadro-metric-val">{ metricas.pendientes }</span>
-            <span class="cuadro-metric-lbl">PENDIENTES</span>
-          </button>
+      <div class="dcv-body">
+        <!-- Metrics -->
+        <div class="dcv-metrics">
+          <div class="dcv-metric" class:dcv-metric--active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'} role="button" tabindex="0">
+            <span class="dcv-metric-value">{ metricas.total }</span>
+            <span class="dcv-metric-label">Centros</span>
+          </div>
+          <div class="dcv-metric dcv-metric--green" class:dcv-metric--active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'} role="button" tabindex="0">
+            <span class="dcv-metric-value">{ metricas.completados }</span>
+            <span class="dcv-metric-label">Completados</span>
+          </div>
+          <div class="dcv-metric dcv-metric--blue" class:dcv-metric--active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'} role="button" tabindex="0">
+            <span class="dcv-metric-value">{ metricas.enProgreso }</span>
+            <span class="dcv-metric-label">En progreso</span>
+          </div>
+          <div class="dcv-metric dcv-metric--amber" class:dcv-metric--active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'} role="button" tabindex="0">
+            <span class="dcv-metric-value">{ metricas.pendientes }</span>
+            <span class="dcv-metric-label">Pendientes</span>
+          </div>
         </div>
-        <div class="centros-label">CENTROS</div>
-        <section class="centros-grid">
-          {#each informesFiltrados as inf (inf.id)}
-            <div
-              class="centro-card"
-              role="button"
-              tabindex="0"
-              style="--dot-color: {colorEstado(inf)}"
-              data-estado={estadoDe(inf)}
-              onclick={() => editarInforme(inf)}
-              onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInforme(inf); } }}>
-               <div class="centro-main">
-                 <div class="centro-info">
-                   <span class="centro-nombre">{ inf.nombreObra }</span>
-                   <span class="centro-progreso">{ progresoDe(inf) }% completado</span>
-                 </div>
-                 <div class="centro-meta">
-                   <span class="centro-estado">{ labelEstado(inf) }</span>
-                   <span class="centro-fecha">{ inf.ultimaModificacion || '—' }</span>
-                 </div>
-               </div>
-            </div>
-          {/each}
-        </section>
+
+        <!-- Filter pills -->
+        <div class="dcv-pills">
+          <button class="dcv-pill" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>Todos</button>
+          <button class="dcv-pill dcv-pill--green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>Completado</button>
+          <button class="dcv-pill dcv-pill--blue" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>En progreso</button>
+          <button class="dcv-pill dcv-pill--amber" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>Pendiente</button>
+        </div>
+
+        <div class="dcv-count">{informesFiltrados.length} centro{informesFiltrados.length !== 1 ? 's' : ''}</div>
+
+        <!-- Centro cards -->
+        {#if informesFiltrados.length === 0}
+          <div class="empty-state">No hay centros para este filtro.</div>
+        {:else}
+          <div class="dcv-grid">
+            {#each informesFiltrados as inf (inf.id)}
+              <div class="dcv-card" style="--accent: {colorEstado(inf)}" data-estado={estadoDe(inf)} role="button" tabindex="0" onclick={() => editarInforme(inf)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInforme(inf); } }}>
+                <div class="dcv-card-accent"></div>
+                <div class="dcv-card-body">
+                  <div class="dcv-card-top">
+                    <span class="dcv-card-name">{ inf.nombreObra }</span>
+                    <span class="dcv-card-badge" style="background: {colorEstado(inf) === '#059669' ? '#E1F5EE' : colorEstado(inf) === '#d97706' ? '#E6F1FB' : '#f1f5f9'}; color: {colorEstado(inf)}">{ labelEstado(inf) }</span>
+                  </div>
+                  <div class="dcv-card-progress-row">
+                    <div class="dcv-card-progress">
+                      <div class="dcv-card-progress-bar" style="width: {progresoDe(inf)}%; background: {colorEstado(inf)}"></div>
+                    </div>
+                    <span class="dcv-card-pct">{progresoDe(inf)}%</span>
+                  </div>
+                  <span class="dcv-card-date">{ inf.ultimaModificacion || '—' }</span>
+                </div>
+              </div>
+            {/each}
+          </div>
+        {/if}
       </div>
     </div>
   </main>
@@ -386,14 +385,18 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 {/if}
 
 <style>
-/* ===== LAYOUT ===== */
+/* ============================================================
+   GLOBAL LAYOUT
+   ============================================================ */
 .main-layout {
   display: flex;
   min-height: 100vh;
   background: var(--bg-page);
 }
 
-/* ===== SIDEBAR (DESKTOP ONLY) ===== */
+/* ============================================================
+   SIDEBAR (desktop only)
+   ============================================================ */
 .main-sidebar {
   width: 320px;
   flex-shrink: 0;
@@ -407,9 +410,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 }
 
 @media (max-width: 768px) {
-  .main-sidebar {
-    display: none;
-  }
+  .main-sidebar { display: none; }
 }
 
 .brand-logo {
@@ -461,7 +462,9 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   box-shadow: 0 0 15px rgba(0,0,0,0.2);
 }
 
-/* ===== MAIN CONTENT AREA ===== */
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
 .main-content {
   flex: 1;
   min-width: 0;
@@ -472,7 +475,6 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   flex-direction: column;
 }
 
-/* ===== DASHBOARD VIEWS (Common) ===== */
 .dash-view {
   display: none;
   flex-direction: column;
@@ -489,12 +491,43 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 }
 
 @media (max-width: 768px) {
-  .mobile-only {
-    display: flex;
+  .mobile-only { display: flex; }
+}
+
+/* ============================================================
+   PANEL HEADER (cuatrimestre list + tabs)
+   ============================================================ */
+.dash-panel-header {
+  position: relative;
+  background: linear-gradient(135deg, #1e3a5f 0%, #234670 100%);
+  padding: 32px 40px;
+  flex-shrink: 0;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .dash-panel-header {
+    padding: 24px 20px;
   }
 }
 
-/* Botón admin (engranaje) en header móvil */
+.dash-panel-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.dash-panel-subtitle {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .dash-panel-title { font-size: 24px; }
+}
+
+/* Admin gear in mobile header */
 .dash-admin-gear {
   position: absolute;
   top: 16px;
@@ -514,109 +547,66 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 }
 
 @media (max-width: 768px) {
-  .dash-admin-gear.mobile-only {
-    display: flex;
-  }
+  .dash-admin-gear.mobile-only { display: flex; }
 }
 
-/* Headers */
-.dash-panel-header,
-.dash-cuatrimestre-header {
-  position: relative;
-  background: linear-gradient(135deg, #1e3a5f 0%, #234670 100%);
-  padding: 32px 40px;
-  flex-shrink: 0;
-  color: #ffffff;
-}
-
-@media (max-width: 768px) {
-  .dash-panel-header,
-  .dash-cuatrimestre-header {
-    padding: 24px 20px;
-  }
-  .dash-cuatrimestre-header {
-    border-radius: 0 0 20px 20px;
-  }
-}
-
-.dash-brand-row {
+/* ============================================================
+   TAB SWITCHER
+   ============================================================ */
+.tab-switcher {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.dash-brand-logo {
-  width: 100px;
-}
-
-.dash-back-link {
+  gap: 12px;
+  margin-top: 28px;
   background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 6px;
-  margin-bottom: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
-  width: fit-content;
+  padding: 6px;
+  border-radius: 14px;
+  max-width: 480px;
 }
 
-.dash-back-link:hover {
-  background: rgba(255,255,255,0.15);
-  transform: translateX(-4px);
-}
-
-/* Titles */
-.dash-panel-title,
-.dash-cuatri-title {
-  font-size: 32px;
-  font-weight: 700;
-  margin: 0 0 8px 0;
-}
-
-.dash-panel-subtitle,
-.dash-subtitle {
-  font-size: 14px;
-  color: rgba(255,255,255,0.5);
-  margin: 0;
-}
-
-@media (max-width: 768px) {
-  .dash-panel-title,
-  .dash-cuatri-title { font-size: 24px; }
-}
-
-/* Metrics */
-
-
-.dash-cuatri-row {
+.tab-btn {
+  flex: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-/* Body */
-.dash-panel-body,
-.dash-cuatrimestre-body {
+.tab-btn:hover {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
+}
+
+.tab-btn.active {
+  background: #ffffff;
+  color: #1e3a5f;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.tab-icon { font-size: 1.1rem; line-height: 1; }
+
+/* ============================================================
+   PANEL BODY (cuatrimestre list)
+   ============================================================ */
+.dash-panel-body {
   flex: 1;
   padding: 40px;
   overflow-y: auto;
 }
 
 @media (max-width: 768px) {
-  .dash-panel-body,
-  .dash-cuatrimestre-body { padding: 20px 16px; }
+  .dash-panel-body { padding: 20px 16px; }
 }
 
-.dash-section-label,
-.centros-label {
+.dash-section-label {
   font-size: 12px;
   font-weight: 700;
   color: #94a3b8;
@@ -625,7 +615,14 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   margin-bottom: 20px;
 }
 
-/* Cuatrimestres List (Grid on Desktop) */
+.empty-state {
+  padding: 80px 0;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 15px;
+}
+
+/* Cuatrimestre cards */
 .dash-cuatrimestres-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -682,325 +679,354 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   .dci-title { font-size: 15px; }
 }
 
-/* Centros Grid (Desktop Optimization) */
-.centros-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 16px;
-}
-
-@media (max-width: 1024px) {
-  .centros-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.centro-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-}
-
-.centro-card:hover {
-  transform: scale(1.01);
-  box-shadow: 0 12px 20px -5px rgba(0,0,0,0.08);
-  border-color: #e2e8f0;
-}
-
-.centro-card::before {
-  content: '';
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--dot-color, #d1d5db);
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  box-shadow: 0 0 0 4px rgba(var(--dot-rgb, 209, 213, 219), 0.1);
-  z-index: 1;
-}
-
-.centro-card::after {
-  content: '›';
-  color: #cbd5e1;
-  font-size: 24px;
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: transform 0.2s;
-}
-
-.centro-card:hover::after {
-  transform: translateY(-50%) translateX(4px);
-  color: #1e3a5f;
-}
-
-.centro-main {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1;
-  margin-left: 24px;
-  gap: 16px;
-}
-
-.centro-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.centro-nombre {
-  font-size: 17px;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.centro-progreso {
-  font-size: 13px;
-  color: #64748b;
-}
-
-.centro-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.centro-estado {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 100px;
-  background: #f1f5f9;
-  color: #475569;
-  white-space: nowrap;
-}
-
-.centro-fecha {
-  font-size: 12px;
-  color: #94a3b8;
-  text-align: right;
-}
-
-.centro-card:hover {
-  transform: scale(1.01);
-  box-shadow: 0 12px 20px -5px rgba(0,0,0,0.08);
-  border-color: #e2e8f0;
-}
-
-.centro-card::before {
-  content: '';
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--dot-color, #d1d5db);
-  grid-row: 1 / 3;
-  box-shadow: 0 0 0 4px rgba(var(--dot-rgb, 209, 213, 219), 0.1);
-}
-
-.centro-card::after {
-  content: '›';
-  color: #cbd5e1;
-  font-size: 24px;
-  grid-row: 1 / 3;
-  transition: transform 0.2s;
-}
-
-.centro-card:hover::after {
-  transform: translateX(4px);
-  color: #1e3a5f;
-}
-
-.centro-nombre {
-  grid-column: 2;
-  grid-row: 1;
-  font-size: 17px;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.centro-progreso {
-  grid-column: 2;
-  grid-row: 2;
-  font-size: 13px;
-  color: #64748b;
-}
-
-.centro-estado {
-  grid-column: 3;
-  grid-row: 1;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 100px;
-  background: #f1f5f9;
-  color: #475569;
-  white-space: nowrap;
-}
-
-.centro-card[data-estado="en-progreso"] .centro-estado {
-  background: #fffbeb;
-  color: #92400e;
-}
-
-.centro-card[data-estado="completado"] .centro-estado {
-  background: #ecfdf5;
-  color: #065f46;
-}
-
-.centro-fecha {
-  grid-column: 3;
-  grid-row: 2;
-  font-size: 12px;
-  color: #94a3b8;
-  text-align: right;
+/* ============================================================
+   CUATRIMESTRE DETAIL VIEW — HEADER
+   ============================================================ */
+.dcv-header {
+  background: linear-gradient(135deg, #1e3a5f 0%, #234670 100%);
+  padding: 24px 40px 20px;
+  flex-shrink: 0;
+  color: #ffffff;
 }
 
 @media (max-width: 768px) {
-  .centro-card {
-    padding: 14px 16px;
-    border-radius: 12px;
-    gap: 4px 12px;
-  }
-  .centro-nombre { font-size: 15px; }
-  .centro-card::after { font-size: 18px; }
-  .centro-main {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .centro-meta {
-    align-items: flex-start;
-    text-align: left;
+  .dcv-header {
+    padding: 20px 20px 16px;
+    border-radius: 0 0 20px 20px;
   }
 }
 
-.empty-state {
-  padding: 100px 0;
-  text-align: center;
-  color: #94a3b8;
-  font-size: 16px;
-}
-
-/* ===== TAB SWITCHER ===== */
-.tab-switcher {
-  display: flex;
-  gap: 12px;
-  margin-top: 28px;
+.dcv-back {
   background: rgba(255,255,255,0.08);
-  padding: 6px;
-  border-radius: 14px;
-  max-width: 480px;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  width: fit-content;
 }
 
-.tab-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 16px;
-  border: none;
-  border-radius: 10px;
-  background: transparent;
-  color: rgba(255,255,255,0.6);
-  font-size: 0.9rem;
+.dcv-back:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(-4px);
+}
+
+.dcv-sublabel {
+  display: block;
+  font-size: 11px;
   font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+}
+
+.dcv-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .dcv-title { font-size: 22px; }
+}
+
+.dcv-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.12);
+}
+
+/* ============================================================
+   CUATRIMESTRE DETAIL VIEW — BODY
+   ============================================================ */
+.dcv-body {
+  flex: 1;
+  padding: 24px 40px;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .dcv-body { padding: 20px 16px; }
+}
+
+/* ============================================================
+   METRICS CARDS
+   2×2 in mobile, inline row in desktop
+   ============================================================ */
+.dcv-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .dcv-metrics {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.dcv-metric {
+  background: var(--gray-100, #f3f4f6);
+  border-radius: 12px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: 2px solid transparent;
+  user-select: none;
+  text-align: center;
 }
 
-.tab-btn:hover {
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.85);
+.dcv-metric:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
-.tab-btn.active {
+.dcv-metric--active {
+  border-color: #1e293b;
   background: #ffffff;
-  color: #1e3a5f;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-.tab-icon {
-  font-size: 1.1rem;
-  line-height: 1;
+.dcv-metric-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1e293b;
+  line-height: 1.1;
 }
 
-/* ===== CUADRO ELÉCTRICO TAB ===== */
-.cuadro-tab-metrics {
+@media (min-width: 900px) {
+  .dcv-metric-value { font-size: 28px; }
+}
+
+.dcv-metric-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Metric color variants */
+.dcv-metric--green .dcv-metric-value { color: #1D9E75; }
+.dcv-metric--blue .dcv-metric-value  { color: #185FA5; }
+.dcv-metric--amber .dcv-metric-value { color: #b45309; }
+
+/* ============================================================
+   FILTER PILLS (scrollable horizontal)
+   ============================================================ */
+.dcv-pills {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+
+.dcv-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.dcv-pill {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1.5px solid #d1d5db;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.dcv-pill:hover {
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+.dcv-pill.active {
+  background: #1e293b;
+  border-color: #1e293b;
+  color: #ffffff;
+}
+
+.dcv-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 16px;
+}
+
+/* ============================================================
+   CENTRO / CUADRO CARDS GRID
+   Mobile: 1 col, Tablet (>=600): 2 cols, Desktop (>=900): auto-fill
+   ============================================================ */
+.dcv-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 28px;
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
-@media (max-width: 768px) {
-  .cuadro-tab-metrics {
+@media (min-width: 600px) {
+  .dcv-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-.cuadro-metric {
+@media (min-width: 900px) {
+  .dcv-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+/* Card with top accent border */
+.dcv-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
+}
+
+.dcv-card:hover {
+  box-shadow: 0 8px 20px -6px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+}
+
+.dcv-card-accent {
+  height: 3px;
+  background: var(--accent, #94a3b8);
+  flex-shrink: 0;
+}
+
+.dcv-card-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 44px;
+}
+
+@media (min-width: 600px) {
+  .dcv-card-body { padding: 18px; }
+}
+
+.dcv-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.dcv-card-name-row {
+  display: flex;
   align-items: center;
   gap: 6px;
-  padding: 18px 12px;
-  border: 2px solid transparent;
-  border-radius: 14px;
-  background: #ffffff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: center;
+  min-width: 0;
+  flex: 1;
 }
 
-.cuadro-metric:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+.dcv-card-icon {
+  font-size: 16px;
+  flex-shrink: 0;
 }
 
-.cuadro-metric.active {
-  border-color: #1e3a5f;
-  background: #f8fafc;
+.dcv-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.3;
+  word-break: break-word;
 }
 
-.cuadro-metric-val {
-  font-size: 26px;
-  font-weight: 800;
-  color: #1e293b;
-  line-height: 1;
-}
-
-.cuadro-metric-lbl {
-  font-size: 11px;
+.dcv-card-badge {
+  font-size: 10px;
   font-weight: 700;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.cuadro-metric--green .cuadro-metric-val { color: #059669; }
-.cuadro-metric--orange .cuadro-metric-val { color: #d97706; }
-.cuadro-metric--red .cuadro-metric-val { color: #ef4444; }
+.dcv-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
 
-.cuadro-tab-header-row {
+.dcv-card-tag {
+  font-size: 11px;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.dcv-card-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dcv-card-progress {
+  flex: 1;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dcv-card-progress-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.dcv-card-pct {
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  min-width: 32px;
+  text-align: right;
+}
+
+.dcv-card-date {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+/* ============================================================
+   CUADRO ELÉCTRICO — header row
+   ============================================================ */
+.ce-header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin: 16px 0;
+}
+
+.ce-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
 }
 
 .btn-nuevo-cuadro {
@@ -1024,116 +1050,29 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   box-shadow: 0 4px 12px rgba(30,58,95,0.25);
 }
 
-.cuadro-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 20px;
-}
-
-@media (max-width: 768px) {
-  .cuadro-cards-grid {
-    grid-template-columns: 1fr;
+/* ============================================================
+   RESPONSIVE TWEAKS
+   ============================================================ */
+@media (max-width: 599px) {
+  .dcv-metrics {
+    gap: 10px;
   }
-}
 
-.cuadro-card-tech {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 20px 22px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
+  .dcv-metric {
+    padding: 14px 8px;
+  }
 
-.cuadro-card-tech:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 12px 24px -6px rgba(0,0,0,0.08);
-  transform: translateY(-2px);
-}
+  .dcv-metric-value {
+    font-size: 22px;
+  }
 
-.cuadro-card-tech-top {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
+  .dcv-card-body {
+    padding: 14px;
+    gap: 8px;
+  }
 
-.cuadro-card-tech-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
-.cuadro-card-tech-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.cuadro-card-tech-info h3 {
-  margin: 0 0 6px;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #0f172a;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cuadro-card-tech-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  font-size: 0.75rem;
-  color: #64748b;
-}
-
-.cuadro-card-tech-meta span {
-  background: #f1f5f9;
-  padding: 3px 8px;
-  border-radius: 6px;
-}
-
-.cuadro-card-tech-estado {
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 100px;
-  background: #f1f5f9;
-  white-space: nowrap;
-}
-
-.cuadro-card-tech-bottom {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  justify-content: space-between;
-}
-
-.cuadro-card-tech-progress {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.cuadro-progress-text {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #64748b;
-  min-width: 36px;
-  text-align: right;
-}
-
-.cuadro-card-tech-date {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  white-space: nowrap;
+  .dcv-card-name {
+    font-size: 13px;
+  }
 }
 </style>

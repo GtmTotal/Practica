@@ -4,52 +4,114 @@ Esta es la UI del proyecto **Informe de Obras** basada en **SvelteKit**.
 
 ## Tecnologías
 
-- **Frontend**: SvelteKit (Svelte 5) + TypeScript
-- **Backend**: ASP.NET Core 10 (Docker Compose) 
+- **Frontend**: SvelteKit (Svelte 5) + TypeScript
+- **Backend**: ASP.NET Core 10 (Docker Compose)
 - **Almacenamiento**: MinIO (S3 compatible) + PostgreSQL
-- **Despliegue**: Docker + Vercel (adapter‑vercel) 
+- **Despliegue**: Docker + Vercel (adapter-vercel) + Dokploy (Raspberry)
 
-## Desarrollo local
+## Entornos de ejecución
+
+La aplicación puede ejecutarse en tres escenarios. Elige el que corresponda según lo que quieras hacer.
+
+---
+
+### 1. Desarrollo local (tu PC)
+
+#### 1A. Frontend local + Backend local (Docker Desktop)
+
+`npm run dev` levanta **solo** el servidor de desarrollo de Vite (`http://localhost:5173`). La API (`http://localhost:5000`) y la BBDD (`localhost:5433`) deben estar corriendo por separado. Si no lo están, el panel de admin y las peticiones a la API fallarán.
 
 ```bash
-# instalar dependencias
-npm ci
+# 1. Levantar API, PostgreSQL y MinIO (desde la raíz del repo)
+cd ../infra
+docker compose up -d
 
-# iniciar servidor de desarrollo (Vite)
-npm run dev   # http://localhost:5173
+# 2. En otra terminal, levantar el frontend con hot-reload
+cd UI
+npm ci      # solo la primera vez
+npm run dev # http://localhost:5173
 ```
 
-El proyecto está configurado para usar **ngrok** cuando necesites exponer la API desde la Raspberry:
+> **¿Por qué necesito Docker Desktop abierto?**
+> El frontend en desarrollo apunta a `http://localhost:5000/api`. Esa API es el contenedor `api` definido en `../infra/docker-compose.yml`. Si Docker Desktop está cerrado, los contenedores se detienen y `localhost:5000` no responde.
 
-```bash
-ngrok http 192.168.1.135:5000 --url=earthly-discard-tarmac.ngrok-free.dev
+#### 1B. Frontend local + Backend real (Raspberry)
+
+Si quieres que tu `npm run dev` local apunte a la API real de la Raspberry (`192.168.1.135:5000`) en lugar de la local, edita temporalmente `src/lib/api-config.ts`:
+
+```ts
+// src/lib/api-config.ts (modo local contra Raspberry)
+if (hostname === 'localhost' || hostname === '127.0.0.1') {
+  return 'http://192.168.1.135:5000/api'; // ← cambia aquí
+}
 ```
 
-## Build & Docker
+Luego ejecuta normalmente:
 
 ```bash
-# Compilar UI para producción (opcional: Docker Compose ya lo hace automáticamente)
-# npm run build   # genera ./build
+npm run dev
+```
 
-# Lanzar todo con Docker Compose (incluye API, MinIO, PostgreSQL y UI pre‑construida)
+> **Importante:** Revierte el cambio en `api-config.ts` antes de hacer `git push`, ya que Vercel necesita la lógica original para decidir entre ngrok y la IP dinámica.
+
+---
+
+### 2. Producción en Raspberry (acceso por IP)
+
+La Raspberry (`192.168.1.135`) corre **Dokploy**, que gestiona los servicios como contenedores Docker Swarm.
+
+| Servicio | Puerto | Descripción |
+|---|---|---|
+| Panel Dokploy | `3000` | Administración web de servicios |
+| API | `5000` | ASP.NET Core (Informe de Obras) |
+| PostgreSQL | `5433` | BBDD del informe |
+| MinIO | `9000` / `9001` | Almacenamiento de fotos/documentos |
+| Frontend | según Dokploy / Traefik (ej. `80`, `443` o `8080`) | UI estática servida por Nginx |
+
+#### ¿Por qué no se actualiza al hacer `git push`?
+
+- `git push` actualiza automáticamente **Vercel** (frontend público).
+- La Raspberry no se entera del push. Para actualizar la versión que sirve por IP debes **redeployar manualmente** en Dokploy:
+  1. Entra al panel: `http://192.168.1.135:3000`
+  2. Localiza el servicio `reporteobras-ui`
+  3. Pulsa **Redeploy** (o **Rebuild** si cambió el `Dockerfile`)
+
+> **Tip:** También puedes configurar un webhook de Git en Dokploy para que redeploye automáticamente tras cada push. Esto se hace desde la pestaña *Webhooks* del servicio en el panel de Dokploy.
+
+---
+
+### 3. Producción en Vercel
+
+El proyecto incluye `@sveltejs/adapter-vercel`. Al hacer push a la rama principal, Vercel compila y despliega automáticamente.
+
+```bash
+git add .
+git commit -m "descripción del cambio"
+git push
+```
+
+No es necesario ejecutar `vercel --prod` manualmente si el proyecto ya está vinculado a Vercel con CI/CD activado.
+
+---
+
+## Build & Docker (todo en uno)
+
+Si prefieres levantar la aplicación completa (frontend compilado + API + BBDD + MinIO) en un solo comando, usa el `docker-compose.yml` de la carpeta `infra`:
+
+```bash
 cd ../infra
 docker compose up --build -d
 ```
 
-> **Nota:** Si utilizas `docker compose up --build`, el contenedor `ui` ejecuta el proceso de build durante la fase de construcción, por lo que no es necesario ejecutar `npm run build` por separado.
+El contenedor `ui` construye la aplicación durante la fase de build y sirve los archivos estáticos desde `./build` usando Nginx.
 
+## ngrok (acceso externo temporal)
 
-El contenedor `ui` sirve los archivos estáticos desde `./build` usando Nginx.
-
-## Despliegue en Vercel
-
-El proyecto ya incluye `@sveltejs/adapter-vercel`.  Basta con hacer push a Git y Vercel construirá automáticamente:
+Cuando necesites que la API de la Raspberry sea accesible desde fuera de la red local (por ejemplo, para que Vercel la consuma), usa ngrok:
 
 ```bash
-vercel --prod
+ngrok http 192.168.1.135:5000 --url=earthly-discard-tarmac.ngrok-free.dev
 ```
-
-Con el adapter‑vercel las rutas como `/informe/2034‑C3/HUEVAR` funcionan sin **404** y el recargo de la página se gestiona mediante Serverless Functions.
 
 ## Licencia
 
