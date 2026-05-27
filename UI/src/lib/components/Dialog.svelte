@@ -313,20 +313,21 @@
 
 .danger-body { align-items: flex-start; }
 .danger-wrap {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff1f2;
+  background: #fef2f2;
 }
 
 .danger-content { flex: 1; }
 .dialog-divider {
   height: 1px;
-  background: #e6eef7;
-  margin: 8px 0 12px 0;
+  background: #e5e7eb;
+  margin: 0;
 }
 
 .save-dialog-desc { color: #6b7280; max-width: 360px; }
@@ -334,6 +335,78 @@
 .save-btn-cancel { background: transparent; border: 1px solid #e6eef7; color: #334155; }
 
 .save-dialog-actions { padding-top: 6px; }
+
+/* Danger-confirm specific styles */
+.danger-dialog {
+  max-width: 400px;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.danger-dialog .save-dialog-body {
+  padding: 28px 28px 20px;
+  gap: 20px;
+}
+
+.danger-dialog .save-dialog-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 8px;
+  text-align: left;
+}
+
+.danger-dialog .save-dialog-desc {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.danger-dialog .save-dialog-actions {
+  display: flex !important;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 16px 28px;
+  background: #fafbfc;
+  border-top: 1px solid #e5e7eb;
+}
+
+.danger-dialog .save-btn-cancel {
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #6b7280;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.danger-dialog .save-btn-cancel:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.danger-dialog .save-btn-delete {
+  background: #dc2626 !important;
+  color: white !important;
+  padding: 10px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  border: none !important;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.danger-dialog .save-btn-delete:hover {
+  background: #b91c1c !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  transform: translateY(-1px);
+}
 
 .btn-cancel:hover { background: #e2e8f0; }
 
@@ -435,22 +508,6 @@
 
 .save-btn-save:hover {
   background: #fdf2e9;
-}
-
-/* Overrides for danger-confirm to avoid conflicting save-confirm grid styles */
-.danger-dialog .save-dialog-actions {
-  display: flex !important;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-/* Ensure delete button is visible despite earlier generic .save-btn rules */
-.save-btn-delete {
-  background: #dc2626 !important;
-  color: #fff !important;
-  padding: 10px 16px !important;
-  border-radius: 12px !important;
-  font-weight: 700 !important;
 }
 
 /* Mejoras accesibilidad - Focus visible */
