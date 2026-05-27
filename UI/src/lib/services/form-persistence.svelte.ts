@@ -5,30 +5,11 @@ import { CUADRO_ELECTRICO_TEMPLATE } from '$lib/templates/cuadroElectrico';
 import { pdfDataBuilder } from './form-persistence/pdf-data-builder.svelte';
 import { pdfReportService } from './form-persistence/pdf-report.svelte';
 import { formInitService } from './form-initialization.svelte';
+import { progresoFormulario } from '$lib/utils/informe-utils';
 import { ui } from './ui.svelte';
 import type { InformeGuardado } from '$lib/types/informe.interface';
 import type { Foto } from '$lib/types/foto.interface';
 import type { FormState, SeccionState, TareaState } from './form-initialization.svelte';
-
-function calcularProgresoFormulario(form: FormState): number {
-  if (!form.secciones || form.secciones.length === 0) return 0;
-
-  let totalTareas = 0;
-  let tareasCompletadas = 0;
-
-  form.secciones.forEach((sec: SeccionState) => {
-    if (sec.tareas) {
-      sec.tareas.forEach((tarea: TareaState) => {
-        totalTareas++;
-        if (tarea.ok || tarea.noOk) {
-          tareasCompletadas++;
-        }
-      });
-    }
-  });
-
-  return totalTareas === 0 ? 0 : Math.round((tareasCompletadas / totalTareas) * 100);
-}
 
 class ServicioPersistenciaFormulario {
   informesGuardados = $state<InformeGuardado[]>([]);
@@ -58,7 +39,7 @@ class ServicioPersistenciaFormulario {
         fotos: fotosSecciones[idx] || []
       })),
       ultimaModificacion: new Date().toLocaleString(),
-      progreso: calcularProgresoFormulario(obraForm)
+      progreso: progresoFormulario(obraForm)
     };
 
     await databaseService.guardar(informeCompleto);
@@ -78,7 +59,7 @@ class ServicioPersistenciaFormulario {
         fotos: fotosSecciones[idx] || []
       })),
       ultimaModificacion: new Date().toLocaleString(),
-      progreso: calcularProgresoFormulario(obraForm)
+      progreso: progresoFormulario(obraForm)
     };
     
     await databaseService.guardar(informeCompleto);

@@ -3,6 +3,7 @@
   import { navService } from '$lib/services/navigation.svelte';
   import { formInitService, type FormState } from '$lib/services/form-initialization.svelte';
   import { formPersistenceService } from '$lib/services/form-persistence.svelte';
+  import { progresoFormulario } from '$lib/utils/informe-utils';
   import { fotoManagerService } from '$lib/services/foto-manager.svelte';
   import { ui } from '$lib/services/ui.svelte';
   import type { Foto } from '$lib/types/foto.interface';
@@ -31,19 +32,7 @@ import InformeFooter from './InformeFooter.svelte';
   let seccionesColapsadas = $derived(formInitService.seccionesColapsadas);
   let centroSeleccionado = $derived(navService.centroSeleccionado);
 
-  let progreso = $derived.by(() => {
-    const form = obraForm;
-    if (!form?.secciones?.length) return 0;
-    let total = 0;
-    let completadas = 0;
-    for (const sec of form.secciones) {
-      for (const t of sec.tareas) {
-        total++;
-        if (t.ok || t.noOk) completadas++;
-      }
-    }
-    return total === 0 ? 0 : Math.round((completadas / total) * 100);
-  });
+  let progreso = $derived(obraForm ? progresoFormulario(obraForm) : 0);
 
   // Auto-save timers
   let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
@@ -252,6 +241,7 @@ import InformeFooter from './InformeFooter.svelte';
 
 <svelte:head>
   <title>{centroSeleccionado || ''} | {obraForm?.tipo === 'cuadro_electrico' ? 'Cuadro Eléctrico' : 'Informe'} | GTM</title>
+  <meta name="description" content="Formulario de inspección de {centroSeleccionado || 'obra'} — {obraForm?.tipo === 'cuadro_electrico' ? 'revisión de cuadro eléctrico' : 'informe de mantenimiento'} de GTM.">
 </svelte:head>
 
 {#if cargando}

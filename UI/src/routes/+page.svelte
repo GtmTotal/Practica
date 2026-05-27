@@ -161,6 +161,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 
 <svelte:head>
   <title>Dashboard | GTM Mantenimiento</title>
+  <meta name="description" content="Panel de control de GTM Mantenimiento — gestión de informes de obra, cuadros eléctricos y seguimiento de centros.">
 </svelte:head>
 
 <div class="main-layout">
@@ -263,13 +264,14 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
           {:else}
             <div class="cuadro-cards-grid">
               {#each informesCuadroFiltrados as inf (inf.id)}
-                <!-- svelte-ignore a11y_click_events_have_key_events -->
-                <!-- svelte-ignore a11y_no_static_element_interactions -->
                 <div
                   class="cuadro-card-tech"
+                  role="button"
+                  tabindex="0"
                   style="--dot-color: {colorEstado(inf)}"
                   data-estado={estadoDe(inf)}
-                  onclick={() => editarInformeCuadro(inf)}>
+                  onclick={() => editarInformeCuadro(inf)}
+                  onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInformeCuadro(inf); } }}>
                   <div class="cuadro-card-tech-top">
                     <div class="cuadro-card-tech-icon" style="background: {progresoDe(inf) === 100 ? '#e6f4ea' : progresoDe(inf) > 0 ? '#fffbeb' : '#f1f5f9'}; color: {progresoDe(inf) === 100 ? '#059669' : progresoDe(inf) > 0 ? '#d97706' : '#64748b'}">
                       ⚡
@@ -347,13 +349,14 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
         <div class="centros-label">CENTROS</div>
         <section class="centros-grid">
           {#each informesFiltrados as inf (inf.id)}
-            <!-- svelte-ignore a11y_click_events_have_key_events -->
-            <!-- svelte-ignore a11y_no_static_element_interactions -->
             <div
               class="centro-card"
+              role="button"
+              tabindex="0"
               style="--dot-color: {colorEstado(inf)}"
               data-estado={estadoDe(inf)}
-              onclick={() => editarInforme(inf)}>
+              onclick={() => editarInforme(inf)}
+              onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInforme(inf); } }}>
               <div class="card-header">
                 <span class="centro-nombre">{ inf.nombreObra }</span>
                 <span class="centro-estado">{ labelEstado(inf) }</span>

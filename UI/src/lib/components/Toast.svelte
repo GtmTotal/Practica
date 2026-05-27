@@ -44,18 +44,17 @@
   pointer-events: none;
 }
 
-.toast-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.2);
-  pointer-events: auto;
-  min-width: 300px;
-  border-left: 4px solid;
-}
+  .toast-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.2);
+    pointer-events: auto;
+    border-left: 4px solid;
+  }
 
 .toast-item.success { border-left-color: #10b981; }
 .toast-item.error { border-left-color: #ef4444; }

@@ -224,6 +224,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 
 <svelte:head>
   <title>Administración | GTM Mantenimiento</title>
+  <meta name="description" content="Panel de administración de GTM Mantenimiento — edición de tareas, cuatrimestres, plantillas y control de informes.">
 </svelte:head>
 
 <div class="admin-layout" class:root-layout={menuPrincipal === 'raiz'}>
@@ -232,7 +233,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
     <div class="admin-root-menu">
       <div class="root-menu-container">
         <header class="root-menu-header">
-          <div class="root-logo">GTM</div>
+          <img src="/gtmCompleto.png" alt="GTM" class="root-logo" style="width: 140px;">
           <h1>Panel de Administración</h1>
           <p>Selecciona un módulo de trabajo para continuar</p>
         </header>
@@ -280,7 +281,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
     <!-- Sidebar (desktop only) -->
     <aside class="admin-sidebar">
       <div class="sidebar-brand">
-        <span class="brand-logo">GTM</span>
+        <img src="/gtmCompleto.png" alt="GTM" class="brand-logo" style="height: 40px;">
         <span class="brand-dot"></span>
         <span class="brand-text">Cuadro Eléctrico</span>
       </div>
@@ -352,7 +353,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
             <button class="admin-back-link" onclick={() => { menuPrincipal = 'raiz'; selectedCuadroId = null; }}>‹ Menú</button>
             <div class="mobile-brand">
               <span class="mobile-brand-arrow">▶</span>
-              <span class="mobile-brand-name">GTM</span>
+              <img src="/gtmCompleto.png" alt="GTM" class="mobile-brand-name" style="height: 20px; vertical-align: middle;">
             </div>
           </div>
           <h1 class="mobile-panel-title">Cuadros Eléctrico</h1>
@@ -432,7 +433,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
             <button class="admin-back-link" onclick={() => { selectedCuadroId = null; }}>‹ Cuadros</button>
             <div class="mobile-brand">
               <span class="mobile-brand-arrow">▶</span>
-              <span class="mobile-brand-name">GTM</span>
+              <img src="/gtmCompleto.png" alt="GTM" class="mobile-brand-name" style="height: 20px; vertical-align: middle;">
             </div>
           </div>
           <div class="mobile-cuatri-row">
@@ -634,7 +635,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
     <!-- Sidebar (desktop only) -->
     <aside class="admin-sidebar">
       <div class="sidebar-brand">
-        <span class="brand-logo">GTM</span>
+        <img src="/gtmCompleto.png" alt="GTM" class="brand-logo" style="height: 40px;">
         <span class="brand-dot"></span>
         <span class="brand-text">Mantenimiento</span>
       </div>
@@ -708,7 +709,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
             <button class="admin-back-link" onclick={() => { menuPrincipal = 'raiz'; cuatrimestreSeleccionado = ''; }}>‹ Menú</button>
             <div class="mobile-brand">
               <span class="mobile-brand-arrow">▶</span>
-              <span class="mobile-brand-name">GTM</span>
+              <img src="/gtmCompleto.png" alt="GTM" class="mobile-brand-name" style="height: 20px; vertical-align: middle;">
             </div>
           </div>
           <h1 class="mobile-panel-title">Mantenimiento Mercadona</h1>
@@ -761,7 +762,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
             <button class="admin-back-link" onclick={() => { vistaPanel = true; cuatrimestreSeleccionado = ''; }}>‹ Cuatrimestre</button>
             <div class="mobile-brand">
               <span class="mobile-brand-arrow">▶</span>
-              <span class="mobile-brand-name">GTM</span>
+              <img src="/gtmCompleto.png" alt="GTM" class="mobile-brand-name" style="height: 20px; vertical-align: middle;">
             </div>
           </div>
           <div class="mobile-cuatri-row">
@@ -792,13 +793,14 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
           <div class="centros-label" style="padding-top: 12px;">CENTROS ({informesFiltrados.length})</div>
           <section class="centros-grid">
             {#each informesFiltrados as inf (inf.id)}
-              <!-- svelte-ignore a11y_click_events_have_key_events -->
-              <!-- svelte-ignore a11y_no_static_element_interactions -->
               <div
                 class="centro-card"
+                role="button"
+                tabindex="0"
                 style="border-left-color: {colorEstado(inf)}; --dot-color: {colorEstado(inf)}"
                 data-estado={estadoDe(inf)}
-                onclick={() => editarInforme(inf)}>
+                onclick={() => editarInforme(inf)}
+                onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInforme(inf); } }}>
                 <div class="card-header">
                   <span class="centro-nombre">{ inf.nombreObra }</span>
                   <span class="centro-estado" style="color: {colorEstado(inf)}">
@@ -845,13 +847,14 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
           <div class="centros-label">CENTROS ({informesFiltrados.length})</div>
           <section class="centros-grid">
             {#each informesFiltrados as inf (inf.id)}
-              <!-- svelte-ignore a11y_click_events_have_key_events -->
-              <!-- svelte-ignore a11y_no_static_element_interactions -->
               <div
                 class="centro-card"
+                role="button"
+                tabindex="0"
                 style="border-left-color: {colorEstado(inf)}; --dot-color: {colorEstado(inf)}"
                 data-estado={estadoDe(inf)}
-                onclick={() => editarInforme(inf)}>
+                onclick={() => editarInforme(inf)}
+                onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInforme(inf); } }}>
                 <div class="card-header">
                   <span class="centro-nombre">{ inf.nombreObra }</span>
                   <span class="centro-estado" style="color: {colorEstado(inf)}">

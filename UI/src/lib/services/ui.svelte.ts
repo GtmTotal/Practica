@@ -21,12 +21,27 @@ export interface ToastOptions {
 
 class UIService {
   dialogState = $state<DialogOptions | null>(null);
+  private dialogQueue: DialogOptions[] = [];
   toastState = $state<ToastOptions[]>([]);
   private toastIdCounter = 0;
 
+  private setOrQueue(opts: DialogOptions): void {
+    if (this.dialogState) {
+      this.dialogQueue.push(opts);
+    } else {
+      this.dialogState = opts;
+    }
+  }
+
+  private processQueue(): void {
+    if (!this.dialogState && this.dialogQueue.length > 0) {
+      this.dialogState = this.dialogQueue.shift()!;
+    }
+  }
+
   alert(title: string, message: string, type: DialogType = 'info'): Promise<boolean> {
     return new Promise((resolve) => {
-      this.dialogState = {
+      this.setOrQueue({
         title,
         message,
         type,
@@ -34,14 +49,15 @@ class UIService {
         resolve: () => {
           this.dialogState = null;
           resolve(true);
+          this.processQueue();
         }
-      };
+      });
     });
   }
 
   confirm(title: string, message: string, okText = 'Confirmar', cancelText = 'Cancelar'): Promise<boolean> {
     return new Promise((resolve) => {
-      this.dialogState = {
+      this.setOrQueue({
         title,
         message,
         type: 'confirm',
@@ -50,28 +66,30 @@ class UIService {
         resolve: (val) => {
           this.dialogState = null;
           resolve(val === true);
+          this.processQueue();
         }
-      };
+      });
     });
   }
 
   saveConfirm(): Promise<'save' | 'discard' | 'cancel'> {
     return new Promise((resolve) => {
-      this.dialogState = {
+      this.setOrQueue({
         title: '¿Guardar antes de salir?',
         message: 'Los cambios no guardados se perderán definitivamente.',
         type: 'save-confirm',
         resolve: (val) => {
           this.dialogState = null;
           resolve((val as 'save' | 'discard' | 'cancel') || 'cancel');
+          this.processQueue();
         }
-      };
+      });
     });
   }
 
   prompt(title: string, message: string, placeholder = '', okText = 'Aceptar', cancelText = 'Cancelar', inputType: 'text' | 'password' = 'text'): Promise<string | null> {
     return new Promise((resolve) => {
-      this.dialogState = {
+      this.setOrQueue({
         title,
         message,
         type: 'prompt',
@@ -83,8 +101,9 @@ class UIService {
           this.dialogState = null;
           if (typeof val === 'string') resolve(val);
           else resolve(val === true ? '' : null);
+          this.processQueue();
         }
-      };
+      });
     });
   }
 
