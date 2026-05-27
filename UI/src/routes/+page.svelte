@@ -124,8 +124,36 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
     }
   }
 
+  // Search (quick locate cuatrimestres / informes)
+  let searchQuery = $state('');
+  let showSearchResults = $state(false);
+  let resultadosBusqueda = $derived.by(() => {
+    const q = (searchQuery || '').trim().toLowerCase();
+    if (!q) return [];
+    const source = tabActual === 'cuadros' ? informesCuadro : informesMantenimiento;
+    const all = source || [];
+    return all
+      .filter(inf => {
+        const name = (inf.nombreObra || '').toLowerCase();
+        const cuat = (inf.cuatrimestre || '').toLowerCase();
+        const ord = (inf.nOrdenCuadro || '')+'';
+        return name.includes(q) || cuat.includes(q) || ord.toLowerCase().includes(q);
+      })
+      .slice(0, 12);
+  });
+
+  async function abrirDesdeBusqueda(inf: InformeGuardado) {
+    searchQuery = '';
+    showSearchResults = false;
+    if (inf.tipo === 'cuadro_electrico') {
+      await editarInformeCuadro(inf);
+    } else {
+      await editarInforme(inf);
+    }
+  }
+
   async function eliminarInformeCuadro(inf: InformeGuardado) {
-    const ok = await ui.confirm(
+    const ok = await ui.confirmDanger(
       'Eliminar Informe',
       `¿Eliminar el informe "${inf.nombreObra}"? Esta acción no se puede deshacer.`,
       'Eliminar',
@@ -186,6 +214,36 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
         <button class="dash-admin-gear mobile-only" onclick={toggleAdmin} title="Administración" aria-label="Administración"><span aria-hidden="true">⚙</span></button>
         <h2 class="dash-panel-title">Control total del mantenimiento.</h2>
         <p class="dash-panel-subtitle">Seguimiento de centros, cuatrimestres y estados en un solo lugar.</p>
+
+          <!-- Search box -->
+          <div class="dash-search">
+            <div class="search-input-wrapper">
+              <input
+                aria-label="Buscar informes o cuatrimestres"
+                placeholder="Buscar obra, cuatrimestre o nº orden..."
+                class="search-input"
+                bind:value={searchQuery}
+                oninput={() => showSearchResults = !!searchQuery.trim()}
+                onblur={() => setTimeout(() => showSearchResults = false, 120)}
+                onfocus={() => showSearchResults = !!searchQuery.trim()}
+              />
+              <button class="search-clear" onclick={() => { searchQuery = ''; showSearchResults = false; }} title="Borrar búsqueda">✕</button>
+              <span class="search-icon" aria-hidden="true">🔍</span>
+            </div>
+
+            {#if showSearchResults && resultadosBusqueda.length > 0}
+              <div class="search-results">
+                {#each resultadosBusqueda as r}
+                <button class="search-result-item" onclick={() => abrirDesdeBusqueda(r)}>
+                    <div class="sr-title">{r.nombreObra}</div>
+                    <div class="sr-meta">{r.cuatrimestre || 'Sin cuatrimestre'} {#if r.nOrdenCuadro}· Ord: {r.nOrdenCuadro}{/if}</div>
+                  </button>
+                {/each}
+              </div>
+            {:else if showSearchResults}
+              <div class="search-results empty">No se encontraron resultados</div>
+            {/if}
+          </div>
 
         <!-- Tab Switcher -->
         <div class="tab-switcher">
@@ -562,6 +620,45 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   border-radius: 14px;
   max-width: 480px;
 }
+
+/* Search box */
+.dash-search {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 320px;
+  z-index: 30;
+}
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  width: 100%;
+  padding: 8px 36px 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+}
+.search-input::placeholder { color: rgba(255,255,255,0.5); }
+.search-icon { position: absolute; right: 8px; pointer-events: none; }
+.search-clear { position: absolute; right: 28px; background: transparent; border: none; color: rgba(255,255,255,0.6); cursor: pointer; }
+.search-results {
+  margin-top: 8px;
+  background: #fff;
+  color: #0f172a;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.2);
+  max-height: 320px;
+  overflow: auto;
+}
+.search-results.empty { padding: 12px; }
+.search-result-item { width: 100%; text-align: left; padding: 10px 12px; border: none; background: none; display: block; cursor: pointer; }
+.search-result-item:hover { background: #f1f5f9; }
+.sr-title { font-weight: 700; }
+.sr-meta { font-size: 12px; color: #475569; }
 
 .tab-btn {
   flex: 1;

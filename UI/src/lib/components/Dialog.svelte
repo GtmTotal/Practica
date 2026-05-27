@@ -29,7 +29,7 @@
 
   function onOverlayClick(e: MouseEvent) {
     if (e.target === e.currentTarget) {
-      if (ui.dialogState?.type === 'save-confirm') {
+      if (ui.dialogState?.type === 'save-confirm' || ui.dialogState?.type === 'danger-confirm') {
         resolveSave('cancel');
       } else if (ui.dialogState?.type !== 'confirm' && ui.dialogState?.type !== 'prompt') {
         onOk();
@@ -76,6 +76,29 @@
           <button class="save-btn save-btn-discard" onclick={() => resolveSave('discard')}>Descartar</button>
           <button class="save-btn save-btn-cancel" onclick={() => resolveSave('cancel')}>Cancelar</button>
           <button class="save-btn save-btn-save" onclick={() => resolveSave('save')}>Guardar</button>
+        </div>
+      </div>
+    {:else if d.type === 'danger-confirm'}
+      <div class="save-dialog danger-dialog" in:scale={{ duration: 250, start: 0.9 }}>
+        <div class="save-dialog-body danger-body">
+          <div class="save-icon-wrap danger-wrap">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Eliminar">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              <path d="M10 11v6"/>
+              <path d="M14 11v6"/>
+              <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </div>
+          <div class="danger-content">
+            <p class="save-dialog-title">{d.title}</p>
+            <p class="save-dialog-desc">{d.message}</p>
+          </div>
+        </div>
+        <div class="dialog-divider" />
+        <div class="save-dialog-actions">
+          <button class="save-btn save-btn-cancel" onclick={() => d.resolve?.(null)}>{d.cancelText || 'Cancelar'}</button>
+          <button class="save-btn save-btn-delete" onclick={() => d.resolve?.(true)}>{d.okText || 'Eliminar'}</button>
         </div>
       </div>
     {:else}
@@ -221,6 +244,97 @@
   color: #475569;
 }
 
+.save-dialog {
+  background: white;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 520px;
+  padding: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.save-dialog-body {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.save-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fffbeb;
+}
+
+.save-dialog-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.save-dialog-desc {
+  margin: 0;
+  color: #475569;
+}
+
+.save-dialog-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.save-btn {
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+}
+
+.save-btn-cancel {
+  background: #f1f5f9;
+  color: #1f2937;
+}
+
+.save-btn-delete {
+  background: #dc2626;
+  color: white;
+}
+
+.danger-icon svg { background: transparent; }
+
+.danger-body { align-items: flex-start; }
+.danger-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff1f2;
+}
+
+.danger-content { flex: 1; }
+.dialog-divider {
+  height: 1px;
+  background: #e6eef7;
+  margin: 8px 0 12px 0;
+}
+
+.save-dialog-desc { color: #6b7280; max-width: 360px; }
+
+.save-btn-cancel { background: transparent; border: 1px solid #e6eef7; color: #334155; }
+
+.save-dialog-actions { padding-top: 6px; }
+
 .btn-cancel:hover { background: #e2e8f0; }
 
 .btn-ok {
@@ -321,6 +435,22 @@
 
 .save-btn-save:hover {
   background: #fdf2e9;
+}
+
+/* Overrides for danger-confirm to avoid conflicting save-confirm grid styles */
+.danger-dialog .save-dialog-actions {
+  display: flex !important;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* Ensure delete button is visible despite earlier generic .save-btn rules */
+.save-btn-delete {
+  background: #dc2626 !important;
+  color: #fff !important;
+  padding: 10px 16px !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
 }
 
 /* Mejoras accesibilidad - Focus visible */

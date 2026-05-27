@@ -329,7 +329,6 @@ informeObrasMercadona/
 ├── 📁 fotosprueba/              # Fotos de prueba (puede eliminarse)
 ├── 📁 node_modules/             # Dependencias npm raíz (generado)
 │
-├── 🖼 logo-gtm2.png             # Logo corporativo
 └── 📊 PLANTILLAS mantenimiento 3 CUATRIMESTRE 2025.xlsx  # Plantilla Excel fuente
 ```
 

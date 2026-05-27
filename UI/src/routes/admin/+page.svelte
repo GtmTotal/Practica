@@ -150,7 +150,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
   }
 
   async function eliminarInformeIndividual(inf: InformeGuardado) {
-    const ok = await ui.confirm(
+    const ok = await ui.confirmDanger(
       'Eliminar informe',
       `¿Eliminar el informe de "${inf.nombreObra}"? Esta acción no se puede deshacer.`,
       'Eliminar',
@@ -178,6 +178,38 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
     }
   }
 
+  // Search in admin dashboard
+  let searchQueryAdmin = $state('');
+  let showSearchResultsAdmin = $state(false);
+  let resultadosBusquedaAdmin = $derived.by(() => {
+    const q = (searchQueryAdmin || '').trim().toLowerCase();
+    if (!q) return [];
+    const source = menuPrincipal === 'cuadro_electrico'
+      ? informesCuadro
+      : menuPrincipal === 'mantenimiento_mercadona'
+        ? informesMantenimiento
+        : informesGuardados;
+    const all = source || [];
+    return all
+      .filter(inf => {
+        const name = (inf.nombreObra || '').toLowerCase();
+        const cuat = (inf.cuatrimestre || '').toLowerCase();
+        const ord = (inf.nOrdenCuadro || '')+'';
+        return name.includes(q) || cuat.includes(q) || ord.toLowerCase().includes(q);
+      })
+      .slice(0, 12);
+  });
+
+  async function abrirDesdeBusquedaAdmin(inf: InformeGuardado) {
+    searchQueryAdmin = '';
+    showSearchResultsAdmin = false;
+    if (inf.tipo === 'cuadro_electrico') {
+      await editarInformeCuadro(inf);
+    } else {
+      await editarInforme(inf);
+    }
+  }
+
   function crearInformeCuadro() {
     showCrearCuadroModal = true;
   }
@@ -199,7 +231,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
   }
 
   async function eliminarInformeCuadro(inf: InformeGuardado) {
-    const ok = await ui.confirm(
+    const ok = await ui.confirmDanger(
       'Eliminar Informe',
       `¿Eliminar el informe "${inf.nombreObra}"? Esta acción no se puede deshacer.`,
       'Eliminar',
@@ -236,6 +268,8 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
           <img src="/gtmCompleto.png" alt="GTM" class="root-logo" style="width: 140px;">
           <h1>Panel de Administración</h1>
           <p>Selecciona un módulo de trabajo para continuar</p>
+
+          
         </header>
 
         <div class="root-menu-grid">
@@ -295,19 +329,27 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
       <nav class="sidebar-nav">
         <div class="nav-label">Informes</div>
         {#each informesCuadro as inf (inf.id)}
-          <button
-            class="nav-item"
-            class:active={selectedCuadroId === inf.id}
-            onclick={() => editarInformeCuadro(inf)}>
-            <div class="nav-item-title">{ inf.nombreObra }</div>
-            <div class="nav-item-meta">
-              {#if inf.nOrdenCuadro}
-                Orden: {inf.nOrdenCuadro}
-              {:else}
-                {progresoDe(inf)}%
-              {/if}
-            </div>
-          </button>
+          <div class="nav-item-wrap">
+            <button
+              class="nav-item"
+              class:active={selectedCuadroId === inf.id}
+              onclick={() => editarInformeCuadro(inf)}>
+              <div class="nav-item-title">{ inf.nombreObra }</div>
+              <div class="nav-item-meta">
+                {#if inf.nOrdenCuadro}
+                  Orden: {inf.nOrdenCuadro}
+                {:else}
+                  {progresoDe(inf)}%
+                {/if}
+              </div>
+            </button>
+            <button
+              class="btn-sidebar-delete"
+              onclick={() => eliminarInformeCuadro(inf)}
+              title="Eliminar informe">
+              🗑️
+            </button>
+          </div>
         {/each}
       </nav>
 
@@ -342,6 +384,35 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
               <span class="icon">➕</span>
               <span class="label">Nuevo Informe</span>
             </button>
+          </div>
+          <!-- Search (Cuadros) -->
+          <div class="admin-search">
+            <div class="search-input-wrapper">
+              <input
+                aria-label="Buscar cuadros"
+                placeholder="Buscar obra, nº orden..."
+                class="search-input"
+                bind:value={searchQueryAdmin}
+                oninput={() => showSearchResultsAdmin = !!searchQueryAdmin.trim()}
+                onblur={() => setTimeout(() => showSearchResultsAdmin = false, 120)}
+                onfocus={() => showSearchResultsAdmin = !!searchQueryAdmin.trim()}
+              />
+              <button class="search-clear" onclick={() => { searchQueryAdmin = ''; showSearchResultsAdmin = false; }} title="Borrar búsqueda">✕</button>
+              <span class="search-icon" aria-hidden="true">🔍</span>
+            </div>
+
+            {#if showSearchResultsAdmin && resultadosBusquedaAdmin.length > 0}
+              <div class="search-results">
+                {#each resultadosBusquedaAdmin as r}
+                  <button class="search-result-item" onclick={() => abrirDesdeBusquedaAdmin(r)}>
+                    <div class="sr-title">{r.nombreObra}</div>
+                    <div class="sr-meta">{r.cuatrimestre || 'Sin cuatrimestre'} {#if r.nOrdenCuadro}· Ord: {r.nOrdenCuadro}{/if}</div>
+                  </button>
+                {/each}
+              </div>
+            {:else if showSearchResultsAdmin}
+              <div class="search-results empty">No se encontraron resultados</div>
+            {/if}
           </div>
         </div>
       </header>
@@ -711,6 +782,35 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
               <span class="icon">➕</span>
               <span class="label">Nuevo Cuatrimestre</span>
             </button>
+          </div>
+          <!-- Search (Mantenimiento) -->
+          <div class="admin-search">
+            <div class="search-input-wrapper">
+              <input
+                aria-label="Buscar mantenimientos"
+                placeholder="Buscar obra, cuatrimestre o nº orden..."
+                class="search-input"
+                bind:value={searchQueryAdmin}
+                oninput={() => showSearchResultsAdmin = !!searchQueryAdmin.trim()}
+                onblur={() => setTimeout(() => showSearchResultsAdmin = false, 120)}
+                onfocus={() => showSearchResultsAdmin = !!searchQueryAdmin.trim()}
+              />
+              <button class="search-clear" onclick={() => { searchQueryAdmin = ''; showSearchResultsAdmin = false; }} title="Borrar búsqueda">✕</button>
+              <span class="search-icon" aria-hidden="true">🔍</span>
+            </div>
+
+            {#if showSearchResultsAdmin && resultadosBusquedaAdmin.length > 0}
+              <div class="search-results">
+                {#each resultadosBusquedaAdmin as r}
+                  <button class="search-result-item" onclick={() => abrirDesdeBusquedaAdmin(r)}>
+                    <div class="sr-title">{r.nombreObra}</div>
+                    <div class="sr-meta">{r.cuatrimestre || 'Sin cuatrimestre'} {#if r.nOrdenCuadro}· Ord: {r.nOrdenCuadro}{/if}</div>
+                  </button>
+                {/each}
+              </div>
+            {:else if showSearchResultsAdmin}
+              <div class="search-results empty">No se encontraron resultados</div>
+            {/if}
           </div>
         </div>
       </header>
@@ -1116,6 +1216,19 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
   align-items: center;
   gap: 24px;
 }
+
+/* Admin search styles reuse */
+.admin-search { position: relative; width: 360px; }
+.admin-search .search-input-wrapper { position: relative; }
+.admin-search .search-input { width: 100%; padding: 8px 36px 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; }
+.admin-search .search-input::placeholder { color: #94a3b8; }
+.admin-search .search-icon { position: absolute; right: 8px; top: 8px; pointer-events: none; }
+.admin-search .search-clear { position: absolute; right: 28px; top: 6px; background: transparent; border: none; color: #64748b; cursor: pointer; }
+.admin-search .search-results { position: absolute; top: 42px; left: 0; width: 100%; background: #fff; border-radius: 8px; box-shadow: 0 8px 30px rgba(2,6,23,0.08); max-height: 300px; overflow: auto; z-index: 60; }
+.admin-search .search-result-item { width: 100%; text-align: left; padding: 10px 12px; border: none; background: none; display: block; cursor: pointer; }
+.admin-search .search-result-item:hover { background: #f1f5f9; }
+.admin-search .sr-title { font-weight: 700; }
+.admin-search .sr-meta { font-size: 12px; color: #64748b; }
 
 .action-group {
   display: flex;

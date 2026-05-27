@@ -137,7 +137,7 @@ class ServicioCuatrimestre {
       ? '¿Estás seguro de que deseas eliminar TODOS los informes sin cuatrimestre?'
       : `¿Estás seguro de que deseas eliminar TODO el cuatrimestre ${cuatrimestre}?`;
 
-    const ok = await ui.confirm(
+    const ok = await ui.confirmDanger(
       esHuerfano ? 'Eliminar Informes Huérfanos' : 'Eliminar Cuatrimestre',
       mensaje,
       'Eliminar',
