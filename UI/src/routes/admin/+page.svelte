@@ -1,18 +1,21 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
-  import { adminService } from '$lib/services/admin.svelte';
-  import { cuatrimestreService } from '$lib/services/cuatrimestre.svelte';
-  import { formPersistenceService } from '$lib/services/form-persistence.svelte';
-  import { formInitService } from '$lib/services/form-initialization.svelte';
-  import { navService } from '$lib/services/navigation.svelte';
-  import { ui } from '$lib/services/ui.svelte';
+import { onMount } from 'svelte';
+import { goto } from '$app/navigation';
+import { adminService } from '$lib/services/admin.svelte';
+import { cuatrimestreService } from '$lib/services/cuatrimestre.svelte';
+import { formPersistenceService } from '$lib/services/form-persistence.svelte';
+import { formInitService } from '$lib/services/form-initialization.svelte';
+import { navService } from '$lib/services/navigation.svelte';
+import { ui } from '$lib/services/ui.svelte';
 import { databaseService } from '$lib/services/database.svelte';
 import { CUADRO_ELECTRICO_TEMPLATE } from '$lib/templates/cuadroElectrico';
 import type { InformeGuardado, GrupoCuatrimestre } from '$lib/types/informe.interface';
+import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/informe-utils';
 import TareasEditor from '$lib/components/admin/TareasEditor.svelte';
 import TareasEditorCuadros from '$lib/components/admin/TareasEditorCuadros.svelte';
 import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectricoModal.svelte';
+import ProgressBar from '$lib/components/ProgressBar.svelte';
+
 
   import './admin-page.css';
 
@@ -89,49 +92,11 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
     filtroSeleccionado = 'todos';
   }
 
-  function estadoDe(informe: InformeGuardado) {
-    const prog = progresoDe(informe);
-    if (prog >= 100) return 'completado';
-    if (prog > 0) return 'en-progreso';
-    return 'pendiente';
-  }
-
-  function progresoDe(informe: InformeGuardado): number {
-    if (informe.progreso !== undefined) return informe.progreso;
-    return calcularProgreso(informe);
-  }
-
-  function calcularProgreso(informe: InformeGuardado): number {
-    const secciones = informe.secciones;
-    if (!secciones?.length) return 0;
-    let total = 0, hechas = 0;
-    for (const sec of secciones) {
-      for (const t of sec.tareas || []) {
-        total++;
-        if (t.ok || t.noOk) hechas++;
-      }
-    }
-    return total > 0 ? Math.round((hechas / total) * 100) : 0;
-  }
-
-  function colorEstado(informe: InformeGuardado): string {
-    const estado = estadoDe(informe);
-    if (estado === 'completado') return '#059669';
-    if (estado === 'en-progreso') return '#d97706';
-    return '#94a3b8';
-  }
-
-  function labelEstado(informe: InformeGuardado): string {
-    const estado = estadoDe(informe);
-    if (estado === 'completado') return 'COMPLETADO';
-    if (estado === 'en-progreso') return 'EN PROGRESO';
-    return 'PENDIENTE';
-  }
-
   async function crearCuatrimestre() {
     await cuatrimestreService.crearCuatrimestreConUI(informesGuardados);
     await formPersistenceService.cargarHistorial();
   }
+
 
   let showCrearCuadroModal = $state(false);
   let showTareasEditorCuadros = $state(false);
@@ -307,7 +272,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
         </div>
 
         <div class="root-menu-footer">
-          <button class="btn-root-logout" onclick={volverAlDashboard}>Volver al Dashboard</button>
+          <button class="btn-root-logout" onclick={volverAlDashboard}>Ver panel técnicos</button>
         </div>
       </div>
     </div>
@@ -346,8 +311,8 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
       </nav>
 
       <div class="sidebar-footer">
-        <button class="btn-logout" onclick={volverAlDashboard} title="Volver al dashboard de usuario">
-          Volver al Dashboard
+        <button class="btn-logout" onclick={volverAlDashboard} title="Ver panel técnicos">
+          Ver panel técnicos
         </button>
       </div>
     </aside>
@@ -486,9 +451,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
 
             <div style="padding: 16px;">
               <div class="cuadro-progreso-row">
-                <div class="cuadro-progreso-bar" style="height:8px;">
-                  <div class="cuadro-progreso-fill" style="width:{progresoDe(selectedCuadro)}%"></div>
-                </div>
+                <ProgressBar value={progresoDe(selectedCuadro)} height={8} />
                 <span class="cuadro-progreso-texto">{progresoDe(selectedCuadro)}%</span>
               </div>
 
@@ -550,9 +513,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
 
           <div class="cuadro-detail-stats-panel">
             <div class="cuadro-progreso-row">
-              <div class="cuadro-progreso-bar">
-                <div class="cuadro-progreso-fill" style="width: {progresoDe(selectedCuadro)}%"></div>
-              </div>
+              <ProgressBar value={progresoDe(selectedCuadro)} />
               <span class="cuadro-progreso-texto">{progresoDe(selectedCuadro)}% completado</span>
             </div>
             
@@ -627,9 +588,7 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
                 </div>
                 <div class="cuadro-card-body">
                   <div class="cuadro-progreso">
-                    <div class="cuadro-progreso-bar">
-                      <div class="cuadro-progreso-fill" style="width: {progresoDe(inf)}%; background: {colorEstado(inf)}"></div>
-                    </div>
+                    <ProgressBar value={progresoDe(inf)} color={colorEstado(inf)} />
                     <span class="cuadro-progreso-texto">{progresoDe(inf)}%</span>
                   </div>
                   <div class="cuadro-card-meta-row">
@@ -707,8 +666,8 @@ import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectric
       </nav>
 
       <div class="sidebar-footer">
-        <button class="btn-logout" onclick={volverAlDashboard} title="Volver al dashboard de usuario">
-          Volver al Dashboard
+        <button class="btn-logout" onclick={volverAlDashboard} title="Ver panel técnicos">
+          Ver panel técnicos
         </button>
       </div>
     </aside>

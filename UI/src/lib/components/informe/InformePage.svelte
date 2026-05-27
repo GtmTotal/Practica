@@ -89,7 +89,12 @@ import InformeFooter from './InformeFooter.svelte';
   });
 
   async function volver() {
-    await navService.volver();
+    const action = await ui.saveConfirm();
+    if (action === 'save') {
+      await guardarYSalir();
+    } else if (action === 'discard') {
+      await navService.volver();
+    }
   }
 
   async function agregarFotos(event: Event, secIdx: number) {
@@ -158,8 +163,8 @@ import InformeFooter from './InformeFooter.svelte';
       setEstadoStatus('guardando');
       await formPersistenceService.soloGuardar(form, fotosPorSeccionBase64);
       setEstadoStatus('guardado');
-      await volver();
     }
+    await navService.volver();
   }
 
   function toggleSeccion(idx: number) {
@@ -309,6 +314,14 @@ import InformeFooter from './InformeFooter.svelte';
     margin: 0 auto;
     padding: 0 24px 100px;
     align-items: flex-start;
+  }
+
+  @media (max-width: 768px) {
+    .layout-columns {
+      flex-direction: column;
+      padding: 0 16px 100px;
+      gap: 16px;
+    }
   }
 
   .informe-main {

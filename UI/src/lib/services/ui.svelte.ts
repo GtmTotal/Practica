@@ -1,4 +1,4 @@
-export type DialogType = 'info' | 'success' | 'warning' | 'error' | 'confirm' | 'prompt';
+export type DialogType = 'info' | 'success' | 'warning' | 'error' | 'confirm' | 'prompt' | 'save-confirm';
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
 export interface DialogOptions {
@@ -50,6 +50,20 @@ class UIService {
         resolve: (val) => {
           this.dialogState = null;
           resolve(val === true);
+        }
+      };
+    });
+  }
+
+  saveConfirm(): Promise<'save' | 'discard' | 'cancel'> {
+    return new Promise((resolve) => {
+      this.dialogState = {
+        title: '¿Guardar antes de salir?',
+        message: 'Los cambios no guardados se perderán definitivamente.',
+        type: 'save-confirm',
+        resolve: (val) => {
+          this.dialogState = null;
+          resolve((val as 'save' | 'discard' | 'cancel') || 'cancel');
         }
       };
     });

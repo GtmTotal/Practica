@@ -1,16 +1,19 @@
 <script lang="ts">
-  import { onMount, untrack } from 'svelte';
-  import { page } from '$app/stores';
-  import { goto } from '$app/navigation';
-  import { navService } from '$lib/services/navigation.svelte';
-  import { adminService } from '$lib/services/admin.svelte';
-  import { ui } from '$lib/services/ui.svelte';
-  import { cuatrimestreService } from '$lib/services/cuatrimestre.svelte';
-  import { formPersistenceService } from '$lib/services/form-persistence.svelte';
-  import { formInitService } from '$lib/services/form-initialization.svelte';
-  import { databaseService } from '$lib/services/database.svelte';
-  import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectricoModal.svelte';
-  import type { InformeGuardado } from '$lib/types/informe.interface';
+import { onMount, untrack } from 'svelte';
+import { page } from '$app/stores';
+import { goto } from '$app/navigation';
+import { navService } from '$lib/services/navigation.svelte';
+import { adminService } from '$lib/services/admin.svelte';
+import { ui } from '$lib/services/ui.svelte';
+import { cuatrimestreService } from '$lib/services/cuatrimestre.svelte';
+import { formPersistenceService } from '$lib/services/form-persistence.svelte';
+import { formInitService } from '$lib/services/form-initialization.svelte';
+import { databaseService } from '$lib/services/database.svelte';
+import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectricoModal.svelte';
+import ProgressBar from '$lib/components/ProgressBar.svelte';
+import type { InformeGuardado } from '$lib/types/informe.interface';
+import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/informe-utils';
+
 
   // Tab state
   let tabActual = $state<'mantenimiento' | 'cuadros'>('mantenimiento');
@@ -64,49 +67,24 @@
     navService.cuatrimestreSeleccionado = clave;
     navService.persist();
   }
-
+  
   function cerrarDetalle() {
     navService.cuatrimestreSeleccionado = '';
     navService.persist();
     filtroSeleccionado = 'todos';
     goto('/');
   }
-
-  function estadoDe(informe: InformeGuardado) {
-    const prog = progresoDe(informe);
-    if (prog >= 100) return 'completado';
-    if (prog > 0) return 'en-progreso';
-    return 'pendiente';
-  }
-
-  function progresoDe(informe: InformeGuardado): number {
-    if (informe.progreso !== undefined) return informe.progreso;
-    const secciones = informe.secciones;
-    if (!secciones?.length) return 0;
-    let total = 0, hechas = 0;
-    for (const sec of secciones) {
-      for (const t of sec.tareas || []) {
-        total++;
-        if (t.rev || t.ok || t.noOk) hechas++;
-      }
+  
+  function switchTab(tab: 'mantenimiento' | 'cuadros') {
+    tabActual = tab;
+    filtroCuadro = 'todos';
+    filtroSeleccionado = 'todos';
+    if (tab === 'cuadros') {
+      navService.cuatrimestreSeleccionado = '';
+      navService.persist();
     }
-    return total > 0 ? Math.round((hechas / total) * 100) : 0;
   }
-
-  function colorEstado(informe: InformeGuardado): string {
-    const estado = estadoDe(informe);
-    if (estado === 'completado') return '#059669';
-    if (estado === 'en-progreso') return '#d97706';
-    return '#94a3b8';
-  }
-
-  function labelEstado(informe: InformeGuardado): string {
-    const estado = estadoDe(informe);
-    if (estado === 'completado') return 'COMPLETADO';
-    if (estado === 'en-progreso') return 'EN PROGRESO';
-    return 'PENDIENTE';
-  }
-
+  
   async function toggleAdmin() {
     if (isAdmin) {
       await navService.irAAdmin();
@@ -122,7 +100,7 @@
       }
     }
   }
-
+  
   async function editarInforme(inf: InformeGuardado) {
     const result = await formPersistenceService.editarInforme(inf);
     if (result) {
@@ -134,7 +112,7 @@
       await navService.irAFormulario(inf.cuatrimestre, inf.nombreObra);
     }
   }
-
+  
   async function editarInformeCuadro(inf: InformeGuardado) {
     const result = await formPersistenceService.editarInforme(inf);
     if (result) {
@@ -146,7 +124,7 @@
       await navService.irAFormulario(inf.cuatrimestre || '', inf.nombreObra);
     }
   }
-
+  
   async function eliminarInformeCuadro(inf: InformeGuardado) {
     const ok = await ui.confirm(
       'Eliminar Informe',
@@ -166,16 +144,6 @@
     }
   }
 
-  function switchTab(tab: 'mantenimiento' | 'cuadros') {
-    tabActual = tab;
-    filtroCuadro = 'todos';
-    filtroSeleccionado = 'todos';
-    // Reset cuatrimestre selection when switching tabs
-    if (tab === 'cuadros') {
-      navService.cuatrimestreSeleccionado = '';
-      navService.persist();
-    }
-  }
 
   onMount(async () => {
     await formPersistenceService.cargarHistorial();
@@ -201,11 +169,11 @@
     <div class="sidebar-top">
       <img src="gtmCompleto.png" alt="GTM" class="brand-logo" />
       <h1 class="sidebar-title">Control total del mantenimiento.</h1>
-      <p class="sidebar-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
+      <p class="sidebar-subtitle">Seguimiento de centros, cuatrimestres y estados en un solo lugar.</p>
     </div>
-    <button class="btn-admin-gear" onclick={toggleAdmin} title="Administración">
-      <span>⚙</span>
-    </button>
+       <button class="btn-admin-gear" onclick={toggleAdmin} title="Administración">
+         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Ajustes"><path d="M12.22 2h+.78a2 2 0 0 1 2 2v.78a2 2 0 0 1-2 2h-.78a2 2 0 0 1-2-2v-.78a2 2 0 0 1 2-2z"/><path d="M2 12h.78a2 2 0 0 1 2 2h.78a2 2 0 0 1 2-2H4.78a2 2 0 0 1-2-2H2v.78z"/><path d="M22 12h-.78a2 2 0 0 1-2 2h-.78a2 2 0 0 1-2-2h.78a2 2 0 0 1 2-2h.78v.78z"/><path d="M12.22 22h-.78a2 2 0 0 1-2-2v-.78a2 2 0 0 1 2-2h.78a2 2 0 0 1 2 2v.78a2 2 0 0 1-2 2z"/><path d="M2 12v.78a2 2 0 0 1-2 2h-.78a2 2 0 0 1-2-2v-.78a2 2 0 0 1 2-2h.78z"/><path d="M22 12v.78a2 2 0 0 1-2 2h-.78a2 2 0 0 1-2-2v-.78a2 2 0 0 1 2-2h.78z"/><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+       </button>
   </aside>
 
   <!-- Main Content -->
@@ -215,24 +183,28 @@
       <div class="dash-panel-header">
         <button class="dash-admin-gear mobile-only" onclick={toggleAdmin} title="Administración">⚙</button>
         <h1 class="dash-panel-title">Control total del mantenimiento.</h1>
-        <p class="dash-panel-subtitle">Seguimiento de centros, períodos y estados en un solo lugar.</p>
+        <p class="dash-panel-subtitle">Seguimiento de centros, cuatrimestres y estados en un solo lugar.</p>
 
         <!-- Tab Switcher -->
         <div class="tab-switcher">
-          <button
-            class="tab-btn"
-            class:active={tabActual === 'mantenimiento'}
-            onclick={() => switchTab('mantenimiento')}>
-            <span class="tab-icon">📋</span>
-            <span class="tab-text">Mantenimientos Mercadona</span>
-          </button>
-          <button
-            class="tab-btn"
-            class:active={tabActual === 'cuadros'}
-            onclick={() => switchTab('cuadros')}>
-            <span class="tab-icon">⚡</span>
-            <span class="tab-text">Cuadros Eléctricos</span>
-          </button>
+           <button
+             class="tab-btn"
+             class:active={tabActual === 'mantenimiento'}
+             onclick={() => switchTab('mantenimiento')}>
+             <span class="tab-icon">
+               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Mantenimiento"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+             </span>
+             <span class="tab-text">Mantenimientos Mercadona</span>
+           </button>
+           <button
+             class="tab-btn"
+             class:active={tabActual === 'cuadros'}
+             onclick={() => switchTab('cuadros')}>
+             <span class="tab-icon">
+               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Cuadros Eléctricos"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+             </span>
+             <span class="tab-text">Cuadros Eléctricos</span>
+           </button>
         </div>
       </div>
 
@@ -278,9 +250,9 @@
 
           <div class="cuadro-tab-header-row">
             <div class="dash-section-label">CUADROS ({informesCuadroFiltrados.length})</div>
-            <button class="btn-nuevo-cuadro" onclick={() => showCrearCuadroModal = true}>
-              <span>＋</span> Nuevo Cuadro
-            </button>
+             <button class="btn-nuevo-cuadro" onclick={() => showCrearCuadroModal = true}>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Añadir"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuevo Cuadro
+             </button>
           </div>
 
           {#if informesCuadroFiltrados.length === 0}
@@ -312,12 +284,10 @@
                     <span class="cuadro-card-tech-estado" style="color: {colorEstado(inf)}">{ labelEstado(inf) }</span>
                   </div>
                   <div class="cuadro-card-tech-bottom">
-                    <div class="cuadro-card-tech-progress">
-                      <div class="cuadro-progress-bar">
-                        <div class="cuadro-progress-fill" style="width: {progresoDe(inf)}%; background: {colorEstado(inf)}"></div>
+                      <div class="cuadro-card-tech-progress">
+                        <ProgressBar value={progresoDe(inf)} color={colorEstado(inf)} />
+                        <span class="cuadro-progress-text">{progresoDe(inf)}%</span>
                       </div>
-                      <span class="cuadro-progress-text">{progresoDe(inf)}%</span>
-                    </div>
                     <span class="cuadro-card-tech-date">{ inf.ultimaModificacion || '—' }</span>
                   </div>
                 </div>
@@ -332,7 +302,9 @@
     <div class="dash-view dash-cuatrimestre-view" class:active={!vistaPanel}>
       <div class="dash-cuatrimestre-header">
         <div class="dash-brand-row">
-          <button class="dash-back-link" onclick={cerrarDetalle}>‹ Cuatrimestre</button>
+           <button class="dash-back-link" onclick={cerrarDetalle}>
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Volver"><path d="m15 18-6-6 6-6"/></svg> Cuatrimestre
+           </button>
           <img src="gtmCompleto.png" alt="GTM" class="dash-brand-logo mobile-only" />
         </div>
         <div class="dash-cuatri-row">
@@ -412,19 +384,20 @@
 .main-layout {
   display: flex;
   min-height: 100vh;
-  background: #f5f5f0;
+  background: var(--bg-page);
 }
 
 /* ===== SIDEBAR (DESKTOP ONLY) ===== */
 .main-sidebar {
   width: 320px;
   flex-shrink: 0;
-  background: #1e3a5f;
+  background: #162d4a;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 48px 40px;
   color: #ffffff;
+  border-right: 1px solid rgba(255,255,255,0.04);
 }
 
 @media (max-width: 768px) {
@@ -449,29 +422,37 @@
 .sidebar-subtitle {
   font-size: 13px;
   line-height: 1.6;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.75);
   margin: 0;
 }
 
 .btn-admin-gear {
   width: 40px;
   height: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  min-height: 40px;
+  max-height: 40px;
   border-radius: 50%;
   border: 1px solid rgba(255,255,255,0.2);
-  background: transparent;
-  color: rgba(255,255,255,0.6);
-  font-size: 18px;
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 0 auto;
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
 .btn-admin-gear:hover {
   border-color: rgba(255,255,255,0.5);
   color: #ffffff;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.12);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
 }
 
 /* ===== MAIN CONTENT AREA ===== */
@@ -536,7 +517,7 @@
 .dash-panel-header,
 .dash-cuatrimestre-header {
   position: relative;
-  background: #1e3a5f;
+  background: linear-gradient(135deg, #1e3a5f 0%, #234670 100%);
   padding: 32px 40px;
   flex-shrink: 0;
   color: #ffffff;
@@ -710,7 +691,7 @@
 
 .centro-card {
   background: #ffffff;
-  border: 1px solid transparent;
+  border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 20px 24px;
   display: grid;
@@ -1041,20 +1022,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.cuadro-progress-bar {
-  flex: 1;
-  height: 6px;
-  background: #e2e8f0;
-  border-radius: 99px;
-  overflow: hidden;
-}
-
-.cuadro-progress-fill {
-  height: 100%;
-  border-radius: 99px;
-  transition: width 0.4s ease;
 }
 
 .cuadro-progress-text {

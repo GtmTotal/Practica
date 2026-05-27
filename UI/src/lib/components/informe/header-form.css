@@ -65,7 +65,7 @@
 }
 
 .progreso-container-mini {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
@@ -219,6 +219,10 @@
     gap: 8px;
     margin-top: 8px;
     padding-top: 8px;
+  }
+
+  .input-field-inline {
+    width: 100%;
   }
 }
 

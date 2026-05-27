@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { TareaState } from '$lib/services/form-initialization.svelte';
   import DatosMotor from './DatosMotor.svelte';
+  import './tarea-shared.css';
 
   let {
     tarea,
@@ -50,16 +51,20 @@
 
   {#if !tarea.sinCheck}
     <div class="inspeccion-controles">
-      <label class="check-inspeccion ok" class:checked={tarea.ok}>
-        <input type="checkbox" bind:checked={tarea.ok} onchange={toggleOk}>
-        <span class="box-icon">✓</span>
-        <span class="box-label">OK</span>
-      </label>
-      <label class="check-inspeccion nook" class:checked={tarea.noOk}>
-        <input type="checkbox" bind:checked={tarea.noOk} onchange={toggleNoOk}>
-        <span class="box-icon">⚠</span>
-        <span class="box-label">{#if tipo === 'cuadro_electrico'}REVISAR{:else}NO OK{/if}</span>
-      </label>
+       <label class="check-inspeccion ok" class:checked={tarea.ok}>
+         <input type="checkbox" bind:checked={tarea.ok} onchange={toggleOk}>
+         <span class="box-icon">
+           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Check"><polyline points="20 6 9 17 4 12"/></svg>
+         </span>
+         <span class="box-label">OK</span>
+       </label>
+       <label class="check-inspeccion nook" class:checked={tarea.noOk}>
+         <input type="checkbox" bind:checked={tarea.noOk} onchange={toggleNoOk}>
+         <span class="box-icon">
+           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Warning"><path d="m21.73 8-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 8h16z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+         </span>
+         <span class="box-label">{#if tipo === 'cuadro_electrico'}REVISAR{:else}NO OK{/if}</span>
+       </label>
     </div>
   {/if}
 
@@ -124,15 +129,6 @@
     gap: 2px;
   }
 
-  .tarea-header-titulo {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #1e293b;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 8px;
-    line-height: 1.4;
-  }
 
   .tarea-subtitulo {
     font-size: 0.85rem;
@@ -210,15 +206,6 @@
     box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
   }
 
-  .tarea-extra-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px dashed var(--gray-200, #e5e7eb);
-  }
 
   .campos-medicion-inline {
     display: flex;
@@ -226,49 +213,7 @@
     flex-wrap: wrap;
   }
 
-  .campo-mini {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: white;
-    border: 1px solid var(--gray-200, #e5e7eb);
-    border-radius: 100px;
-    padding: 4px 12px;
-  }
 
-  .campo-mini input {
-    width: 55px;
-    border: none;
-    background: transparent;
-    font-size: 0.85rem;
-    font-weight: 500;
-    text-align: center;
-    outline: none;
-  }
-
-  .mini-sufijo {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--gray-600, #4b5563);
-  }
-
-  .input-nota-tarea {
-    flex: 1;
-    min-width: 150px;
-    padding: 10px 16px;
-    border: 1px solid transparent;
-    background: var(--gray-100, #f3f4f6);
-    border-radius: 8px;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-  }
-
-  .input-nota-tarea:focus {
-    outline: none;
-    background: white;
-    border-color: var(--primary, #1e3a5f);
-    box-shadow: 0 4px 12px rgba(30, 60, 114, 0.08);
-  }
 
   @media (max-width: 600px) {
     .tarea-main-row {

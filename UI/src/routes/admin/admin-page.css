@@ -2,7 +2,7 @@
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  background: #ffffff;
+  background: var(--bg-page-alt);
 }
 
 /* ===== SIDEBAR ===== */
@@ -489,7 +489,7 @@
   justify-content: center;
   width: 100%;
   min-height: 100vh;
-  background: radial-gradient(circle at 50% 50%, #f8fafc 0%, #cbd5e1 100%);
+  background: var(--bg-page);
   padding: 40px 20px;
   box-sizing: border-box;
 }
@@ -790,8 +790,6 @@
   transition: transform 0.2s;
 }
 
-.logo-corner {
-
 /* ===== BTN BACK PROYECTOS ===== */
 .btn-back-proyectos {
   display: flex;
@@ -810,12 +808,6 @@
 .btn-back-proyectos:hover {
   background: #0f172a;
   border-color: #0f172a;
-}
-
-  font-size: 14px;
-  font-weight: 800;
-  color: #1e3a5f;
-  letter-spacing: 1px;
 }
 
 .placeholder-body {
@@ -1002,11 +994,11 @@
   }
 
   .mobile-panel-view {
-    background: #f5f5f0;
+    background: var(--bg-page);
   }
 
   .mobile-cuatrimestre-view {
-    background: #f5f5f0;
+    background: var(--bg-page);
   }
 
   .mobile-brand-row {
@@ -1471,7 +1463,7 @@
 
   /* Mobile Detail View (cuadro eléctrico) */
   .mobile-detail-view {
-    background: #f5f5f0;
+    background: var(--bg-page);
   }
 
   .mobile-detail-view .cuadro-progreso-row {
@@ -1572,6 +1564,14 @@
   }
 }
 
+/* ===== LANDSCAPE MOBILE ===== */
+@media (max-height: 480px) {
+  .admin-layout.root-layout {
+    min-height: auto;
+    padding: 20px 12px;
+  }
+}
+
 /* ===== CUADRO ELÉCTRICO ADMIN ===== */
 .cuadro-grid {
   display: grid;
@@ -1657,21 +1657,6 @@
   gap: 10px;
 }
 
-.cuadro-progreso-bar {
-  flex: 1;
-  height: 6px;
-  background: #e2e8f0;
-  border-radius: 99px;
-  overflow: hidden;
-}
-
-.cuadro-progreso-fill {
-  height: 100%;
-  background: #3b82f6;
-  border-radius: 99px;
-  transition: width 0.3s;
-}
-
 .cuadro-progreso-texto {
   font-size: 12px;
   font-weight: 600;
@@ -1685,66 +1670,6 @@
   color: #94a3b8;
 }
 
-/* Detail view */
-.cuadro-detail-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  margin-bottom: 16px;
-}
-
-.cuadro-detail-icon {
-  font-size: 36px;
-  width: 52px;
-  height: 52px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fef3c7;
-  border-radius: 12px;
-}
-
-.cuadro-detail-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.cuadro-detail-info h2 {
-  margin: 0 0 4px;
-  font-size: 18px;
-  color: #0f172a;
-}
-
-.cuadro-detail-meta {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.cuadro-detail-meta span {
-  font-size: 12px;
-  color: #64748b;
-  background: #f1f5f9;
-  padding: 2px 10px;
-  border-radius: 100px;
-}
-
-.cuadro-detail-estado {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-  flex-shrink: 0;
-  padding: 4px 12px;
-  border-radius: 100px;
-  background: #f1f5f9;
-}
-
 .cuadro-progreso-row {
   display: flex;
   align-items: center;
@@ -1753,50 +1678,16 @@
   padding: 0 4px;
 }
 
-.cuadro-progreso-row .cuadro-progreso-bar {
-  height: 8px;
-}
-
 .cuadro-detail-actions {
   display: flex;
   gap: 10px;
   margin-bottom: 24px;
 }
 
-.cuadro-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 20px;
-  text-align: center;
-  background: white;
-  border-radius: 16px;
-  border: 2px dashed #e2e8f0;
-}
-
 .cuadro-empty-icon {
   font-size: 64px;
   margin-bottom: 16px;
   opacity: 0.5;
-}
-
-.cuadro-empty h2 {
-  margin: 0 0 8px;
-  font-size: 20px;
-  color: #334155;
-}
-
-.cuadro-empty p {
-  margin: 0 0 24px;
-  color: #64748b;
-  max-width: 400px;
-  line-height: 1.5;
-}
-
-.btn-icon-label.large {
-  padding: 12px 28px;
-  font-size: 15px;
 }
 
 /* ===== REDISEÑO DASHBOARD CUADROS ELÉCTRICOS ===== */
