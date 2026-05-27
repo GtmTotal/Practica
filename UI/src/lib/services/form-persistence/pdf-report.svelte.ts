@@ -1,5 +1,3 @@
-declare const pdfMake: any;
-
 export interface DatosPDF {
   nombreObra: string;
   tecnico: string;
@@ -95,11 +93,29 @@ const estilos = {
   }
 };
 
+function loadPdfMake(): Promise<void> {
+  if (typeof pdfMake !== 'undefined') return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.9/pdfmake.min.js';
+    script.onload = () => {
+      const fontsScript = document.createElement('script');
+      fontsScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.9/vfs_fonts.min.js';
+      fontsScript.onload = () => resolve();
+      fontsScript.onerror = () => reject(new Error('Error al cargar fuentes de pdfmake'));
+      document.head.appendChild(fontsScript);
+    };
+    script.onerror = () => reject(new Error('Error al cargar pdfmake'));
+    document.head.appendChild(script);
+  });
+}
+
 class ServicioReporteDocumento {
   private logoCompletoBase64: string = '';
   private logoMedBase64: string = '';
 
   async generarPDF(datos: DatosPDF): Promise<void> {
+    await loadPdfMake();
     if (!this.logoCompletoBase64) {
       try {
         this.logoCompletoBase64 = await this.convertImageToBase64('/gtmCompleto.png');

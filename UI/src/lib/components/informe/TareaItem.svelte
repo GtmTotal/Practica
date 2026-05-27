@@ -52,16 +52,16 @@
   {#if !tarea.sinCheck}
     <div class="inspeccion-controles">
        <label class="check-inspeccion ok" class:checked={tarea.ok}>
-         <input type="checkbox" bind:checked={tarea.ok} onchange={toggleOk}>
+         <input type="checkbox" bind:checked={tarea.ok} onchange={toggleOk} aria-label="OK">
          <span class="box-icon">
            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Check"><polyline points="20 6 9 17 4 12"/></svg>
          </span>
          <span class="box-label">OK</span>
        </label>
        <label class="check-inspeccion nook" class:checked={tarea.noOk}>
-         <input type="checkbox" bind:checked={tarea.noOk} onchange={toggleNoOk}>
+         <input type="checkbox" bind:checked={tarea.noOk} onchange={toggleNoOk} aria-label="NO OK">
          <span class="box-icon">
-           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Warning"><path d="m21.73 8-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 8h16z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Warning"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
          </span>
          <span class="box-label">{#if tipo === 'cuadro_electrico'}REVISAR{:else}NO OK{/if}</span>
        </label>
@@ -180,7 +180,11 @@
   }
 
   .check-inspeccion input {
-    display: none;
+    opacity: 0;
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
   }
 
   .box-label {

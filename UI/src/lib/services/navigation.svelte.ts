@@ -1,4 +1,5 @@
 import { goto } from '$app/navigation';
+import { browser } from '$app/environment';
 
 export type Vista = 'inicio' | 'seleccion' | 'formulario';
 
@@ -9,7 +10,7 @@ class ServicioNavegacion {
   vistaOrigen = $state<string>('dashboard');
 
   constructor() {
-    if (typeof window !== 'undefined') {
+    if (browser) {
       this.vistaActual = (localStorage.getItem('vistaActual') as Vista) || 'inicio';
       this.centroSeleccionado = localStorage.getItem('centroSeleccionado') || '';
       this.cuatrimestreSeleccionado = localStorage.getItem('cuatrimestreSeleccionado') || '';
@@ -19,7 +20,7 @@ class ServicioNavegacion {
 
   // Se debe llamar a esta función en algún root layout con $effect
   persist() {
-    if (typeof window !== 'undefined') {
+    if (browser) {
       localStorage.setItem('vistaActual', this.vistaActual);
       localStorage.setItem('centroSeleccionado', this.centroSeleccionado);
       localStorage.setItem('cuatrimestreSeleccionado', this.cuatrimestreSeleccionado);
@@ -92,7 +93,7 @@ class ServicioNavegacion {
   async reset(): Promise<void> {
     this.vistaActual = 'inicio';
     this.centroSeleccionado = '';
-    if (typeof window !== 'undefined') {
+    if (browser) {
       localStorage.removeItem('vistaActual');
       localStorage.removeItem('centroSeleccionado');
     }

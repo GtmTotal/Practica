@@ -65,15 +65,16 @@
       />
 
       <div class="fotos-seccion">
-        <input
-          type="file"
-          accept="image/*"
-          capture="environment"
-          bind:this={fileInput}
-          hidden
-          onchange={onAgregarFoto}
-          multiple
-        />
+         <input
+           type="file"
+           accept="image/*"
+           capture="environment"
+           bind:this={fileInput}
+           hidden
+           onchange={onAgregarFoto}
+           multiple
+           aria-label="Añadir fotos"
+         />
          <button
            type="button"
            class="btn-foto"

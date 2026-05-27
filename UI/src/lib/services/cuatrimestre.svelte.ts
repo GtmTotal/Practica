@@ -2,6 +2,7 @@ import { databaseService } from './database.svelte';
 import { configCentrosService } from './config-centros.svelte';
 import { ui } from './ui.svelte';
 import type { GrupoCuatrimestre, InformeGuardado } from '$lib/types/informe.interface';
+import type { ConfigSeccion, TareaConfig, CampoMedicion } from '$lib/types/config.interface';
 
 class ServicioCuatrimestre {
   getInformesPorCuatrimestre(informesGuardados: InformeGuardado[]): GrupoCuatrimestre[] {
@@ -56,22 +57,22 @@ class ServicioCuatrimestre {
       if (!config) continue;
 
       try {
-        const seccionesVacias = config.secciones.map((secTemplate: any) => {
+        const seccionesVacias = config.secciones.map((secTemplate: ConfigSeccion) => {
           const bombasUsar = (secTemplate.bombasQuimicas && secTemplate.bombasQuimicas.length)
             ? secTemplate.bombasQuimicas
             : (config.bombasQuimicas || []);
-          const camposDefecto = [{ clave: 'amperios', sufijo: 'A' }, { clave: 'porcentaje', sufijo: '%' }];
+          const camposDefecto: CampoMedicion[] = [{ clave: 'amperios', sufijo: 'A' }, { clave: 'porcentaje', sufijo: '%' }];
           const camposUsar = (secTemplate.camposBombas && secTemplate.camposBombas.length)
             ? secTemplate.camposBombas
             : camposDefecto;
 
-          const tareasConBombas = secTemplate.tareas.map((tareaTemplate: any, tareaIdx: number) => {
+          const tareasConBombas = secTemplate.tareas.map((tareaTemplate: TareaConfig, tareaIdx: number) => {
             const baseTarea = {
               descripcion: tareaTemplate.descripcion,
               ok: false,
               noOk: false,
               notaTarea: '',
-              campos: (tareaTemplate.campos || []).map((campo: any) => ({
+              campos: (tareaTemplate.campos || []).map((campo: CampoMedicion) => ({
                 clave: campo.clave,
                 valor: null,
                 sufijo: campo.sufijo
@@ -79,8 +80,8 @@ class ServicioCuatrimestre {
             };
             if (secTemplate.tipo === 'quimicos' && tareaIdx === 0 && bombasUsar.length) {
               const bombasVacias = bombasUsar.map((nombre: string) => {
-                const bomba: any = { nombre };
-                camposUsar.forEach((campo: any) => (bomba[campo.clave] = null));
+                const bomba: Record<string, string | null> = { nombre };
+                camposUsar.forEach((campo: CampoMedicion) => (bomba[campo.clave] = null));
                 return bomba;
               });
               return { ...baseTarea, bombasQuimicas: bombasVacias };

@@ -4,6 +4,12 @@
 
   let inputVal = $state('');
 
+  $effect(() => {
+    if (ui.dialogState) {
+      inputVal = '';
+    }
+  });
+
   function onOk() {
     const s = ui.dialogState;
     if (s?.type === 'prompt') {
@@ -11,17 +17,14 @@
     } else {
       s?.resolve?.(true);
     }
-    inputVal = '';
   }
 
   function onCancel() {
     ui.dialogState?.resolve?.(null);
-    inputVal = '';
   }
 
   function resolveSave(action: 'save' | 'discard' | 'cancel') {
     ui.dialogState?.resolve?.(action);
-    inputVal = '';
   }
 
   function onOverlayClick(e: MouseEvent) {

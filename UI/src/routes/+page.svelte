@@ -172,8 +172,11 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
       <h1 class="sidebar-title">Control total del mantenimiento.</h1>
       <p class="sidebar-subtitle">Seguimiento de centros, cuatrimestres y estados en un solo lugar.</p>
     </div>
-       <button class="btn-admin-gear" onclick={toggleAdmin} title="Administración">
-         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Ajustes"><path d="M12.22 2h+.78a2 2 0 0 1 2 2v.78a2 2 0 0 1-2 2h-.78a2 2 0 0 1-2-2v-.78a2 2 0 0 1 2-2z"/><path d="M2 12h.78a2 2 0 0 1 2 2h.78a2 2 0 0 1 2-2H4.78a2 2 0 0 1-2-2H2v.78z"/><path d="M22 12h-.78a2 2 0 0 1-2 2h-.78a2 2 0 0 1-2-2h.78a2 2 0 0 1 2-2h.78v.78z"/><path d="M12.22 22h-.78a2 2 0 0 1-2-2v-.78a2 2 0 0 1 2-2h.78a2 2 0 0 1 2 2v.78a2 2 0 0 1-2 2z"/><path d="M2 12v.78a2 2 0 0 1-2 2h-.78a2 2 0 0 1-2-2v-.78a2 2 0 0 1 2-2h.78z"/><path d="M22 12v.78a2 2 0 0 1-2 2h-.78a2 2 0 0 1-2-2v-.78a2 2 0 0 1 2-2h.78z"/><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+       <button class="btn-admin-gear" onclick={toggleAdmin} title="Administración" aria-label="Administración">
+         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+           <circle cx="12" cy="12" r="3"/>
+           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+         </svg>
        </button>
   </aside>
 
@@ -182,8 +185,8 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
     <!-- View 1: Panel de Selección (con pestañas) -->
     <div class="dash-view dash-panel-view" class:active={vistaPanel}>
       <div class="dash-panel-header">
-        <button class="dash-admin-gear mobile-only" onclick={toggleAdmin} title="Administración">⚙</button>
-        <h1 class="dash-panel-title">Control total del mantenimiento.</h1>
+        <button class="dash-admin-gear mobile-only" onclick={toggleAdmin} title="Administración" aria-label="Administración"><span aria-hidden="true">⚙</span></button>
+        <h2 class="dash-panel-title">Control total del mantenimiento.</h2>
         <p class="dash-panel-subtitle">Seguimiento de centros, cuatrimestres y estados en un solo lugar.</p>
 
         <!-- Tab Switcher -->
@@ -357,16 +360,16 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
               data-estado={estadoDe(inf)}
               onclick={() => editarInforme(inf)}
               onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInforme(inf); } }}>
-              <div class="card-header">
-                <span class="centro-nombre">{ inf.nombreObra }</span>
-                <span class="centro-estado">{ labelEstado(inf) }</span>
-              </div>
-              <div class="card-body">
-                <div class="centro-progreso">
-                  <span class="progreso-valor">{ progresoDe(inf) }% completado</span>
-                </div>
-                <div class="centro-fecha">{ inf.ultimaModificacion || '—' }</div>
-              </div>
+               <div class="centro-main">
+                 <div class="centro-info">
+                   <span class="centro-nombre">{ inf.nombreObra }</span>
+                   <span class="centro-progreso">{ progresoDe(inf) }% completado</span>
+                 </div>
+                 <div class="centro-meta">
+                   <span class="centro-estado">{ labelEstado(inf) }</span>
+                   <span class="centro-fecha">{ inf.ultimaModificacion || '—' }</span>
+                 </div>
+               </div>
             </div>
           {/each}
         </section>
@@ -697,14 +700,98 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 20px 24px;
-  display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  grid-template-rows: auto auto;
+  display: flex;
   align-items: center;
-  gap: 4px 16px;
+  gap: 16px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.centro-card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 12px 20px -5px rgba(0,0,0,0.08);
+  border-color: #e2e8f0;
+}
+
+.centro-card::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--dot-color, #d1d5db);
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 0 4px rgba(var(--dot-rgb, 209, 213, 219), 0.1);
+  z-index: 1;
+}
+
+.centro-card::after {
+  content: '›';
+  color: #cbd5e1;
+  font-size: 24px;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.2s;
+}
+
+.centro-card:hover::after {
+  transform: translateY(-50%) translateX(4px);
+  color: #1e3a5f;
+}
+
+.centro-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  margin-left: 24px;
+  gap: 16px;
+}
+
+.centro-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.centro-nombre {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.centro-progreso {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.centro-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.centro-estado {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: #f1f5f9;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.centro-fecha {
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: right;
 }
 
 .centro-card:hover {
@@ -789,6 +876,15 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   }
   .centro-nombre { font-size: 15px; }
   .centro-card::after { font-size: 18px; }
+  .centro-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .centro-meta {
+    align-items: flex-start;
+    text-align: left;
+  }
 }
 
 .empty-state {

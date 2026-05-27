@@ -4,6 +4,7 @@
   import { CUADRO_ELECTRICO_TEMPLATE } from '$lib/templates/cuadroElectrico';
   import { formPersistenceService } from '$lib/services/form-persistence.svelte';
   import { databaseService } from '$lib/services/database.svelte';
+  import { obtenerTemplateCuadroElectrico, guardarTemplateCuadroElectrico } from '$lib/services/template-service';
 
   let {
     onClose
@@ -21,14 +22,7 @@
 
   // Cargar plantilla personalizada si ya existe en localStorage
   if (typeof window !== 'undefined') {
-    const saved = localStorage.getItem('CUADRO_ELECTRICO_TEMPLATE_CUSTOM');
-    if (saved) {
-      try {
-        template = JSON.parse(saved);
-      } catch (e) {
-        console.error('Error parsing custom template', e);
-      }
-    }
+    template = obtenerTemplateCuadroElectrico();
   }
 
   function addTarea(seccionIdx: number) {
@@ -137,7 +131,7 @@
   async function finalGuardar() {
     saving = true;
     try {
-      localStorage.setItem('CUADRO_ELECTRICO_TEMPLATE_CUSTOM', JSON.stringify(template));
+      guardarTemplateCuadroElectrico(template);
       
       const idsParaAplicar = Object.entries(selectedInformes)
         .filter(([_, checked]) => checked)
@@ -806,5 +800,104 @@
   .btn-save:disabled {
     background: #94a3b8;
     cursor: not-allowed;
+  }
+
+  @media (max-width: 640px) {
+    .tareas-editor-overlay {
+      padding: 0;
+      align-items: flex-end;
+    }
+
+    .tareas-editor-card {
+      max-height: 95vh;
+      max-width: 100%;
+      border-radius: 20px 20px 0 0;
+    }
+
+    .editor-header {
+      padding: 16px;
+    }
+
+    .header-left h2 {
+      font-size: 1rem;
+    }
+
+    .editor-body {
+      padding: 16px;
+    }
+
+    .seccion-header {
+      padding: 10px 14px;
+      flex-wrap: wrap;
+    }
+
+    .seccion-titulo {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .titulo-input {
+      font-size: 0.85rem;
+      min-width: 100%;
+    }
+
+    .tarea-row {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tarea-indice-input {
+      width: 48px;
+      padding: 6px;
+      font-size: 0.8rem;
+    }
+
+    .tarea-desc-input {
+      min-width: 100%;
+      order: -1;
+      font-size: 0.85rem;
+    }
+
+    .check-toggle-label {
+      font-size: 0.7rem;
+      padding: 4px 10px;
+    }
+
+    .subtareas-editor-box {
+      margin-left: 0;
+    }
+
+    .subtarea-row-item {
+      flex-wrap: wrap;
+    }
+
+    .subtarea-desc-input {
+      font-size: 0.8rem;
+    }
+
+    .editor-footer {
+      padding: 14px 16px;
+      flex-wrap: wrap;
+    }
+
+    .editor-footer button {
+      flex: 1;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    .select-informes-view {
+      padding: 12px;
+    }
+
+    .informes-list {
+      padding: 12px;
+      max-height: 250px;
+    }
+
+    .btn-add-seccion {
+      padding: 12px;
+      font-size: 0.85rem;
+    }
   }
 </style>

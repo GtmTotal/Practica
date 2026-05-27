@@ -328,7 +328,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
             </button>
           {/if}
           <div>
-            <h1>{ selectedCuadro?.nombreObra || 'Cuadro Eléctrico' }</h1>
+            <h2>{ selectedCuadro?.nombreObra || 'Cuadro Eléctrico' }</h2>
             <span class="header-subtitle">Gestión de informes de cuadros eléctricos</span>
           </div>
         </div>
@@ -356,7 +356,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
               <img src="/gtmCompleto.png" alt="GTM" class="mobile-brand-name" style="height: 20px; vertical-align: middle;">
             </div>
           </div>
-          <h1 class="mobile-panel-title">Cuadros Eléctrico</h1>
+          <h2 class="mobile-panel-title">Cuadros Eléctrico</h2>
           <p class="mobile-panel-subtitle">Gestión de informes de cuadros eléctricos</p>
         </div>
 
@@ -712,7 +712,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
               <img src="/gtmCompleto.png" alt="GTM" class="mobile-brand-name" style="height: 20px; vertical-align: middle;">
             </div>
           </div>
-          <h1 class="mobile-panel-title">Mantenimiento Mercadona</h1>
+          <h2 class="mobile-panel-title">Mantenimiento Mercadona</h2>
           <p class="mobile-panel-subtitle">Gestiona datos base y estructura de cuatrimestres</p>
         </div>
         

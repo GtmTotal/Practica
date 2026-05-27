@@ -1,8 +1,9 @@
 <script lang="ts">
+  import { onMount, tick } from 'svelte';
   import { databaseService } from '$lib/services/database.svelte';
   import { formPersistenceService } from '$lib/services/form-persistence.svelte';
+  import { obtenerTemplateCuadroElectrico } from '$lib/services/template-service';
   import { ui } from '$lib/services/ui.svelte';
-  import { CUADRO_ELECTRICO_TEMPLATE } from '$lib/templates/cuadroElectrico';
   import { fade } from 'svelte/transition';
 
   let {
@@ -19,6 +20,44 @@
   let nOrdenInstalacion = $state('');
   let creando = $state(false);
 
+  let modalCard: HTMLDivElement;
+  let previousActiveElement: Element | null = null;
+
+  onMount(() => {
+    previousActiveElement = document.activeElement;
+  });
+
+  function focusTrap(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      closeModal();
+      return;
+    }
+    if (e.key === 'Tab') {
+      const focusable = modalCard.querySelectorAll<HTMLElement>(
+        'input, button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }
+
+  function closeModal() {
+    onClose();
+    tick().then(() => {
+      if (previousActiveElement instanceof HTMLElement) {
+        previousActiveElement.focus();
+      }
+    });
+  }
+
   async function crear() {
     if (!nombreObra.trim()) {
       ui.error('El nombre de la obra es obligatorio');
@@ -33,17 +72,7 @@
       const id = Date.now();
       const hoy = new Date().toISOString().split('T')[0];
 
-      let baseTemplate = CUADRO_ELECTRICO_TEMPLATE;
-      if (typeof window !== 'undefined') {
-        const saved = localStorage.getItem('CUADRO_ELECTRICO_TEMPLATE_CUSTOM');
-        if (saved) {
-          try {
-            baseTemplate = JSON.parse(saved);
-          } catch (e) {
-            console.error('Error parsing custom template', e);
-          }
-        }
-      }
+      let baseTemplate = obtenerTemplateCuadroElectrico();
 
       const secciones = baseTemplate.secciones.map(sec => ({
         ...sec,
@@ -78,18 +107,17 @@
   }
 </script>
 
-<div class="modal-overlay" transition:fade onclick={onClose} role="presentation">
-  <!-- svelte-ignore a11y_interactive_supports_focus -->
-  <div class="modal-card" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.key === 'Escape' && onClose()} role="dialog" tabindex="0">
+<div class="modal-overlay" transition:fade onclick={closeModal} role="presentation">
+  <div class="modal-card" bind:this={modalCard} onkeydown={focusTrap} onclick={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
     <header class="modal-header">
       <h2>Nuevo Informe Cuadro Eléctrico</h2>
-      <button class="btn-close" onclick={onClose}>✕</button>
+      <button class="btn-close" onclick={closeModal}>✕</button>
     </header>
 
     <div class="modal-body">
       <div class="field-group">
         <label for="campo-nombre">Nombre obra <span class="req">*</span></label>
-        <input id="campo-nombre" type="text" bind:value={nombreObra} placeholder="Ej: MERCADONA GRAN VIA - LPC" />
+        <input id="campo-nombre" type="text" bind:value={nombreObra} placeholder="Ej: MERCADONA GRAN VIA - LPC" autofocus />
       </div>
 
       <div class="field-row">
@@ -112,7 +140,7 @@
     </div>
 
     <footer class="modal-footer">
-      <button class="btn-cancel" onclick={onClose}>Cancelar</button>
+      <button class="btn-cancel" onclick={closeModal}>Cancelar</button>
       <button class="btn-create" onclick={crear} disabled={creando}>
         {creando ? 'Creando...' : 'Crear Informe'}
       </button>

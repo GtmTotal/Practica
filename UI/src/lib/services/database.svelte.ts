@@ -1,5 +1,6 @@
 import { getApiBaseUrl, getApiHeaders } from '../api-config';
 import { adminService } from './admin.svelte';
+import { mapInformeFromApi, mapKeysToCamel } from '$lib/utils/api-mapper';
 import type { InformeGuardado } from '$lib/types/informe.interface';
 
 class ServicioBaseDeDatos {
@@ -80,19 +81,7 @@ class ServicioBaseDeDatos {
     if (!res.ok) return [];
     const data = await res.json();
 
-    return data.map((item: any) => ({
-      id: item.id,
-      tipo: item.tipo || 'mantenimiento',
-      nombreObra: item.nombre_obra,
-      fecha: item.fecha,
-      cuatrimestre: item.cuatrimestre,
-      protegido: item.datos?.protegido === true,
-      progreso: item.datos?.progreso ?? 0,
-      ultimaModificacion: item.modificado,
-      nProy: item.n_proy,
-      nOrdenCuadro: item.n_orden_cuadro,
-      nOrdenInstalacion: item.n_orden_instalacion,
-    }));
+    return data.map((item: any) => mapInformeFromApi(item));
   }
 
   async eliminarCuatrimestre(cuatrimestre: string) {
@@ -123,7 +112,8 @@ class ServicioBaseDeDatos {
       });
       if (!res.ok) return null;
       const data = await res.json();
-      return data?.datos ?? null;
+      const datos = data?.datos ?? null;
+      return datos ? mapKeysToCamel(datos) : null;
     } catch {
       return null;
     }

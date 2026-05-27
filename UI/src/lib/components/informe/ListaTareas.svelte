@@ -20,7 +20,7 @@
   {#each tareasArray as tarea, idx}
     {#if tarea.subtareas?.length}
       <TareaPadreItem 
-        {tarea} 
+        bind:tarea={tareasArray[idx]}
         idxTarea={idx} 
         {prefijo} 
         {idxSeccion} 
@@ -29,7 +29,7 @@
       />
     {:else}
       <TareaItem 
-        {tarea} 
+        bind:tarea={tareasArray[idx]}
         idxTarea={idx} 
         {prefijo} 
         {idxSeccion} 

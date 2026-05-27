@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import { navService } from '$lib/services/navigation.svelte';
   import { formInitService, type FormState } from '$lib/services/form-initialization.svelte';
   import { formPersistenceService } from '$lib/services/form-persistence.svelte';
@@ -191,9 +192,8 @@ import InformeFooter from './InformeFooter.svelte';
       navService.centroSeleccionado = centroParam;
       navService.vistaActual = 'formulario';
       // Establecer vistaOrigen basado en los parámetros de búsqueda o URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const fromParam = urlParams.get('from');
-      navService.vistaOrigen = fromParam === 'admin' ? 'admin' : (window.location.pathname.startsWith('/admin') ? 'admin' : 'dashboard');
+      const fromParam = $page.url.searchParams.get('from');
+      navService.vistaOrigen = fromParam === 'admin' ? 'admin' : ($page.url.pathname.startsWith('/admin') ? 'admin' : 'dashboard');
       navService.persist();
 
       try {

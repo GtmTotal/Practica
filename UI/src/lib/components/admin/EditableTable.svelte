@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { DocumentDto } from '$lib/types/document.interface';
   import { adminService } from '$lib/services/admin.svelte';
-  import Toast from '../Toast.svelte';
+  import { ui } from '$lib/services/ui.svelte';
 
   let { documents } = $props<{ documents: DocumentDto[] }>();
 
@@ -19,9 +19,9 @@
     try {
       await adminService.updateDocument(editingId, editData);
       editingId = null;
-      toast.success('Documento actualizado correctamente');
+      ui.success('Documento actualizado correctamente');
     } catch (e: any) {
-      toast.error(e.message || 'Error al actualizar');
+      ui.error(e.message || 'Error al actualizar');
     }
   }
 
@@ -34,17 +34,13 @@
     if (!confirm('¿Estás seguro de que deseas eliminar este documento?')) return;
     try {
       await adminService.deleteDocument(id);
-      toast.success('Documento eliminado');
+      ui.success('Documento eliminado');
     } catch (e: any) {
-      toast.error(e.message || 'Error al eliminar');
+      ui.error(e.message || 'Error al eliminar');
     }
   }
 
-  // Toast instance (assuming it's available globally or via service)
-  const toast = {
-    success: (msg: string) => alert('✅ ' + msg),
-    error: (msg: string) => alert('❌ ' + msg)
-  };
+
 </script>
 
 <div class="table-container">

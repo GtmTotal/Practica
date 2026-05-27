@@ -1,7 +1,8 @@
 import { databaseService } from './database.svelte';
 import { navService } from './navigation.svelte';
 import { configCentrosService } from './config-centros.svelte';
-import { CUADRO_ELECTRICO_TEMPLATE } from '$lib/templates/cuadroElectrico';
+import { obtenerTemplateCuadroElectrico } from './template-service';
+import type { CuadroSeccionTemplate, CuadroTareaTemplate, CuadroSubTareaTemplate } from './template-service';
 import { pdfDataBuilder } from './form-persistence/pdf-data-builder.svelte';
 import { pdfReportService } from './form-persistence/pdf-report.svelte';
 import { formInitService } from './form-initialization.svelte';
@@ -9,7 +10,15 @@ import { progresoFormulario } from '$lib/utils/informe-utils';
 import { ui } from './ui.svelte';
 import type { InformeGuardado } from '$lib/types/informe.interface';
 import type { Foto } from '$lib/types/foto.interface';
-import type { FormState, SeccionState, TareaState } from './form-initialization.svelte';
+import type { FormState, SeccionState, TareaState, SubTareaState, CampoState, BombaState } from './form-initialization.svelte';
+import type { ConfigSeccion, TareaConfig, CampoMedicion } from '$lib/types/config.interface';
+
+interface TareaTemplate extends TareaConfig {
+  titulo?: string;
+  subtareas?: { descripcion: string; sinCheck?: boolean }[];
+  indice?: string;
+  sinCheck?: boolean;
+}
 
 class ServicioPersistenciaFormulario {
   informesGuardados = $state<InformeGuardado[]>([]);
@@ -100,7 +109,7 @@ class ServicioPersistenciaFormulario {
       
       if (!completo) return null;
 
-      const nombreCentro = inf.nombreObra || completo.nombreObra || completo.nombre_obra;
+      const nombreCentro = inf.nombreObra || completo.nombreObra;
       navService.centroSeleccionado = nombreCentro;
       navService.cuatrimestreSeleccionado = completo.cuatrimestre || inf.cuatrimestre || '';
       navService.persist();
@@ -123,25 +132,13 @@ class ServicioPersistenciaFormulario {
       const fotosPorSeccionBase64: Foto[][] = [];
       const seccionesColapsadas: boolean[] = [];
 
-      let templateCuadro: any = null;
+      let templateCuadro: { secciones: CuadroSeccionTemplate[] } | null = null;
       if (completo.tipo === 'cuadro_electrico') {
-        if (typeof window !== 'undefined') {
-          const saved = localStorage.getItem('CUADRO_ELECTRICO_TEMPLATE_CUSTOM');
-          if (saved) {
-            try {
-              templateCuadro = JSON.parse(saved);
-            } catch (e) {
-              console.error('Error parsing custom template', e);
-            }
-          }
-        }
-        if (!templateCuadro) {
-          templateCuadro = CUADRO_ELECTRICO_TEMPLATE;
-        }
+        templateCuadro = obtenerTemplateCuadroElectrico();
       }
 
       if (completo.secciones?.length) {
-        completo.secciones.forEach((sec: any) => {
+        completo.secciones.forEach((sec: SeccionState & { fotos?: Foto[] }) => {
           const { seccionGroup, fotos } = this.restaurarSeccionGuardada(sec, templateCuadro);
           obraForm.secciones.push(seccionGroup);
           fotosPorSeccionBase64.push(fotos);
@@ -151,7 +148,7 @@ class ServicioPersistenciaFormulario {
         const centroConfig = await configCentrosService.getByCentro(nombreCentro);
         
         if (centroConfig) {
-          centroConfig.secciones.forEach((template: any) => {
+          centroConfig.secciones.forEach((template: ConfigSeccion) => {
             const seccionGroup = this.crearSeccionDesdeTemplate(template);
             obraForm.secciones.push(seccionGroup);
             fotosPorSeccionBase64.push([]);
@@ -196,25 +193,22 @@ class ServicioPersistenciaFormulario {
     await this.cargarHistorial();
   }
 
-  private restaurarSeccionGuardada(sec: any, templateCuadro?: any): { seccionGroup: SeccionState; fotos: Foto[] } {
-    const templateSec = templateCuadro?.secciones?.find((s: any) => String(s.prefijo) === String(sec.prefijo));
+  private restaurarSeccionGuardada(sec: SeccionState & { fotos?: Foto[] }, templateCuadro?: { secciones: CuadroSeccionTemplate[] } | null): { seccionGroup: SeccionState; fotos: Foto[] } {
+    const templateSec = templateCuadro?.secciones?.find((s: CuadroSeccionTemplate) => String(s.prefijo) === String(sec.prefijo));
 
-    const tareas = (sec.tareas || []).map((t: any, idx: number) => {
+    const tareas = (sec.tareas || []).map((t: TareaState, idx: number) => {
 
       let matchedTitulo = t.titulo;
-      // Match template tarea by index first, then by description
       const templateTarea = templateSec?.tareas
-        ? (templateSec.tareas[idx] || templateSec.tareas.find((tt: any) => tt.descripcion === t.descripcion))
+        ? (templateSec.tareas[idx] || templateSec.tareas.find((tt: CuadroTareaTemplate) => tt.descripcion === t.descripcion))
         : null;
       if (!matchedTitulo && templateTarea) {
         matchedTitulo = templateTarea.titulo;
       }
 
-      // Restore subtareas: use saved data if available, otherwise restore from template
-      let subtareas: any[] = [];
+      let subtareas: SubTareaState[] = [];
       if (t.subtareas && t.subtareas.length > 0) {
-        // Saved data has subtareas — use them
-        subtareas = t.subtareas.map((st: any) => ({
+        subtareas = t.subtareas.map((st: SubTareaState) => ({
           descripcion: st.descripcion,
           ok: st.ok || false,
           noOk: st.noOk || false,
@@ -222,8 +216,7 @@ class ServicioPersistenciaFormulario {
           sinCheck: st.sinCheck
         }));
       } else if (templateTarea?.subtareas?.length) {
-        // No saved subtareas — restore structure from template
-        subtareas = templateTarea.subtareas.map((st: any) => ({
+        subtareas = templateTarea.subtareas.map((st: CuadroSubTareaTemplate) => ({
           descripcion: st.descripcion,
           ok: false,
           noOk: false,
@@ -240,7 +233,7 @@ class ServicioPersistenciaFormulario {
         noOk: t.noOk || false,
         notaTarea: t.notaTarea || '',
         grupo: t.grupo,
-        campos: (t.campos || []).map((c: any) => ({
+        campos: (t.campos || []).map((c: CampoState) => ({
           clave: c.clave,
           valor: c.valor,
           sufijo: c.sufijo
@@ -251,7 +244,7 @@ class ServicioPersistenciaFormulario {
       };
 
       if (t.bombasQuimicas) {
-        tareaGroup.bombasQuimicas = (t.bombasQuimicas as any[]).map(b => ({
+        tareaGroup.bombasQuimicas = (t.bombasQuimicas as BombaState[]).map((b: BombaState) => ({
           nombre: b.nombre,
           amperios: b.amperios,
           porcentaje: b.porcentaje
@@ -269,7 +262,7 @@ class ServicioPersistenciaFormulario {
       observaciones: sec.observaciones || ''
     };
 
-    const fotos = (sec.fotos || []).map((f: any) => ({
+    const fotos = (sec.fotos || []).map((f: Foto) => ({
       url: f.url,
       preview: f.url || f.base64,
       nombre: f.nombre,
@@ -280,19 +273,19 @@ class ServicioPersistenciaFormulario {
     return { seccionGroup, fotos };
   }
 
-  private crearSeccionDesdeTemplate(template: any): SeccionState {
-    const tareas = template.tareas.map((tareaTemplate: any) => ({
+  private crearSeccionDesdeTemplate(template: ConfigSeccion): SeccionState {
+    const tareas = template.tareas.map((tareaTemplate: TareaTemplate) => ({
       descripcion: tareaTemplate.descripcion,
       titulo: tareaTemplate.titulo,
       ok: false,
       noOk: false,
       notaTarea: '',
-      campos: (tareaTemplate.campos || []).map((campo: any) => ({
+      campos: (tareaTemplate.campos || []).map((campo: CampoMedicion) => ({
         clave: campo.clave,
         valor: null,
         sufijo: campo.sufijo
       })),
-      subtareas: (tareaTemplate.subtareas || []).map((st: any) => ({
+      subtareas: (tareaTemplate.subtareas || []).map((st: { descripcion: string; sinCheck?: boolean }) => ({
         descripcion: st.descripcion,
         ok: false,
         noOk: false,
