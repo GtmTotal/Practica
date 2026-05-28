@@ -8,6 +8,7 @@ class ServicioNavegacion {
   centroSeleccionado = $state<string>('');
   cuatrimestreSeleccionado = $state<string>('');
   vistaOrigen = $state<string>('dashboard');
+  tabSeleccionado = $state<'mantenimiento' | 'cuadros' | null>(null);
 
   constructor() {
     if (browser) {
@@ -15,6 +16,7 @@ class ServicioNavegacion {
       this.centroSeleccionado = localStorage.getItem('centroSeleccionado') || '';
       this.cuatrimestreSeleccionado = localStorage.getItem('cuatrimestreSeleccionado') || '';
       this.vistaOrigen = localStorage.getItem('vistaOrigen') || 'dashboard';
+      this.tabSeleccionado = localStorage.getItem('tabSeleccionado') as 'mantenimiento' | 'cuadros' | null;
     }
   }
 
@@ -25,6 +27,11 @@ class ServicioNavegacion {
       localStorage.setItem('centroSeleccionado', this.centroSeleccionado);
       localStorage.setItem('cuatrimestreSeleccionado', this.cuatrimestreSeleccionado);
       localStorage.setItem('vistaOrigen', this.vistaOrigen);
+      if (this.tabSeleccionado) {
+        localStorage.setItem('tabSeleccionado', this.tabSeleccionado);
+      } else {
+        localStorage.removeItem('tabSeleccionado');
+      }
     }
   }
 
@@ -51,8 +58,10 @@ class ServicioNavegacion {
       this.persist();
       await goto(`/admin${qs}`);
     } else {
+      const tab = this.tabSeleccionado;
+      const qs = tab ? `?tab=${encodeURIComponent(tab)}` : '';
       this.persist();
-      await goto('/');
+      await goto(`/${qs}`);
     }
   }
 

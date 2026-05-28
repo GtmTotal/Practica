@@ -377,10 +377,10 @@ import { DsMobileHeader } from '$lib/components/design-system';
             </button>
           {/if}
           <div>
-            <h2>{ selectedCuadro?.nombreObra || 'Cuadro Eléctrico' }</h2>
+            <h2 style="color: #fff;">{ selectedCuadro?.nombreObra || 'Cuadro Eléctrico' }</h2>
             <span class="header-subtitle">Gestión de informes de cuadros eléctricos</span>
           </div>
-        </div>
+        </div>    
         <div class="header-actions">
           <div class="action-group">
             <button class="btn-icon-label primary" onclick={() => showTareasEditorCuadros = true} title="Editar plantilla predeterminada de tareas para futuros cuadros">
@@ -429,7 +429,7 @@ import { DsMobileHeader } from '$lib/components/design-system';
         <DsMobileHeader
           title="Cuadros Eléctricos"
           subtitle="Gestión de informes de cuadros eléctricos"
-          backButton={{ label: '‹ Menú', onClick: () => { menuPrincipal = 'raiz'; selectedCuadroId = null; } }}
+          backButton={{ label: 'Menú', onClick: () => { menuPrincipal = 'raiz'; selectedCuadroId = null; } }}
           showAdminButton={false}
         />
         
@@ -461,7 +461,7 @@ import { DsMobileHeader } from '$lib/components/design-system';
            <!-- Cards -->
            <div class="admin-grid">
              {#each informesCuadroFiltrados as inf (inf.id)}
-               <div class="admin-card" style="--accent: {colorEstado(inf)}" data-estado={estadoDe(inf)} role="button" tabindex="0" onclick={() => seleccionarCuadro(inf.id)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); seleccionarCuadro(inf.id); } }}>
+               <div class="admin-card" style="--accent: {colorEstado(inf)}" data-estado={estadoDe(inf)} role="button" tabindex="0" onclick={() => editarInformeCuadro(inf)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInformeCuadro(inf); } }}>
                  <div class="admin-card-accent"></div>
                  <div class="admin-card-body">
                    <div class="admin-card-top">
@@ -765,7 +765,7 @@ import { DsMobileHeader } from '$lib/components/design-system';
         <DsMobileHeader
           title="Mantenimiento Mercadona"
           subtitle="Gestión de cuatrimestres y tareas"
-          backButton={{ label: '‹ Menú', onClick: () => { menuPrincipal = 'raiz'; cuatrimestreSeleccionado = ''; } }}
+          backButton={{ label: 'Menú', onClick: () => { menuPrincipal = 'raiz'; cuatrimestreSeleccionado = ''; } }}
           showAdminButton={false}
         />
         

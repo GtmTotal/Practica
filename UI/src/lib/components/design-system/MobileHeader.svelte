@@ -128,6 +128,7 @@
     color: #ffffff;
     padding: 0;
     flex-shrink: 0;
+    width: 100%;
   }
 
   .mobile-header-back-row {
@@ -169,7 +170,10 @@
     margin: 0;
     color: #ffffff;
     flex: 1;
+    min-width: 0;
     line-height: 1.2;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .mobile-header-admin-btn {
@@ -199,6 +203,8 @@
     color: rgba(255, 255, 255, 0.7);
     margin: 0 0 12px 0;
     line-height: 1.4;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .mobile-header-search {

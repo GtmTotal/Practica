@@ -78,15 +78,17 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   function switchTab(tab: 'mantenimiento' | 'cuadros') {
     if (tabActual === tab) {
       tabActual = null;
+      navService.tabSeleccionado = null;
     } else {
       tabActual = tab;
+      navService.tabSeleccionado = tab;
     }
     filtroCuadro = 'todos';
     filtroSeleccionado = 'todos';
     if (tab === 'cuadros') {
       navService.cuatrimestreSeleccionado = '';
-      navService.persist();
     }
+    navService.persist();
   }
 
   async function toggleAdmin() {
@@ -178,6 +180,14 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 
   onMount(async () => {
     await formPersistenceService.cargarHistorial();
+    const tab = $page.url.searchParams.get('tab');
+    if (tab === 'cuadros' || tab === 'mantenimiento') {
+      tabActual = tab;
+      navService.tabSeleccionado = tab;
+      navService.persist();
+    } else if (navService.tabSeleccionado) {
+      tabActual = navService.tabSeleccionado;
+    }
   });
 
   $effect(() => {
@@ -185,6 +195,17 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
     if (c && c !== untrack(() => navService.cuatrimestreSeleccionado)) {
       navService.cuatrimestreSeleccionado = c;
       navService.persist();
+    }
+  });
+
+  $effect(() => {
+    const tab = $page.url.searchParams.get('tab');
+    if (tab === 'cuadros' || tab === 'mantenimiento') {
+      if (tab !== tabActual) {
+        tabActual = tab;
+        navService.tabSeleccionado = tab;
+        navService.persist();
+      }
     }
   });
 
@@ -412,7 +433,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
     <!-- ===== VIEW 2: Cuatrimestre detail (centro cards) ===== -->
     <div class="dash-view dash-cuatrimestre-view" class:active={!vistaPanel}>
       <!-- Mobile Header for Detail View -->
-      <div class="mobile-only" style="width: 100%; display: block;">
+      <div class="mobile-only" style="width: 100%;">
         <DsMobileHeader
           title={ grupoSeleccionado?.label || 'Informes' }
           subtitle="INFORMES DE MANTENIMIENTO"
@@ -502,6 +523,8 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   display: flex;
   min-height: 100vh;
   background: var(--bg-page);
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 /* ============================================================
@@ -578,6 +601,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 .main-content {
   flex: 1;
   min-width: 0;
+  width: 100%;
   height: 100vh;
   overflow-y: auto;
   position: relative;
@@ -635,6 +659,8 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   font-size: 32px;
   font-weight: 700;
   margin: 0 0 8px 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .dash-panel-subtitle {
@@ -914,6 +940,8 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   font-weight: 700;
   margin: 0 0 16px 0;
   line-height: 1.2;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 @media (max-width: 768px) {

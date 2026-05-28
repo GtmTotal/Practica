@@ -19,18 +19,15 @@
 {#if isCuadro}
 <footer class="form-footer form-footer--cuadro">
   <button type="button" class="btn-submit btn-submit--cuadro" onclick={generarPDF} disabled={guardando}>
-    { guardando ? '⌛ Generando...' : 'Guardar y generar informe' }
+    { guardando ? '⌛ Generando...' : '📄 Generar informe' }
   </button>
 </footer>
 {:else}
 <footer class="form-footer">
   <textarea bind:value={obraForm.conclusiones} placeholder="Conclusiones finales..."></textarea>
   <div class="footer-actions">
-    <button type="button" class="btn-save-exit" onclick={guardarYSalir} disabled={guardando}>
-      💾 GUARDAR Y SALIR
-    </button>
     <button type="button" class="btn-submit" onclick={generarPDF} disabled={guardando}>
-      { guardando ? '⌛ Generando...' : '📄 FINALIZAR Y GENERAR PDF' }
+      { guardando ? '⌛ Generando...' : '📄 Generar informe' }
     </button>
   </div>
 </footer>
@@ -67,27 +64,8 @@
 
 .footer-actions {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
+  grid-template-columns: 1fr;
   gap: 12px;
-}
-
-.btn-save-exit {
-  background: white;
-  color: var(--gray-700);
-  border: 2px solid var(--gray-200);
-  width: 100%;
-  padding: 14px;
-  border-radius: 100px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.btn-save-exit:hover {
-  background: var(--gray-50);
-  border-color: var(--gray-300);
-  transform: translateY(-1px);
 }
 
 .btn-submit {
@@ -143,7 +121,6 @@
     gap: 8px;
   }
 
-  .btn-save-exit,
   .btn-submit {
     padding: 10px;
     font-size: 0.85rem;
