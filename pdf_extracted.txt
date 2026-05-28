@@ -1,0 +1,412 @@
+=== PAGE 0 ===
+0. DATOS OBRA
+Nombre obra: MERCADONA GRAN VIA - LPC
+Nº Proy PROY26/3
+Nº Orden cuadro 24361
+Nº Orden Instalación
+Versión 24-04-15En 3.PUESTA EN MARCHA. Se añade el 8 IMPORTANTE PUESTA 
+EN MARCHA BOMBAS
+Versión 25-03-06 Se ha modificado el material de instalación
+Versión 25-07-28 Se ha añadido una nueva linea para que se entregue a Pascual el sinóptico
+Versión 26-03-09 Se cambia el apartado 5 porque ya no se utiliza el Miró, se usa el Excel
+
+=== PAGE 1 ===
+NOMBRE OBRA: MERCADONA GRAN VIA - LPC
+ORDEN CUADRO:24361       PROY: PROY26/3 HECHO
+FECHA INCICIO:                                                                                                        1. DOCUMENTACIÓN
+0.0 Crear espacio - CHAT
+0.1 Crear orden de fabricación  para sinóptico
+0.2 Sinóptico
+0.3 Revisión sinóptico
+0.4 Subir sinóptico al chat
+0.5 Actualizar estado proyecto- Excel de seguimiento
+0.6 Entregar sinóptico a Pascual
+0.7 Anotar si reutilizamos materiales
+- -
+- -
+FECHA INCICIO:                                                                                                        1. DOCUMENTACIÓN
+1.0 Crear carpeta (Cuadro eléctrico)
+1.1 Esquemas (Cuadro eléctrico)
+__Revisión esquemas
+1.2 Subir esquemas al chat
+1.3 Diseño cuadro
+__Configuación cuadro (Cuadro eléctrico)
+__Diseño puerta (Cuadro eléctrico)
+__Revisión configuración
+1.4 Revisión de stock ( PYME )
+__Comprobar stock armarios
+__Comprobar stock variadores
+__Comprobar stock artículos (Actualizar Stock Pyme)
+1.5 Todo OK
+__Pedir soporte (Chat y Correo)
+1.6 Material cuadro (Previstos + Pedido)
+1.7 IMPRIMIR
+__Esquemas
+__Sinóptico
+__Configuación cuadro
+__Lista materiales cuadro
+__Parte horas cuadro (poner horas)
+1.8 Archivo etiquetas (Cuadro eléctrico)
+__Etiqueta manionbra(2,9)
+__Etiqueta fuerza(3,5)
+__Amarillas (15x9)
+__Blancas (40x25)
+__Pulsantería (26,5x17,5)  --> En taller
+__Rombo (29x8)
+1.9 Crear acceso directo (Obras en proceso)
+1.10 Poner obra en código de cuadros (Exel)
+Anotaciones/observacionesOBERSERVACIONES
+0. PREPARACIÓN DOCUMENTACIÓN
+1. DOCUMENTACIÓN
+1.1. TRABAJOS TALLER
+
+=== PAGE 2 ===
+NOMBRE OBRA: MERCADONA GRAN VIA - LPC
+ORDEN CUADRO:24361       PROY: PROY26/3 HECHO
+FECHA INCICIO:     2. PREPARACIÓN  MATERIALES
+2.0 Comprobar 1. DOCUMENTACIÓN
+2.1 Comprobar si lleva soporte/orejas/anclado
+2.2 Llevar puerta a corte + USB (Archivo DXF)
+2.3 Hacer caja preparación materiales 
+2.4 Imprimir etiquetas 
+__Amarillas (15x9) __Rombo (29x8)
+__Blancas (40x25) __Etiqueta manionbra(2,9)
+__Pulsantería (26,5x17,5) __Etiqueta fuerza(3,5)
+__Bornas __Relé
+Anotaciones/cosas pendientes:
+FECHA INICIO:
+3.0 Comprobar materiales
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+*CORREGIR A MANO ESQUEMAS ELÉCTRICOS*
+3.1 Corte maquina agua (Archivo DXF)
+3.2 Montaje canaleta + carril DIN
+3.3 Instalar componentes + pegatinas
+3.4 Cablear fuerza
+3.5 Dejar regulado los guardamotores a In
+3.6 Cablear maniobra/comunicación
+3.7 Puerta + otros elementos externos
+3.8 Realizar agujero para seccionador
+3.9 Tapa canaletas + Pega. blancas(40x25)
+3.10 Elementos conexionado externo
+__Barra de tierras (pletina cobre)
+__Grapas apantallado
+__Canal entrada cables/prensaestopa/pasamuros
+3.11 Pegatinas GTM y Riesgo eléctricoOBERSERVACIONES
+3. CABLEADO CUADRO
+1.2. TRABAJOS TALLER
+
+=== PAGE 3 ===
+NOMBRE OBRA: MERCADONA GRAN VIA - LPC
+ORDEN CUADRO:24361       PROY: PROY26/3 HECHO
+3.12 Actualizar esquemas eléctricos (Autocad)
+3.13 Soporte/fijación cuadro
+3.14 Comprobar cuadro ( sin tensión )
+3.15 Comprobar cuadro ( con tensión )
+3.16 Limpieza cuadro
+3.17 A dejar dentro cuadro
+__Esquemas
+__Manuales (variador, controlador…)
+__Etiquetas rombos + bridas
+__Sinóptico
+__Materiales (Alarma, sensores…)
+__Parte materiales obras
+3.18 Rellenar orden y parte horas (PYME)
+3.19 Fotos cuadro eléctrico (Subir a su carpeta)
+3.20 Guardar fotos cuadro + documentación
+3.21 Envolver/empaquetar cuadro (poner nombre obra)
+3.22 Escanear documentos (Subir a oficina)
+3.23 ⚠ IMPRIMIR CARTEL DE SACAR ALBARÁN ⚠
+Anotaciones/cosas pendientes:
+1.2. TRABAJOS TALLEROBERSERVACIONES
+
+=== PAGE 4 ===
+NOMBRE OBRA: MERCADONA GRAN VIA - LPC
+PROY: PROY26/3 HECHO
+FECHA INCICIO:                                                                                                        1. DOCUMENTACIÓN
+4.0 Ubicación cuadro eléctrico -
+4.1 Acometida eléctrica -
+4.2 Cable ethernet/comunicaciones -
+4.3 Tubos enterrados -
+4.4 Reutilización de canalización -
+4.5 Reutilización materiales -
+- -
+- -
+- -
+- -
+- -
+- -
+- -
+- -
+- -
+- -
+- -
+__Cuadro auxiliares/caja empalmes
+__Mangueras 
+__Rejiband+ soportes
+__Tubos+soportes
+__Sensores
+__
+__
+__
+__
+Anotaciones/cosas pendientes: *CORREGIR A MANO ESQUEMAS ELÉCTRICOS. 
+2.1 INSTALACIÓNOBERSERVACIONES
+4. COSAS A TENER EN CUENTA (EN TALLER)
+5.0 PREPARACIÓN  MATERIALES  PARA LLEVAR A OBRA (EN TALLER)
+
+=== PAGE 5 ===
+NOMBRE OBRA: MERCADONA GRAN VIA - LPC
+PROY: PROY26/3 HECHO
+FECHA INCICIO:                                                                                                        1. DOCUMENTACIÓN
+6.0 Comprobar 5.0 Preparación mat…
+6.1 Trabjas a realizar por cuenta cliente
+__Cable ethernet
+__Acometidas
+__Cable ethernet
+__
+__
+6.2 Planificación canalización
+6.3 Instalar cuadro
+6.4 Instalar canalización
+6.5 Cajas empalmes
+6.6 Tirar cables
+6.7 Conexión cables
+__Conexión cuadro
+__Conexión equipos
+6.8 Reapriete cuadro eléctrico
+6.9 Verificar tensión cuadro eléctrico
+6.10 Desbloquear bombas (Ventilador)
+6.11 Comprobar conexionado
+__Sensores / Entradas PLC
+__Electroválvulas
+__Instalar sirena
+__Motores/Bombas
+(Comprobar intensidad motores  en vacio)
+6.12 Rellenar "Parte materiales obra"
+6.13 Fotos cajas empalma y cuadro
+6.14 Subir a carpeta obra las fotos
+Anotaciones/cosas pendientes:
+2.2 INSTALACIÓNOBERSERVACIONES
+6. PROCESO INSTALCIÓN (EN OBRA)
+
+=== PAGE 6 ===
+PROY: PROY26/3 HECHO
+FECHA INCICIO:                                                                                                        1. DOCUMENTACIÓN
+*CORREGIR A MANO ESQUEMAS ELÉCTRICOS. 
+7.0 Comprobar 6 Proceso instalación
+7.1 Config. parámetros analogicos
+7.2 Config. parámetros variadores
+7.3 Confg. Hora en plc y hmi
+7.4 Prueba en manual equipos (HMI)
+7.5 Prueba en auto por zonas
+7.6 Prueba AUTO 100%
+7.7 Comprobar alarmas
+7.8 Ajustar parámetros si precisa
+7.9 Copiar o foto de párametros:
+__HMI/PLC
+__Variadores
+__Esquemas eléctricos
+7.10 Explicación cliente
+7.11 Rellenar parte albarán y materiales
+ Archivar programa más parámetros en carpeta obra y borrar el acceso directo de 0000 Obras…
+7.12 Verificar que este archivado:
+__Programa PLC+HMI
+__Párametros variador + HMI
+__Fotos caja empalmes y cuadro
+__Esquemas actualizados
+__Acceso directo borrado de 0000 Obras.
+__
+__
+FECHA INCICIO:                                                                                                        1. DOCUMENTACIÓN
+1º Todas las bombas  con ventilador hay que moverlas del ventilador o eje para desbloquear 
+el cierre mecánico
+2º Las bombas sobre bancada  antes de ponerlas en marcha hay que grabar un video  donde 
+se vea  alineado el acoplamiento  de los ejes
+3.1 PUESTA EN MARCHANOMBRE OBRA: MERCADONA GRAN VIA - LPC
+OBERSERVACIONES
+7.  PARAMETRIZAR EQUIPOS(EN OBRA)
+8.  IMPORTANTE PUESTA EN MARCHA BOMBAS
+
+=== PAGE 7 ===
+PROY: PROY26/3 HECHO
+FECHA INCICIO:                                                                                                        1. DOCUMENTACIÓNOBERSERVACIONES
+7.  PARAMETRIZAR EQUIPOS(EN OBRA)NOMBRE OBRA: MERCADONA GRAN VIA - LPC
+
+=== PAGE 8 ===
+NOMBRE OBRA: MERCADONA GRAN VIA - LPC
+PROY: PROY26/3
+DESIGNACIÓNPOTENCIA
+(KW)INTENSIDAD 
+NOMINAL
+(A)PROTECCIÓN 
+INTENSIDAD
+(A)INTENSIDAD 
+CONSUMIDA
+(A)INTENSIDAD 
+REGULADA
+(A)TABLA DE CONSUMOS
+
+
+=== PAGE 9 ===
+NOMBRE OBRA:MERCADONA GRAN VIA - LPC Nº ORDEN:
+MATERIAL CODIGO SALIDA MAT. ENTRADA MAT. MAT. GASTADO
+4X1.5 8598
+4X2.5 3339
+2X1 8002
+4X1 1034
+3X1 3338
+2X0,75AP 19388
+3X1 AP 13031
+8X1 AP 18921
+12X1 AP 18922
+16X1.5 AP 16301
+24X1.5AP 12554
+4X2.5 AP 12300
+4X6 AP 13046
+4X10 AP 130410
+4X16 AP 17292
+4X25 AP 12577
+16X1.5 AP 16301
+12X1 AP 18922
+25x1.5AP            19387
+REJIBAND 60X60 4130
+REJIBAND 100X60 56416
+REJIBAND 150X60 5494894
+REJIBAND 200X60 3787
+SOPORTE REJIBAND 100 7800
+SOPORTE REJIBAND 150 5188
+TUBO FLEXIBLE FLEXL 16 19125
+TUBO FLEXIBLE FLEXL 28 19126
+TUBO FLEXIBLE FLEXL 42 19127
+RACOR FLEXL 16 19128
+RACOR FLEXL 28 19129
+RACOR FLEXL 42 19130
+PRENSAESTOPA 16 2639
+PRENSAESTOPA 20 9475
+PRENSAESTOPA 25 2637
+PRENSAESTOPA 32 2638
+CONTRATUERCA 16 5935
+CONTRATUERCA 20 9476
+CONTRATUERCA 25 1863
+CONTRATUERCA 32 2964
+TUBO PVC 20 4179
+TUBO PVC 25 16091
+TUBO PVC 32 4133
+TUBO PVC 40 4132
+TUBO PVC 50 4108
+CAJA 40X80 17640
+CAJA 80X80 16092
+CAJA 155X110 9390
+CAJA 220X170 2767
+
+=== PAGE 10 ===
+CAJA 105X105X55 9380
+ARMARIO TEKPAN 300X300 20880
+BORNA AZUL 2,5 PUSHIN 13204
+BORNA GRIS 2,5 PUSHIN 13115
+BORNA TT 2,5 PUSHIN 13205
+SOPORTE WURTH 400 12278
+SOPORTE WURTH 300 12277
+SOPORTE WURTH 500 15059
+BRIDAS NYLON 4643
+CARRIL DIN 10145
+GRAPAS FLEXL 16 19131
+GRAPAS FLEXL 28 19132
+GRAPAS FLEXL 42 19133
+FICHAS EMPALME 6 MM 1699
+FICHAS EMPALME 10 MM 1693
+FICHAS EMPALME 16 MM 1694
+FICHAS EMPALME 25 MM 1697
+RACOR BLINDADO 20  E39
+RACOR BLINDADO 25  E40
+RACOR BLINDADO 40 E41
+RACOR BLINDADO 50 E42
+CURVA FLEXIBLE 20 11918
+CURVA FLEXIBLE 25 12433
+CURVA FLEXIBLE 32 11919
+CURVA FLEXIBLE 40 11920
+CURVA FLEXIBLE 50 18052
+CAJA METAL 500X300X135 21851
+TIRAFONDO HEXAGONAL 8X50 40085
+TIRAFONDO HEXAGONAL 8X60 40086
+TIRAFONDO HEXAGONAL 8X80 40088
+TACO 10X61 6011
+ABRAZADERA ISOFONICA 22 6085
+ABRAZADERA ISOFONICA 28 13365
+ABRAZADERA ISOFONICA 35 5720
+ABRAZADERA ISOFONICA 40 6086
+ABRAZADERA ISOFONICA 48 1258
+ABRAZADERA ISOFONICA 54 4988
+TUBO AIRE POLIAMIDA 12X10 420
+TUBO AIRE POLIAMIDA 10X8 419
+TUBO AIRE POLIAMIDA 8X6 422
+curva flexible pvc 20 11918
+PASAMUROS PASACABLES 17orificios E44
+PASAMUROS PASACABLES 12orificios 16175
+TACOBRIDA nylon M8 7434
+TORNILLO REJIBAND COMPLETO E000225
+ARANDELA TORNILLO REJIBAND 19149
+GRAPA SUJECCION CENTRAL REJIBAND 20933
+OMEGA REJIBAND 20932
+TORNILLO M6 CABEZA ESTRELLA 11191
+CINTA AISLANTE  AMAR/VERD 8854
+
+=== PAGE 11 ===
+CINTA AISLANTE  NEGRO 35214
+CINTA AISLANTE MARRON 3616
+CINTA AISLANTE GRIS 65987
+CINTA AISLANTE AZUL 654789
+CINTA AISLANTE BLANCA 658954
+TORNILLO M6 INOX HEX. 6X20 5508
+TORNILLO M6 INOX HEX. 6X25 5453
+TORNILLO M6 INOX. HEX. 6X30 6067
+TORNILLO M6 INOX. HEX. 6X35 5723
+ARANDELA NORMAL M6 6024
+ARANDELA ANCHA M6 45287
+TUERCA NORMAL M6 1562
+TUERCA FRENO M6 4138
+TORNILLO M8 HEX. 8X20 12042
+TORNILLO M8 HEX. 8X25 10977
+TORNILLO M8 HEX. 8X30 9831
+TORNILLO M8 HEX. 8X40 15543
+ARANDELA NORMAL M8 96045
+ARANDELA ANCHA M8 1160
+TUERCA NORMAL M8 3210
+TUERCA FRENO M8 12043
+ROSCACHAPA HEX. CORTO 1120
+ROSCACHAPA HEX. LARGO 5943
+TIRAFONDO DLOBLE ROSCA (HIERRO) 6533
+TIRAFONDO DOBLE ROSCA (PARED) 40093
+TORNILLO M4 ALLEN 4X16 22515
+TORNILLO M4 ALLEN 4X20 5905
+TORNILLO M4 ALLEN 4X25 4777
+TORNILLO M4 ALLEN 4X30 3981
+TORNILLO M4 ALLEN 4X40 7733
+TORNILLO M4 ALLEN AVELLANADO 4X16 161631
+TUERCA M4 NORMAL 7734
+TUERCA M4 FRENO 11200
+ARANDELA M4 7735
+CAJA METAL 400X200X135 E000194
+REDUCCIÓN 20 A 16 13888
+REDUCCIÓN 25 A 20 20301
+REDUCCIÓN 32 A 25 15779
+REDUCCIÓN 40 A 25 17183
+REDUCCIÓN 40 A 32 19229
+REDUCCIÓN 50 A 32 20300
+REDUCCIÓN 50 A 40 20201
+SOPORTE RECA 240mm 23924
+SOPORTE RECA 320mm 23925
+SOPORTE RECA 420mm 23926
+CARRIL ELMO PERFIL PERFORADO 20X10 20978
+BORNAS GRISES 35mm^2 6419
+BORNAS TIERRA 35MM^2 6420
+

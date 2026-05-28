@@ -154,7 +154,7 @@ export const CUADRO_ELECTRICO_TEMPLATE = {
           ok: false,
           noOk: false,
           notaTarea: '',
-          indice: "3.10",
+          indice: "3.11",
           sinCheck: true,
           subtareas: [
             { descripcion: "Barra de tierras (pletina cobre)", ok: false, noOk: false, notaTarea: '' },
@@ -162,18 +162,18 @@ export const CUADRO_ELECTRICO_TEMPLATE = {
             { descripcion: "Canal entrada cables/prensaestopa/pasamuros", ok: false, noOk: false, notaTarea: '' }
           ]
         },
-        { descripcion: "Pegatinas GTM y Riesgo eléctrico", ok: false, noOk: false, notaTarea: '', indice: "3.11" },
-        { descripcion: "Actualizar esquemas eléctricos (Autocad)", ok: false, noOk: false, notaTarea: '', indice: "3.12" },
-        { descripcion: "Soporte/fijación cuadro", ok: false, noOk: false, notaTarea: '', indice: "3.13" },
-        { descripcion: "Comprobar cuadro (sin tensión)", ok: false, noOk: false, notaTarea: '', indice: "3.14" },
-        { descripcion: "Comprobar cuadro (con tensión)", ok: false, noOk: false, notaTarea: '', indice: "3.15" },
-        { descripcion: "Limpieza cuadro", ok: false, noOk: false, notaTarea: '', indice: "3.16" },
+        { descripcion: "Pegatinas GTM y Riesgo eléctrico", ok: false, noOk: false, notaTarea: '', indice: "3.12" },
+        { descripcion: "Actualizar esquemas eléctricos (Autocad)", ok: false, noOk: false, notaTarea: '', indice: "3.13" },
+        { descripcion: "Soporte/fijación cuadro", ok: false, noOk: false, notaTarea: '', indice: "3.14" },
+        { descripcion: "Comprobar cuadro (sin tensión)", ok: false, noOk: false, notaTarea: '', indice: "3.15" },
+        { descripcion: "Comprobar cuadro (con tensión)", ok: false, noOk: false, notaTarea: '', indice: "3.16" },
+        { descripcion: "Limpieza cuadro", ok: false, noOk: false, notaTarea: '', indice: "3.17" },
         {
           descripcion: "A dejar dentro cuadro",
           ok: false,
           noOk: false,
           notaTarea: '',
-          indice: "3.17",
+          indice: "3.18",
           sinCheck: true,
           subtareas: [
             { descripcion: "Esquemas", ok: false, noOk: false, notaTarea: '' },
@@ -184,12 +184,12 @@ export const CUADRO_ELECTRICO_TEMPLATE = {
             { descripcion: "Parte materiales obras", ok: false, noOk: false, notaTarea: '' }
           ]
         },
-        { descripcion: "Rellenar orden y parte horas (PYME)", ok: false, noOk: false, notaTarea: '', indice: "3.18" },
-        { descripcion: "Fotos cuadro eléctrico (Subir a su carpeta)", ok: false, noOk: false, notaTarea: '', indice: "3.19" },
-        { descripcion: "Guardar fotos cuadro + documentación", ok: false, noOk: false, notaTarea: '', indice: "3.20" },
-        { descripcion: "Envolver/empaquetar cuadro (poner nombre obra)", ok: false, noOk: false, notaTarea: '', indice: "3.21" },
-        { descripcion: "Escanear documentos (Subir a oficina)", ok: false, noOk: false, notaTarea: '', indice: "3.22" },
-        { descripcion: "Imprimir cartel de sacar albarán" , ok: false, noOk: false, notaTarea: '', indice: "3.23" }
+        { descripcion: "Rellenar orden y parte horas (PYME)", ok: false, noOk: false, notaTarea: '', indice: "3.19" },
+        { descripcion: "Fotos cuadro eléctrico (Subir a su carpeta)", ok: false, noOk: false, notaTarea: '', indice: "3.20" },
+        { descripcion: "Guardar fotos cuadro + documentación", ok: false, noOk: false, notaTarea: '', indice: "3.21" },
+        { descripcion: "Envolver/empaquetar cuadro (poner nombre obra)", ok: false, noOk: false, notaTarea: '', indice: "3.22" },
+        { descripcion: "Escanear documentos (Subir a oficina)", ok: false, noOk: false, notaTarea: '', indice: "3.23" },
+        { descripcion: "Imprimir cartel de sacar albarán" , ok: false, noOk: false, notaTarea: '', indice: "3.24" }
       ]
     },
     {

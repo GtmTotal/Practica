@@ -4,7 +4,8 @@
   import { progresoPorSeccion } from "$lib/utils/informe-utils";
   import ListaTareas from "./ListaTareas.svelte";
   import GaleriaFotos from "./GaleriaFotos.svelte";
-
+  import { tecnicosService } from "$lib/services/stores/tecnicos";
+ 
   let {
     seccion,
     idxSeccion,
@@ -28,11 +29,17 @@
     onActualizarDescripcion: (fotoIdx: number, desc: string) => void;
     tipoFormulario?: string;
   } = $props();
-
+ 
   let fileInput: HTMLInputElement | null = $state(null);
   let cardRef: HTMLDivElement | null = $state(null);
   let wasColapsada = true;
-
+ 
+  function asignarTecnicoSeccion(tecnico: string) {
+    seccion.tareas.forEach(t => {
+      t.tecnico = tecnico;
+    });
+  }
+ 
   $effect(() => {
     const c = colapsada;
     if (wasColapsada && !c && cardRef) {
@@ -41,7 +48,7 @@
     }
     wasColapsada = c;
   });
-
+ 
   let parsed = $derived.by(() => {
     const match = seccion.titulo.match(/^(\d+)\s*[-.]?\s*(.+)$/);
     if (match) {
@@ -49,7 +56,7 @@
     }
     return { numero: String(idxSeccion + 1), texto: seccion.titulo };
   });
-
+ 
   let numeroSeccion = $derived(parsed.numero);
   let textoSeccion = $derived(parsed.texto);
   let progSec = $derived(progresoPorSeccion(seccion));
@@ -61,6 +68,14 @@
       <span class="seccion-texto seccion-texto--cuadro">{textoSeccion}</span>
     </div>
     <div class="seccion-header-right">
+      <div class="seccion-tecnico-assign">
+        <select onchange={(e) => asignarTecnicoSeccion(e.currentTarget.value)} aria-label="Asignar técnico a toda la sección">
+          <option value="">Asignar técnico a todos...</option>
+          {#each tecnicosService.lista as tecnico}
+            <option value={tecnico}>{tecnico}</option>
+          {/each}
+        </select>
+      </div>
       <span class="seccion-progreso">{progSec.completadas}/{progSec.total}</span>
       <span class="icon-toggle" class:is-open={!colapsada}>{!colapsada ? '▼' : '▶'}</span>
     </div>
@@ -282,27 +297,48 @@
   flex-shrink: 0;
 }
 
-.btn-foto--cuadro:hover {
-  background: var(--primary, #1e3a5f);
-  color: white;
-  transform: none;
-  box-shadow: none;
-}
-
-.fotos-seccion--cuadro {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 16px 0 8px;
-  margin-top: 8px;
-  border-top: 1px solid #f1f5f9;
-}
-
-@media (max-width: 600px) {
-  .btn-foto--cuadro {
-    width: 120px;
-    height: 120px;
-    font-size: 0.75rem;
+  .btn-foto--cuadro:hover {
+    background: var(--primary, #1e3a5f);
+    color: white;
+    transform: none;
+    box-shadow: none;
   }
-}
+ 
+  .fotos-seccion--cuadro {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 0 8px;
+    margin-top: 8px;
+    border-top: 1px solid #f1f5f9;
+  }
+ 
+  .seccion-tecnico-assign {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+ 
+  .seccion-tecnico-assign select {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 6px;
+    border: 1px solid var(--gray-300);
+    background: white;
+    color: var(--gray-600);
+    outline: none;
+    cursor: pointer;
+  }
+  
+  .seccion-tecnico-assign select:hover {
+    border-color: var(--primary);
+  }
+ 
+  @media (max-width: 600px) {
+    .btn-foto--cuadro {
+      width: 120px;
+      height: 120px;
+      font-size: 0.75rem;
+    }
+  }
 </style>

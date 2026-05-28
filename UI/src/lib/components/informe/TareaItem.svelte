@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { TareaState } from '$lib/services/domain/form-initialization.svelte';
   import DatosMotor from './DatosMotor.svelte';
-
+  import { tecnicosService } from '$lib/services/stores/tecnicos';
+ 
   let {
     tarea = $bindable(),
     idxTarea,
@@ -17,14 +18,14 @@
     tipo: string;
     mostrarTitulo?: boolean;
   } = $props();
-
-
+ 
+ 
   function toggleOk() {
     if (tarea.ok) {
       tarea.noOk = false;
     }
   }
-
+ 
   function toggleNoOk() {
     if (tarea.noOk) {
       tarea.ok = false;
@@ -50,22 +51,30 @@
   </div>
 
   {#if !tarea.sinCheck}
-    <div class="inspeccion-controles inspeccion-controles--cuadro">
-       <label class="check-inspeccion ok" class:checked={tarea.ok}>
-         <input type="checkbox" bind:checked={tarea.ok} onchange={toggleOk} aria-label="OK">
-         <span class="box-icon">
-           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Check"><polyline points="20 6 9 17 4 12"/></svg>
-         </span>
-         <span class="box-label">OK</span>
-       </label>
-       <label class="check-inspeccion nook" class:checked={tarea.noOk}>
-         <input type="checkbox" bind:checked={tarea.noOk} onchange={toggleNoOk} aria-label="NO OK">
-         <span class="box-icon">
-           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Warning"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-         </span>
-         <span class="box-label">{#if tipo === 'cuadro_electrico'}REVISAR{:else}NO OK{/if}</span>
-       </label>
-    </div>
+   <div class="inspeccion-controles inspeccion-controles--cuadro">
+        <div class="tecnico-selector">
+          <select bind:value={tarea.tecnico} aria-label="Asignar técnico">
+            <option value="">Técnico...</option>
+            {#each tecnicosService.lista as tecnico}
+              <option value={tecnico}>{tecnico}</option>
+            {/each}
+          </select>
+        </div>
+        <label class="check-inspeccion ok" class:checked={tarea.ok}>
+          <input type="checkbox" bind:checked={tarea.ok} onchange={toggleOk} aria-label="OK">
+          <span class="box-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Check"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <span class="box-label">OK</span>
+        </label>
+        <label class="check-inspeccion nook" class:checked={tarea.noOk}>
+          <input type="checkbox" bind:checked={tarea.noOk} onchange={toggleNoOk} aria-label="NO OK">
+          <span class="box-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Warning"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </span>
+          <span class="box-label">{#if tipo === 'cuadro_electrico'}REVISAR{:else}NO OK{/if}</span>
+        </label>
+     </div>
   {/if}
 
   <div class="tarea-extra-row tarea-extra-row--cuadro">
@@ -209,6 +218,28 @@
     margin-top: 8px;
     margin-bottom: 0;
     justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .tecnico-selector {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+  }
+
+  .tecnico-selector select {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--gray-200);
+    background: white;
+    color: var(--gray-600);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .tecnico-selector select:focus {
+    border-color: var(--primary);
   }
 
   .check-inspeccion {

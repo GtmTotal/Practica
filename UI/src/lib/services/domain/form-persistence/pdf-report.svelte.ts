@@ -26,6 +26,7 @@ export interface PuntoPDF {
   ok: boolean;
   noOk: boolean;
   notaPunto: string;
+  tecnico: string;
   amperios: string;
   hz: string;
   bar: string;
@@ -271,26 +272,31 @@ class ServicioReporteDocumento {
 
   private buildPuntoContent(punto: PuntoPDF): any {
     const content: any[] = [{ text: punto.descripcionManual, style: 'textoTarea' }];
+    
+    if (punto.tecnico) {
+      content.push({ text: `Técnico: ${punto.tecnico}`, fontSize: 8, color: '#64748b', italics: true, margin: [0, 0, 0, 2] });
+    }
+ 
     const medidas: string[] = [];
     if (punto.amperios) medidas.push(`${punto.amperios} A`);
     if (punto.hz) medidas.push(`${punto.hz} Hz`);
     if (punto.bar) medidas.push(`${punto.bar} Bar`);
     if (punto.porcentaje) medidas.push(`${punto.porcentaje}%`);
-
+ 
     if (medidas.length > 0) {
       content.push({ text: medidas.join(' · '), fontSize: 8, color: '#1e40af', margin: [0, 1, 0, 1] });
     }
-
+ 
     if (punto.bombasQuimicas?.length > 0) {
       for (const bomba of punto.bombasQuimicas) {
         content.push({ text: `• ${bomba.nombre}: ${bomba.amperios || '0'} A / ${bomba.porcentaje || '0'}%`, fontSize: 8, color: '#f59e0b', margin: [0, 1, 0, 1] });
       }
     }
-
+ 
     if (punto.notaPunto?.trim()) {
       content.push({ text: `Nota: ${punto.notaPunto}`, style: 'textoNota' });
     }
-
+ 
     return { stack: content };
   }
 

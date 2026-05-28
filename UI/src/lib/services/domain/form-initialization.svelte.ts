@@ -20,6 +20,7 @@ export interface TareaState {
   ok: boolean;
   noOk: boolean;
   notaTarea: string;
+  tecnico: string;
   orden?: number;
   campos: CampoState[];
   bombasQuimicas?: BombaState[];
@@ -34,6 +35,7 @@ export interface SubTareaState {
   ok: boolean;
   noOk: boolean;
   notaTarea: string;
+  tecnico: string;
   sinCheck?: boolean;
 }
 
@@ -133,28 +135,31 @@ class ServicioInicializacionFormulario {
           return grupoBomba;
         });
         
-        tareaGroup = {
-          descripcion: tareaTemplate.descripcion,
-          titulo: tareaTemplate.titulo,
-          rev: false, ok: false, noOk: false, notaTarea: '',
-          grupo: tareaTemplate.grupo,
-          campos: (tareaTemplate.campos || []).map((c: any) => this.crearCampo(c)),
-          bombasQuimicas,
-          subtareas: (tareaTemplate.subtareas || []).map((st: any) => ({
-            descripcion: st.descripcion,
-            ok: false,
-            noOk: false,
-            notaTarea: '',
-            sinCheck: st.sinCheck
-          })),
-          indice: tareaTemplate.indice,
-          sinCheck: tareaTemplate.sinCheck
-        };
+          tareaGroup = {
+            descripcion: tareaTemplate.descripcion,
+            titulo: tareaTemplate.titulo,
+            rev: false, ok: false, noOk: false, notaTarea: '',
+            tecnico: '',
+            grupo: tareaTemplate.grupo,
+            campos: (tareaTemplate.campos || []).map((c: any) => this.crearCampo(c)),
+            bombasQuimicas,
+            subtareas: (tareaTemplate.subtareas || []).map((st: any) => ({
+              descripcion: st.descripcion,
+              ok: false,
+              noOk: false,
+              notaTarea: '',
+              tecnico: '',
+              sinCheck: st.sinCheck
+            })),
+            indice: tareaTemplate.indice,
+            sinCheck: tareaTemplate.sinCheck
+          };
       } else {
         tareaGroup = {
           descripcion: tareaTemplate.descripcion,
           titulo: tareaTemplate.titulo,
           rev: false, ok: false, noOk: false, notaTarea: '',
+          tecnico: '',
           grupo: tareaTemplate.grupo,
           campos: (tareaTemplate.campos || []).map((c: any) => this.crearCampo(c)),
           subtareas: (tareaTemplate.subtareas || []).map((st: any) => ({

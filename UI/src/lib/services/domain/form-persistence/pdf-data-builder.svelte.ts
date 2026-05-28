@@ -17,25 +17,32 @@ class ServicioConstruccionDatosDocumento {
           tipoSeccion: s.tipo ?? '',
           observaciones: s.observaciones ?? '',
           fotos: fotosPDF.filter(f => f.base64),
-          puntos: (s.tareas ?? []).map((t: any, pIdx: number) => ({
-            idManual: `${s.prefijo}.${pIdx + 1}`,
-            descripcionManual: t.descripcion ?? '',
-            revisado: t.rev ?? false,
-            ok: t.ok ?? false,
-            noOk: t.noOk ?? false,
-            notaPunto: t.notaTarea ?? '',
-            amperios: this.getValorCampo(t.campos, 'amperios'),
-            hz: this.getValorCampo(t.campos, 'hz'),
-            bar: this.getValorCampo(t.campos, 'bar'),
-            porcentaje: this.getValorCampo(t.campos, 'porcentaje'),
-            bombasQuimicas: t.bombasQuimicas && Array.isArray(t.bombasQuimicas)
-              ? t.bombasQuimicas.map((b: any) => ({
-                  nombre: b.nombre,
-                  amperios: b.amperios,
-                  porcentaje: b.porcentaje
-                }))
-              : []
-          }))
+            puntos: (s.tareas ?? []).map((t: any, pIdx: number) => {
+              const subtareas = t.subtareas || [];
+              const tecnicosAsignados = [t.tecnico, ...subtareas.map((st: any) => st.tecnico)].filter(Boolean);
+              const tecnicosUnicos = [...new Set(tecnicosAsignados)].join(', ');
+              
+              return {
+                idManual: `${s.prefijo}.${pIdx + 1}`,
+                descripcionManual: t.descripcion ?? '',
+                revisado: t.rev ?? false,
+                ok: t.ok ?? false,
+                noOk: t.noOk ?? false,
+                notaPunto: t.notaTarea ?? '',
+                tecnico: tecnicosUnicos,
+                amperios: this.getValorCampo(t.campos, 'amperios'),
+                hz: this.getValorCampo(t.campos, 'hz'),
+                bar: this.getValorCampo(t.campos, 'bar'),
+                porcentaje: this.getValorCampo(t.campos, 'porcentaje'),
+                bombasQuimicas: t.bombasQuimicas && Array.isArray(t.bombasQuimicas)
+                  ? t.bombasQuimicas.map((b: any) => ({
+                      nombre: b.nombre,
+                      amperios: b.amperios,
+                      porcentaje: b.porcentaje
+                    }))
+                  : []
+              };
+            })
         };
       })
     );

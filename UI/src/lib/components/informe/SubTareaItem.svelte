@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { SubTareaState } from '$lib/services/domain/form-initialization.svelte';
-
+  import { tecnicosService } from '$lib/services/stores/tecnicos';
+ 
   let {
     subtarea = $bindable(),
     indiceCompleto
@@ -8,7 +9,7 @@
     subtarea: SubTareaState;
     indiceCompleto: string;
   } = $props();
-
+ 
   function toggleOk() {
     if (subtarea.ok) {
       subtarea.ok = false;
@@ -17,7 +18,7 @@
       subtarea.noOk = false;
     }
   }
-
+ 
   function toggleNoOk() {
     if (subtarea.noOk) {
       subtarea.noOk = false;
@@ -33,6 +34,15 @@
     <span class="subtarea-indice">{ indiceCompleto }</span>
     <p class="subtarea-descripcion">{ subtarea.descripcion }</p>
     
+    <div class="subtarea-tecnico-selector">
+      <select bind:value={subtarea.tecnico} aria-label="Asignar técnico">
+        <option value="">Técnico...</option>
+        {#each tecnicosService.lista as tecnico}
+          <option value={tecnico}>{tecnico}</option>
+        {/each}
+      </select>
+    </div>
+
     {#if !subtarea.sinCheck}
       <div class="subtarea-controles">
         <button class="sub-btn sub-btn-ok" class:checked={subtarea.ok} onclick={toggleOk}>
@@ -66,7 +76,24 @@
     gap: 10px;
     flex-wrap: wrap;
   }
-
+ 
+  .subtarea-tecnico-selector {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+ 
+  .subtarea-tecnico-selector select {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 6px;
+    border: 1px solid var(--gray-200);
+    background: white;
+    color: var(--gray-600);
+    outline: none;
+    cursor: pointer;
+  }
+ 
   .subtarea-indice {
     font-weight: 700;
     font-size: 0.75rem;

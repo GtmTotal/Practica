@@ -1196,26 +1196,6 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   color: #94a3b8;
 }
 
-.btn-nuevo-cuadro {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 10px;
-  background: #1e3a5f;
-  color: #ffffff;
-  font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-nuevo-cuadro:hover {
-  background: #152942;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(30,58,95,0.25);
-}
 
 /* ============================================================
    RESPONSIVE TWEAKS
