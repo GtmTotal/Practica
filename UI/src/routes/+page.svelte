@@ -68,6 +68,11 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
     navService.persist();
   }
 
+  async function crearCuatrimestre() {
+    await cuatrimestreService.crearCuatrimestreConUI(informesMantenimiento);
+    await formPersistenceService.cargarHistorial();
+  }
+
   function cerrarDetalle() {
     navService.cuatrimestreSeleccionado = '';
     navService.persist();
@@ -76,10 +81,13 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   }
 
   function switchTab(tab: 'mantenimiento' | 'cuadros') {
+    const url = new URL($page.url);
     if (tabActual === tab) {
+      url.searchParams.delete('tab');
       tabActual = null;
       navService.tabSeleccionado = null;
     } else {
+      url.searchParams.set('tab', tab);
       tabActual = tab;
       navService.tabSeleccionado = tab;
     }
@@ -89,6 +97,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
       navService.cuatrimestreSeleccionado = '';
     }
     navService.persist();
+    goto(url.pathname + url.search, { replaceState: true, noScroll: true });
   }
 
   async function toggleAdmin() {
@@ -338,11 +347,19 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
         </DsMobileHeader>
       </div>
 
-      <div class="dash-panel-body">
-        {#if tabActual === 'mantenimiento'}
-          <!-- ===== MANTENIMIENTO: Cuatrimestre list ===== -->
-          <div class="dash-section-label">CUATRIMESTRES</div>
-          {#if cuatrimestres.length === 0}
+       <div class="dash-panel-body">
+         {#if tabActual === 'mantenimiento'}
+           <!-- ===== MANTENIMIENTO: Cuatrimestre list ===== -->
+           <div class="dash-section-label">CUATRIMESTRES</div>
+
+           <div class="ce-header-row">
+             <span class="ce-count">{cuatrimestres.length} cuatrimestre{cuatrimestres.length !== 1 ? 's' : ''}</span>
+             <button class="btn-nuevo-cuadro" onclick={crearCuatrimestre}>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Añadir"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Añadir Cuatrimestre
+             </button>
+           </div>
+
+           {#if cuatrimestres.length === 0}
             <div class="empty-state">No hay informes guardados.</div>
           {:else}
             <div class="dash-cuatrimestres-list">

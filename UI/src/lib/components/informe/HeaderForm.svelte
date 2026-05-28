@@ -310,6 +310,16 @@
     padding-top: 8px;
   }
 
+  .cuadro-extra-fields {
+    flex-direction: row;
+    gap: 4px;
+  }
+
+  .cuadro-extra-fields .input-field-inline {
+    flex: 1;
+    padding: 4px 8px;
+  }
+
   .input-field-inline {
     width: 100%;
   }
