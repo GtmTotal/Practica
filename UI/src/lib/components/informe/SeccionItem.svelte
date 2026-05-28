@@ -30,6 +30,17 @@
   } = $props();
 
   let fileInput: HTMLInputElement | null = $state(null);
+  let cardRef: HTMLDivElement | null = $state(null);
+  let wasColapsada = true;
+
+  $effect(() => {
+    const c = colapsada;
+    if (wasColapsada && !c && cardRef) {
+      const y = cardRef.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+    wasColapsada = c;
+  });
 
   let parsed = $derived.by(() => {
     const match = seccion.titulo.match(/^(\d+)\s*[-.]?\s*(.+)$/);
@@ -44,7 +55,7 @@
   let progSec = $derived(progresoPorSeccion(seccion));
 </script>
 
-<div class="seccion-card seccion-card--cuadro" id="seccion-{idxSeccion}">
+<div class="seccion-card seccion-card--cuadro" id="seccion-{idxSeccion}" bind:this={cardRef}>
   <button type="button" class="seccion-titulo seccion-titulo--cuadro" onclick={onToggle}>
     <div class="seccion-titulo-left">
       <span class="seccion-texto seccion-texto--cuadro">{textoSeccion}</span>
@@ -158,6 +169,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+  flex: 1;
 }
 
 .seccion-texto {
@@ -165,6 +178,7 @@
   letter-spacing: 0.02em;
   color: var(--gray-800);
   line-height: 1.3;
+  overflow-wrap: break-word;
 }
 
 .seccion-texto--cuadro {
@@ -173,6 +187,7 @@
   font-size: 0.85rem;
   font-weight: 800;
   color: #1e293b;
+  overflow-wrap: break-word;
 }
 
 .seccion-header-right {
@@ -253,10 +268,18 @@
   color: var(--primary, #1e3a5f);
   border: 1.5px solid var(--primary, #1e3a5f);
   border-radius: 10px;
-  padding: 10px 20px;
+  padding: 0;
   font-weight: 600;
   font-size: 0.8rem;
   box-shadow: none;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .btn-foto--cuadro:hover {
@@ -268,9 +291,18 @@
 
 .fotos-seccion--cuadro {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
   padding: 16px 0 8px;
   margin-top: 8px;
   border-top: 1px solid #f1f5f9;
+}
+
+@media (max-width: 600px) {
+  .btn-foto--cuadro {
+    width: 120px;
+    height: 120px;
+    font-size: 0.75rem;
+  }
 }
 </style>

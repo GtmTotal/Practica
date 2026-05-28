@@ -159,6 +159,8 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
+    min-width: 0;
+    overflow-wrap: break-word;
   }
 
   .tarea-subtitulo {
@@ -167,6 +169,7 @@
     font-weight: 400;
     margin: 0;
     color: #475569;
+    overflow-wrap: break-word;
   }
 
   .tarea-subtitulo--cuadro {
@@ -180,6 +183,7 @@
     line-height: 1.4;
     font-weight: 400;
     margin: 0;
+    overflow-wrap: break-word;
   }
 
   .tarea-texto--cuadro {

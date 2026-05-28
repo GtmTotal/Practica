@@ -113,6 +113,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .header-title-row {
@@ -120,6 +121,7 @@
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 2px;
+  gap: 8px;
 }
 
 .header-info h1 {
@@ -131,6 +133,7 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+  overflow-wrap: break-word;
 }
 
 .btn-back-minimal {

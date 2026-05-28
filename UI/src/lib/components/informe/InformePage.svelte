@@ -302,6 +302,7 @@
     background: #f8fafc;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
   }
 
   .layout-columns {

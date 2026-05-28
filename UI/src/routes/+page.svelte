@@ -342,19 +342,19 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 
           <!-- Metrics -->
           <div class="dcv-metrics" style="margin-bottom: 20px;">
-            <div class="dcv-metric" class:dcv-metric--active={filtroCuadro === 'todos'} onclick={() => filtroCuadro = 'todos'} role="button" tabindex="0">
+            <div class="dcv-metric" class:dcv-metric--active={filtroCuadro === 'todos'} onclick={() => filtroCuadro = 'todos'} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filtroCuadro = 'todos'; } }} role="button" tabindex="0">
               <span class="dcv-metric-value">{ metricasCuadro.total }</span>
               <span class="dcv-metric-label">Cuadros</span>
             </div>
-            <div class="dcv-metric" class:dcv-metric--active={filtroCuadro === 'completado'} onclick={() => filtroCuadro = 'completado'} role="button" tabindex="0">
+            <div class="dcv-metric" class:dcv-metric--active={filtroCuadro === 'completado'} onclick={() => filtroCuadro = 'completado'} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filtroCuadro = 'completado'; } }} role="button" tabindex="0">
               <span class="dcv-metric-value">{ metricasCuadro.completados }</span>
               <span class="dcv-metric-label">Completados</span>
             </div>
-            <div class="dcv-metric" class:dcv-metric--active={filtroCuadro === 'en-progreso'} onclick={() => filtroCuadro = 'en-progreso'} role="button" tabindex="0">
+            <div class="dcv-metric" class:dcv-metric--active={filtroCuadro === 'en-progreso'} onclick={() => filtroCuadro = 'en-progreso'} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filtroCuadro = 'en-progreso'; } }} role="button" tabindex="0">
               <span class="dcv-metric-value">{ metricasCuadro.enProgreso }</span>
               <span class="dcv-metric-label">En progreso</span>
             </div>
-            <div class="dcv-metric" class:dcv-metric--active={filtroCuadro === 'pendiente'} onclick={() => filtroCuadro = 'pendiente'} role="button" tabindex="0">
+            <div class="dcv-metric" class:dcv-metric--active={filtroCuadro === 'pendiente'} onclick={() => filtroCuadro = 'pendiente'} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filtroCuadro = 'pendiente'; } }} role="button" tabindex="0">
               <span class="dcv-metric-value">{ metricasCuadro.pendientes }</span>
               <span class="dcv-metric-label">Pendientes</span>
             </div>
@@ -437,19 +437,19 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
       <div class="dcv-body">
         <!-- Metrics -->
         <div class="dcv-metrics">
-          <div class="dcv-metric" class:dcv-metric--active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'} role="button" tabindex="0">
+          <div class="dcv-metric" class:dcv-metric--active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filtroSeleccionado = 'todos'; } }} role="button" tabindex="0">
             <span class="dcv-metric-value">{ metricas.total }</span>
             <span class="dcv-metric-label">Centros</span>
           </div>
-          <div class="dcv-metric" class:dcv-metric--active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'} role="button" tabindex="0">
+          <div class="dcv-metric" class:dcv-metric--active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filtroSeleccionado = 'completado'; } }} role="button" tabindex="0">
             <span class="dcv-metric-value">{ metricas.completados }</span>
             <span class="dcv-metric-label">Completados</span>
           </div>
-          <div class="dcv-metric" class:dcv-metric--active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'} role="button" tabindex="0">
+          <div class="dcv-metric" class:dcv-metric--active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filtroSeleccionado = 'en-progreso'; } }} role="button" tabindex="0">
             <span class="dcv-metric-value">{ metricas.enProgreso }</span>
             <span class="dcv-metric-label">En progreso</span>
           </div>
-          <div class="dcv-metric" class:dcv-metric--active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'} role="button" tabindex="0">
+          <div class="dcv-metric" class:dcv-metric--active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filtroSeleccionado = 'pendiente'; } }} role="button" tabindex="0">
             <span class="dcv-metric-value">{ metricas.pendientes }</span>
             <span class="dcv-metric-label">Pendientes</span>
           </div>

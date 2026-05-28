@@ -962,7 +962,7 @@ import { DsMobileHeader } from '$lib/components/design-system';
 .brand-text {
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255,255,255,0.7);
+  color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -1488,70 +1488,6 @@ import { DsMobileHeader } from '$lib/components/design-system';
     background: var(--bg-page);
   }
 
-  .mobile-brand-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-
-  .mobile-brand {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #ffffff;
-  }
-
-  .mobile-brand-arrow {
-    color: #fbbf24;
-    font-size: 14px;
-  }
-
-  .mobile-brand-name {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 1px;
-  }
-
-  .admin-back-link {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #ffffff;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    padding: 6px 12px;
-    border-radius: 6px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s;
-    width: fit-content;
-  }
-
-  .admin-back-link:hover {
-    background: rgba(255,255,255,0.15);
-    transform: translateX(-4px);
-  }
-
-  .mobile-panel-header {
-  background: var(--gradient-header);
-    flex-shrink: 0;
-  }
-
-  .mobile-panel-title {
-    color: #ffffff;
-    font-size: 20px;
-    font-weight: 700;
-    margin: 16px 0 4px;
-  }
-
-  .mobile-panel-subtitle {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 13px;
-    margin: 0 0 12px;
-  }
-
   .mobile-panel-body {
     flex: 1;
     padding: 20px 16px;
@@ -1679,29 +1615,7 @@ import { DsMobileHeader } from '$lib/components/design-system';
     color: #1e293b;
   }
 
-  .mobile-cuatrimestre-header {
-  background: var(--gradient-header);
-    flex-shrink: 0;
-  }
 
-  .mobile-cuatri-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-
-  .mobile-cuatri-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: #ffffff;
-  }
-
-  .mobile-subtitle {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0 0 20px 0;
-  }
 
   .mobile-cuatrimestre-body {
     flex: 1;
