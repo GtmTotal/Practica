@@ -279,39 +279,39 @@ import { DsMobileHeader } from '$lib/components/design-system';
         </header>
 
 
-        <div class="root-menu-grid">
-          <!-- Card Mantenimiento Mercadona -->
-          <button class="root-menu-card" onclick={() => menuPrincipal = 'mantenimiento_mercadona'}>
-            <div class="card-icon icon-maint">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                <path d="M9 14h6"></path>
-                <path d="M9 18h6"></path>
-                <path d="M9 10h6"></path>
-              </svg>
-            </div>
-            <div class="card-info">
-              <h2>Mantenimiento Mercadona</h2>
-              <p>Edición de tareas, cuatrimestres, carga de planillas Excel y control de informes de obras.</p>
-            </div>
-            <div class="card-arrow">➔</div>
-          </button>
-
-          <!-- Card Cuadro Eléctrico -->
-          <button class="root-menu-card" onclick={() => menuPrincipal = 'cuadro_electrico'}>
-            <div class="card-icon icon-electrical">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-              </svg>
-            </div>
-            <div class="card-info">
-              <h2>Cuadros Eléctricos</h2>
-              <p>Gestión de informes de procesos de cuadros eléctricos. Edición de tareas, creación y control de obras.</p>
-            </div>
-            <div class="card-arrow">➔</div>
-          </button>
-        </div>
+         <div class="root-menu-grid">
+           <!-- Card Cuadro Eléctrico -->
+           <button class="root-menu-card" onclick={() => menuPrincipal = 'cuadro_electrico'}>
+             <div class="card-icon icon-electrical">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+               </svg>
+             </div>
+             <div class="card-info">
+               <h2>Cuadros Eléctricos</h2>
+               <p>Gestión de informes de procesos de cuadros eléctricos. Edición de tareas, creación y control de obras.</p>
+             </div>
+             <div class="card-arrow">➔</div>
+           </button>
+ 
+           <!-- Card Mantenimiento Mercadona -->
+           <button class="root-menu-card" onclick={() => menuPrincipal = 'mantenimiento_mercadona'}>
+             <div class="card-icon icon-maint">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                 <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                 <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                 <path d="M9 14h6"></path>
+                 <path d="M9 18h6"></path>
+                 <path d="M9 10h6"></path>
+               </svg>
+             </div>
+             <div class="card-info">
+               <h2>Mantenimiento Mercadona</h2>
+               <p>Edición de tareas, cuatrimestres, carga de planillas Excel y control de informes de obras.</p>
+             </div>
+             <div class="card-arrow">➔</div>
+           </button>
+         </div>
 
         <div class="root-menu-footer">
           <button class="btn-root-logout" onclick={volverAlDashboard}>Ver panel técnicos</button>

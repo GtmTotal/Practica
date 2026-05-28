@@ -9,7 +9,6 @@ import { cuatrimestreService } from '$lib/services/stores/cuatrimestre.svelte';
 import { formPersistenceService } from '$lib/services/domain/form-persistence.svelte';
 import { formInitService } from '$lib/services/domain/form-initialization.svelte';
 import { databaseService } from '$lib/services/api/database.svelte';
-import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectricoModal.svelte';
 import ProgressBar from '$lib/components/ProgressBar.svelte';
 import { DsMobileHeader } from '$lib/components/design-system';
 import type { InformeGuardado } from '$lib/types/informe.interface';
@@ -29,7 +28,6 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   let cuatrimestres = $derived(cuatrimestreService.getInformesPorCuatrimestre(informesMantenimiento));
 
   // Cuadro Eléctrico state
-  let showCrearCuadroModal = $state(false);
   let filtroCuadro = $state('todos');
   let informesCuadroFiltrados = $derived.by(() => {
     if (filtroCuadro === 'todos') return informesCuadro;
@@ -67,12 +65,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
     navService.cuatrimestreSeleccionado = clave;
     navService.persist();
   }
-
-  async function crearCuatrimestre() {
-    await cuatrimestreService.crearCuatrimestreConUI(informesMantenimiento);
-    await formPersistenceService.cargarHistorial();
-  }
-
+ 
   function cerrarDetalle() {
     navService.cuatrimestreSeleccionado = '';
     navService.persist();
@@ -284,21 +277,21 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
         <div class="tab-switcher">
           <button
             class="tab-btn"
-            class:active={tabActual === 'mantenimiento'}
-            onclick={() => switchTab('mantenimiento')}>
-            <span class="tab-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Mantenimiento"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
-            </span>
-            <span class="tab-text">Mantenimientos Mercadona</span>
-          </button>
-          <button
-            class="tab-btn"
             class:active={tabActual === 'cuadros'}
             onclick={() => switchTab('cuadros')}>
             <span class="tab-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Cuadros Eléctricos"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
             </span>
             <span class="tab-text">Cuadros Eléctricos</span>
+          </button>
+          <button
+            class="tab-btn"
+            class:active={tabActual === 'mantenimiento'}
+            onclick={() => switchTab('mantenimiento')}>
+            <span class="tab-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Mantenimiento"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+            </span>
+            <span class="tab-text">Mantenimientos Mercadona</span>
           </button>
         </div>
       </div>
@@ -323,27 +316,27 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
           showAdminButton={true}
           onAdminClick={toggleAdmin}
         >
-          <!-- Tab Switcher para mobile -->
-          <div class="tab-switcher-mobile">
-            <button
-              class="tab-btn mobile"
-              class:active={tabActual === 'mantenimiento'}
-              onclick={() => switchTab('mantenimiento')}>
-              <span class="tab-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Mantenimiento"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
-              </span>
-              <span class="tab-text">Mantenimientos</span>
-            </button>
-            <button
-              class="tab-btn mobile"
-              class:active={tabActual === 'cuadros'}
-              onclick={() => switchTab('cuadros')}>
-              <span class="tab-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Cuadros Eléctricos"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-              </span>
-              <span class="tab-text">Cuadros</span>
-            </button>
-          </div>
+           <!-- Tab Switcher para mobile -->
+           <div class="tab-switcher-mobile">
+             <button
+               class="tab-btn mobile"
+               class:active={tabActual === 'cuadros'}
+               onclick={() => switchTab('cuadros')}>
+               <span class="tab-icon">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Cuadros Eléctricos"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+               </span>
+               <span class="tab-text">Cuadros</span>
+             </button>
+             <button
+               class="tab-btn mobile"
+               class:active={tabActual === 'mantenimiento'}
+               onclick={() => switchTab('mantenimiento')}>
+               <span class="tab-icon">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Mantenimiento"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+               </span>
+               <span class="tab-text">Mantenimientos</span>
+             </button>
+           </div>
         </DsMobileHeader>
       </div>
 
@@ -351,14 +344,6 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
          {#if tabActual === 'mantenimiento'}
            <!-- ===== MANTENIMIENTO: Cuatrimestre list ===== -->
            <div class="dash-section-label">CUATRIMESTRES</div>
-
-           <div class="ce-header-row">
-             <span class="ce-count">{cuatrimestres.length} cuatrimestre{cuatrimestres.length !== 1 ? 's' : ''}</span>
-             <button class="btn-nuevo-cuadro" onclick={crearCuatrimestre}>
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Añadir"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Añadir Cuatrimestre
-             </button>
-           </div>
-
            {#if cuatrimestres.length === 0}
             <div class="empty-state">No hay informes guardados.</div>
           {:else}
@@ -399,12 +384,9 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
           </div>
 
            <!-- Header row -->
-          <div class="ce-header-row">
-            <span class="ce-count">{informesCuadroFiltrados.length} cuadro{informesCuadroFiltrados.length !== 1 ? 's' : ''}</span>
-            <button class="btn-nuevo-cuadro" onclick={() => showCrearCuadroModal = true}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Añadir"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuevo Cuadro
-            </button>
-          </div>
+           <div class="ce-header-row">
+             <span class="ce-count">{informesCuadroFiltrados.length} cuadro{informesCuadroFiltrados.length !== 1 ? 's' : ''}</span>
+           </div>
 
           <!-- Cards -->
           {#if informesCuadroFiltrados.length === 0}
@@ -524,13 +506,6 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
     </div>
   </main>
 </div>
-
-{#if showCrearCuadroModal}
-  <CrearCuadroElectricoModal
-    onClose={() => showCrearCuadroModal = false}
-    onCreated={() => { showCrearCuadroModal = false; }}
-  />
-{/if}
 
 <style>
 /* ============================================================
