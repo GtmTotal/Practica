@@ -68,6 +68,31 @@
       ui.error('El número de orden del cuadro es obligatorio');
       return;
     }
+
+    // Validate uniqueness before creating
+    const informes = formPersistenceService.informesGuardados;
+    const nProyTrim = nProy.trim();
+    const nOrdenCuadroTrim = nOrdenCuadro.trim();
+    const nOrdenInstalacionTrim = nOrdenInstalacion.trim();
+
+    const duplicado = informes.find(inf => {
+      if (inf.tipo !== 'cuadro_electrico') return false;
+      if (nProyTrim && inf.nProy?.trim() === nProyTrim) return true;
+      if (nOrdenCuadroTrim && inf.nOrdenCuadro?.trim() === nOrdenCuadroTrim) return true;
+      if (nOrdenInstalacionTrim && inf.nOrdenInstalacion?.trim() === nOrdenInstalacionTrim) return true;
+      return false;
+    });
+
+    if (duplicado) {
+      let campo = '';
+      if (nProyTrim && duplicado.nProy?.trim() === nProyTrim) campo = 'el Nº de proyecto';
+      else if (nOrdenCuadroTrim && duplicado.nOrdenCuadro?.trim() === nOrdenCuadroTrim) campo = 'el Nº de orden del cuadro';
+      else if (nOrdenInstalacionTrim && duplicado.nOrdenInstalacion?.trim() === nOrdenInstalacionTrim) campo = 'el Nº de orden de instalación';
+      
+      ui.error(`Ya existe un informe de cuadro eléctrico con ${campo} "${campo === 'el Nº de proyecto' ? nProyTrim : campo === 'el Nº de orden del cuadro' ? nOrdenCuadroTrim : nOrdenInstalacionTrim}" (Obra: ${duplicado.nombreObra})`);
+      return;
+    }
+
     creando = true;
     try {
       const id = Date.now();

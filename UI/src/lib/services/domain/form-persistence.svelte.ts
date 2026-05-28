@@ -34,8 +34,49 @@ class ServicioPersistenciaFormulario {
     return ordenados;
   }
 
+  private validarUnicidadCuadro(obraForm: FormState): { valido: boolean; error?: string } {
+    if (obraForm.tipo !== 'cuadro_electrico') return { valido: true };
+
+    const id = obraForm.id;
+    const nProy = obraForm.nProy?.trim();
+    const nOrdenCuadro = obraForm.nOrdenCuadro?.trim();
+    const nOrdenInstalacion = obraForm.nOrdenInstalacion?.trim();
+
+    const duplicados = this.informesGuardados.filter(inf => {
+      if (inf.id === id) return false;
+      if (inf.tipo !== 'cuadro_electrico') return false;
+
+      if (nProy && inf.nProy?.trim() === nProy) return true;
+      if (nOrdenCuadro && inf.nOrdenCuadro?.trim() === nOrdenCuadro) return true;
+      if (nOrdenInstalacion && inf.nOrdenInstalacion?.trim() === nOrdenInstalacion) return true;
+
+      return false;
+    });
+
+    if (duplicados.length > 0) {
+      const inf = duplicados[0];
+      let campo = '';
+      if (nProy && inf.nProy?.trim() === nProy) campo = 'el Nº de proyecto';
+      else if (nOrdenCuadro && inf.nOrdenCuadro?.trim() === nOrdenCuadro) campo = 'el Nº de orden del cuadro';
+      else if (nOrdenInstalacion && inf.nOrdenInstalacion?.trim() === nOrdenInstalacion) campo = 'el Nº de orden de instalación';
+
+      return { 
+        valido: false, 
+        error: `Ya existe un informe de cuadro eléctrico con ${campo} "${campo === 'el Nº de proyecto' ? nProy : campo === 'el Nº de orden del cuadro' ? nOrdenCuadro : nOrdenInstalacion}" (Obra: ${inf.nombreObra})` 
+      };
+    }
+
+    return { valido: true };
+  }
+
   async guardar(obraForm: FormState | null, fotosSecciones: Foto[][]): Promise<void> {
     if (!obraForm) return;
+
+    const unicidad = this.validarUnicidadCuadro(obraForm);
+    if (!unicidad.valido) {
+      ui.error(unicidad.error || 'Error de unicidad');
+      throw new Error(unicidad.error);
+    }
 
     if ((!obraForm.tipo || obraForm.tipo === 'mantenimiento') && (!obraForm.cuatrimestre || !obraForm.cuatrimestre.trim())) {
       ui.error('El informe debe tener un cuatrimestre asignado');
@@ -57,6 +98,15 @@ class ServicioPersistenciaFormulario {
 
   async soloGuardar(obraForm: FormState | null, fotosSecciones: Foto[][]): Promise<void> {
     if (!obraForm) return;
+
+    if (obraForm.tipo === 'cuadro_electrico') {
+      const unicidad = this.validarUnicidadCuadro(obraForm);
+      if (!unicidad.valido) {
+        // For auto-save, we don't show a popup to avoid interrupting the user, 
+        // but we don't save the data to prevent duplicates.
+        return;
+      }
+    }
 
     if ((!obraForm.tipo || obraForm.tipo === 'mantenimiento') && (!obraForm.cuatrimestre || !obraForm.cuatrimestre.trim())) {
       return; // Silently fail for auto-save if cuatrimestre is missing

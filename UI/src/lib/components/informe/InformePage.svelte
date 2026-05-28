@@ -12,8 +12,9 @@
 
   import HeaderForm from './HeaderForm.svelte';
   import ListaSecciones from './ListaSecciones.svelte';
-import InformeFooter from './InformeFooter.svelte';
-   import Spinner from '../Spinner.svelte';
+  import InformeFooter from './InformeFooter.svelte';
+  import CuadroStepper from './CuadroStepper.svelte';
+  import Spinner from '../Spinner.svelte';
 
   // Props from route parameters
   let { cuatrimestre: cuatrimestreParam, centro: centroParam }: {
@@ -159,10 +160,11 @@ import InformeFooter from './InformeFooter.svelte';
 
   function toggleSeccion(idx: number) {
     const cols = [...seccionesColapsadas];
-    if (idx >= 0 && idx < cols.length) {
-      cols[idx] = !cols[idx];
-      formInitService.seccionesColapsadas = cols;
-    }
+    if (idx < 0 || idx >= cols.length) return;
+    const abriendo = cols[idx];
+    const nuevas = cols.map(() => true);
+    nuevas[idx] = !abriendo;
+    formInitService.seccionesColapsadas = nuevas;
   }
 
   async function seleccionarCentro(nombre: string, cuatrimestre?: string) {
@@ -250,7 +252,7 @@ import InformeFooter from './InformeFooter.svelte';
     <p>Cargando informe...</p>
   </div>
 {:else if obraForm}
-  <div class="informe-wrapper">
+  <div class="informe-wrapper informe-wrapper--cuadro">
     <HeaderForm
       centro={centroSeleccionado}
       {progreso}
@@ -259,8 +261,14 @@ import InformeFooter from './InformeFooter.svelte';
       onCerrar={volver}
     />
 
-    <div class="layout-columns">
-       <main class="informe-main">
+    <CuadroStepper
+      secciones={obraForm.secciones}
+      seccionActiva={seccionesColapsadas.findIndex(c => !c)}
+      onSeleccionar={(idx) => toggleSeccion(idx)}
+    />
+
+    <div class="layout-columns layout-columns--cuadro">
+       <main class="informe-main informe-main--cuadro">
           <ListaSecciones
             {obraForm}
             {seccionesColapsadas}
@@ -329,5 +337,31 @@ import InformeFooter from './InformeFooter.svelte';
     min-height: 100vh;
     gap: 16px;
     color: #64748b;
+  }
+
+  /* Cuadro eléctrico layout */
+  .informe-wrapper--cuadro {
+    background: #f1f5f9;
+  }
+
+  .layout-columns--cuadro {
+    padding: 16px 0 100px;
+    max-width: none;
+    gap: 0;
+  }
+
+  .informe-main--cuadro {
+    max-width: 640px;
+    padding: 0 16px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .layout-columns--cuadro {
+      padding: 12px 0 80px;
+    }
+    .informe-main--cuadro {
+      padding: 0 12px;
+    }
   }
 </style>

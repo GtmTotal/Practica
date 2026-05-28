@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { SeccionState } from "$lib/services/domain/form-initialization.svelte";
   import type { Foto } from "$lib/types/foto.interface";
+  import { progresoPorSeccion } from "$lib/utils/informe-utils";
   import ListaTareas from "./ListaTareas.svelte";
   import GaleriaFotos from "./GaleriaFotos.svelte";
-
 
   let {
     seccion,
@@ -32,7 +32,6 @@
   let fileInput: HTMLInputElement | null = $state(null);
 
   let parsed = $derived.by(() => {
-    // Intenta formato: "1 - Titulo" o "1. Titulo" o "1 Titulo"
     const match = seccion.titulo.match(/^(\d+)\s*[-.]?\s*(.+)$/);
     if (match) {
       return { numero: match[1], texto: match[2] };
@@ -42,21 +41,22 @@
 
   let numeroSeccion = $derived(parsed.numero);
   let textoSeccion = $derived(parsed.texto);
+  let progSec = $derived(progresoPorSeccion(seccion));
 </script>
 
-<div class="seccion-card" id="seccion-{idxSeccion}">
-  <button type="button" class="seccion-titulo" onclick={onToggle}>
+<div class="seccion-card seccion-card--cuadro" id="seccion-{idxSeccion}">
+  <button type="button" class="seccion-titulo seccion-titulo--cuadro" onclick={onToggle}>
     <div class="seccion-titulo-left">
-      {#if numeroSeccion}
-        <span class="seccion-numero">{numeroSeccion}</span>
-      {/if}
-      <span class="seccion-texto">{textoSeccion}</span>
+      <span class="seccion-texto seccion-texto--cuadro">{textoSeccion}</span>
     </div>
-    <span class="icon-toggle" class:is-open={!colapsada}>▶</span>
+    <div class="seccion-header-right">
+      <span class="seccion-progreso">{progSec.completadas}/{progSec.total}</span>
+      <span class="icon-toggle" class:is-open={!colapsada}>{!colapsada ? '▼' : '▶'}</span>
+    </div>
   </button>
 
   {#if !colapsada}
-    <div class="seccion-contenido">
+    <div class="seccion-contenido seccion-contenido--cuadro">
       <ListaTareas
         tareasArray={seccion.tareas}
         prefijo={seccion.prefijo}
@@ -64,7 +64,7 @@
         tipo={tipoFormulario}
       />
 
-      <div class="fotos-seccion">
+      <div class="fotos-seccion fotos-seccion--cuadro">
          <input
            type="file"
            accept="image/*"
@@ -77,9 +77,9 @@
          />
          <button
            type="button"
-           class="btn-foto"
+           class="btn-foto btn-foto--cuadro"
            onclick={() => fileInput?.click()}>
-           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Añadir Foto"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Añadir Fotos
+           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Añadir Foto"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Añadir fotos
          </button>
 
         <GaleriaFotos
@@ -115,6 +115,20 @@
   transform: translateY(-2px);
 }
 
+/* Cuadro eléctrico: tarjeta plana y limpia */
+.seccion-card--cuadro {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  box-shadow: none;
+  transition: none;
+}
+.seccion-card--cuadro:hover {
+  box-shadow: none;
+  transform: none;
+}
+
 .seccion-titulo {
   width: 100%;
   text-align: left;
@@ -130,25 +144,20 @@
   cursor: pointer;
 }
 
+.seccion-titulo--cuadro {
+  padding: 14px 16px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid transparent;
+}
+
 .seccion-titulo-left {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.seccion-numero {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 800;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(30, 60, 114, 0.3);
 }
 
 .seccion-texto {
@@ -156,6 +165,29 @@
   letter-spacing: 0.02em;
   color: var(--gray-800);
   line-height: 1.3;
+}
+
+.seccion-texto--cuadro {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.seccion-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.seccion-progreso {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 6px;
 }
 
 .icon-toggle {
@@ -168,15 +200,22 @@
 
 .icon-toggle.is-open {
   color: var(--primary);
-  transform: rotate(90deg);
+}
+
+.seccion-titulo--cuadro .icon-toggle.is-open {
+  color: var(--primary);
 }
 
 .seccion-contenido {
   padding: 20px;
 }
 
-.obs-area,
-.input-obs {
+.seccion-contenido--cuadro {
+  padding: 0;
+  border-top: 1px solid #f1f5f9;
+}
+
+.obs-area {
   width: 100%;
   padding: 12px;
   border: 1px solid var(--gray-200);
@@ -188,8 +227,7 @@
   background: white;
 }
 
-.btn-foto,
-.btn-foto-add {
+.btn-foto {
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
   color: white;
   border: none;
@@ -205,9 +243,34 @@
   box-shadow: var(--shadow-sm);
 }
 
-.btn-foto:hover,
-.btn-foto-add:hover {
+.btn-foto:hover {
   transform: scale(1.02);
   box-shadow: var(--shadow-md);
+}
+
+.btn-foto--cuadro {
+  background: white;
+  color: var(--primary, #1e3a5f);
+  border: 1.5px solid var(--primary, #1e3a5f);
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  box-shadow: none;
+}
+
+.btn-foto--cuadro:hover {
+  background: var(--primary, #1e3a5f);
+  color: white;
+  transform: none;
+  box-shadow: none;
+}
+
+.fotos-seccion--cuadro {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 8px;
+  margin-top: 8px;
+  border-top: 1px solid #f1f5f9;
 }
 </style>

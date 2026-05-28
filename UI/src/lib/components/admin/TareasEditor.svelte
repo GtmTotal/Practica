@@ -299,14 +299,18 @@
  
           {#each currentInforme.secciones as seccion, sIdx}
             <div class="seccion-card">
-              <div class="seccion-header">
-                <div class="seccion-titulo">
-                  <input type="number" bind:value={seccion.prefijo} class="prefijo-input" min="0" />
-                  <input type="text" bind:value={seccion.titulo} class="titulo-input" />
-                  <span class="tipo-badge">{seccion.tipo}</span>
-                </div>
-                <button class="btn-delete-seccion" onclick={() => removeSeccion(sIdx)} title="Eliminar sección">✕</button>
-              </div>
+<div class="seccion-header">
+  <div class="seccion-title-container">
+    <div class="seccion-main-row">
+      <input type="number" bind:value={seccion.prefijo} class="prefijo-input" min="0" />
+      <input type="text" bind:value={seccion.titulo} class="titulo-input" />
+    </div>
+    <div class="seccion-badge-row">
+      <span class="tipo-badge">{seccion.tipo}</span>
+    </div>
+  </div>
+  <button class="btn-delete-seccion" onclick={() => removeSeccion(sIdx)} title="Eliminar sección">✕</button>
+</div>
  
               {#each seccion.tareas as tarea, tIdx}
                 <div class="tarea-row">
@@ -682,14 +686,27 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
   }
 
-  .seccion-titulo {
+  .seccion-title-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .seccion-main-row {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex: 1;
+    min-width: 0;
+  }
+
+  .seccion-badge-row {
+    display: flex;
+    align-items: center;
   }
 
   .titulo-input {
@@ -702,6 +719,7 @@
     background: transparent;
     outline: none;
     flex: 1;
+    min-width: 0;
     transition: all 0.15s;
   }
 

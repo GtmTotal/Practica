@@ -18,6 +18,7 @@
     mostrarTitulo?: boolean;
   } = $props();
 
+
   function toggleOk() {
     if (tarea.ok) {
       tarea.noOk = false;
@@ -31,25 +32,25 @@
   }
 </script>
 
-<div class="inspeccion-item" class:notice-item={!tarea.indice && tarea.sinCheck}>
+<div class="inspeccion-item inspeccion-item--cuadro" class:notice-item={!tarea.indice && tarea.sinCheck}>
   {#if tarea.titulo && mostrarTitulo}
-    <div class="tarea-header-titulo">{ tarea.titulo }</div>
+    <div class="tarea-header-titulo tarea-header-titulo--cuadro">{ tarea.titulo }</div>
   {/if}
-  <div class="tarea-main-row">
+  <div class="tarea-main-row tarea-main-row--cuadro">
     {#if tarea.indice}
-      <span class="tarea-indice">{ tarea.indice }</span>
+      <span class="tarea-indice tarea-indice--cuadro">{ tarea.indice }</span>
     {/if}
     <div class="tarea-texto-wrapper">
       {#if tarea.titulo && mostrarTitulo}
-        <p class="tarea-subtitulo">{ tarea.descripcion }</p>
+        <p class="tarea-subtitulo tarea-subtitulo--cuadro">{ tarea.descripcion }</p>
       {:else}
-        <p class="tarea-texto" class:is-notice={!tarea.indice && tarea.sinCheck}>{ tarea.descripcion }</p>
+        <p class="tarea-texto tarea-texto--cuadro" class:is-notice={!tarea.indice && tarea.sinCheck}>{ tarea.descripcion }</p>
       {/if}
     </div>
   </div>
 
   {#if !tarea.sinCheck}
-    <div class="inspeccion-controles">
+    <div class="inspeccion-controles inspeccion-controles--cuadro">
        <label class="check-inspeccion ok" class:checked={tarea.ok}>
          <input type="checkbox" bind:checked={tarea.ok} onchange={toggleOk} aria-label="OK">
          <span class="box-icon">
@@ -67,7 +68,7 @@
     </div>
   {/if}
 
-  <div class="tarea-extra-row">
+  <div class="tarea-extra-row tarea-extra-row--cuadro">
     <div class="campos-medicion-inline">
       {#each tarea.campos as campo, idx (idx)}
         <div class="campo-mini">
@@ -98,9 +99,28 @@
     border-color: var(--gray-300, #d1d5db);
   }
 
+  .inspeccion-item--cuadro {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #f1f5f9;
+    border-radius: 0;
+    padding: 12px 16px;
+    margin-bottom: 0;
+  }
+  .inspeccion-item--cuadro:hover {
+    background: transparent;
+    border-color: #e2e8f0;
+  }
+
   .inspeccion-item.notice-item {
     background: #f1f5f9;
     border-left: 4px solid var(--primary, #1e3a5f);
+  }
+
+  .inspeccion-item--cuadro.notice-item {
+    background: #f8fafc;
+    border-left: 3px solid #1e293b;
+    border-bottom: 1px solid #f1f5f9;
   }
 
   .tarea-main-row {
@@ -108,6 +128,10 @@
     align-items: flex-start;
     gap: 12px;
     flex-wrap: wrap;
+  }
+
+  .tarea-main-row--cuadro {
+    align-items: center;
   }
 
   .tarea-indice {
@@ -121,13 +145,21 @@
     text-align: center;
   }
 
+  .tarea-indice--cuadro {
+    background: transparent;
+    color: #94a3b8;
+    padding: 0;
+    min-width: auto;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
   .tarea-texto-wrapper {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 2px;
   }
-
 
   .tarea-subtitulo {
     font-size: 0.85rem;
@@ -137,12 +169,22 @@
     color: #475569;
   }
 
+  .tarea-subtitulo--cuadro {
+    font-size: 0.85rem;
+    color: #334155;
+  }
+
   .tarea-texto {
     flex: 1;
     font-size: 0.9rem;
     line-height: 1.4;
     font-weight: 400;
     margin: 0;
+  }
+
+  .tarea-texto--cuadro {
+    font-size: 0.85rem;
+    color: #334155;
   }
 
   .tarea-texto.is-notice {
@@ -159,7 +201,11 @@
     margin-bottom: 10px;
   }
 
-
+  .inspeccion-controles--cuadro {
+    margin-top: 8px;
+    margin-bottom: 0;
+    justify-content: flex-end;
+  }
 
   .check-inspeccion {
     display: inline-flex;
@@ -209,14 +255,11 @@
     box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
   }
 
-
   .campos-medicion-inline {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
   }
-
-
 
   @media (max-width: 600px) {
     .tarea-main-row {
@@ -228,6 +271,18 @@
       justify-content: center;
       margin-top: 12px;
       margin-bottom: 8px;
+    }
+
+    .inspeccion-controles--cuadro {
+      justify-content: flex-end;
+    }
+
+    .inspeccion-item--cuadro {
+      padding: 10px 12px;
+    }
+
+    .check-inspeccion {
+      padding: 6px 12px;
     }
   }
 
@@ -241,6 +296,12 @@
     line-height: 1.4;
   }
 
+  .tarea-header-titulo--cuadro {
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+    color: #64748b;
+  }
+
   .tarea-extra-row {
     display: flex;
     flex-wrap: wrap;
@@ -249,6 +310,11 @@
     margin-top: 12px;
     padding-top: 12px;
     border-top: 1px dashed var(--gray-200, #e5e7eb);
+  }
+
+  .tarea-extra-row--cuadro {
+    margin-top: 8px;
+    padding-top: 8px;
   }
 
   .input-nota-tarea {

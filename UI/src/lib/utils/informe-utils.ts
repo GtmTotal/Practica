@@ -1,5 +1,5 @@
 import type { InformeGuardado } from '$lib/types/informe.interface';
-import type { FormState } from '$lib/services/domain/form-initialization.svelte';
+import type { FormState, SeccionState } from '$lib/services/domain/form-initialization.svelte';
 
 export function progresoFormulario(form: FormState): number {
   if (!form.secciones?.length) return 0;
@@ -7,11 +7,23 @@ export function progresoFormulario(form: FormState): number {
   let completadas = 0;
   for (const sec of form.secciones) {
     for (const t of sec.tareas) {
+      if (t.sinCheck) continue;
       total++;
       if (t.ok || t.noOk) completadas++;
     }
   }
   return total === 0 ? 0 : Math.round((completadas / total) * 100);
+}
+
+export function progresoPorSeccion(seccion: SeccionState): { total: number; completadas: number } {
+  let total = 0;
+  let completadas = 0;
+  for (const t of seccion.tareas) {
+    if (t.sinCheck) continue;
+    total++;
+    if (t.ok || t.noOk) completadas++;
+  }
+  return { total, completadas };
 }
 
 export function progresoDe(informe: InformeGuardado): number {

@@ -11,11 +11,12 @@ import { formInitService } from '$lib/services/domain/form-initialization.svelte
 import { databaseService } from '$lib/services/api/database.svelte';
 import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectricoModal.svelte';
 import ProgressBar from '$lib/components/ProgressBar.svelte';
+import { DsMobileHeader } from '$lib/components/design-system';
 import type { InformeGuardado } from '$lib/types/informe.interface';
 import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/informe-utils';
 
   // Tab state
-  let tabActual = $state<'mantenimiento' | 'cuadros'>('mantenimiento');
+  let tabActual = $state<'mantenimiento' | 'cuadros' | null>(null);
 
   // Derived state
   let isAdmin = $derived(adminService.isAdmin);
@@ -75,7 +76,11 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   }
 
   function switchTab(tab: 'mantenimiento' | 'cuadros') {
-    tabActual = tab;
+    if (tabActual === tab) {
+      tabActual = null;
+    } else {
+      tabActual = tab;
+    }
     filtroCuadro = 'todos';
     filtroSeleccionado = 'todos';
     if (tab === 'cuadros') {
@@ -210,40 +215,40 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   <main class="main-content">
     <!-- ===== VIEW 1: PANEL (cuatrimestre list + tabs) ===== -->
     <div class="dash-view dash-panel-view" class:active={vistaPanel}>
-      <div class="dash-panel-header">
-        <button class="dash-admin-gear mobile-only" onclick={toggleAdmin} title="Administración" aria-label="Administración"><span aria-hidden="true">⚙</span></button>
+      <!-- Desktop Header -->
+      <div class="dash-panel-header desktop-only">
         <h2 class="dash-panel-title">Control total del mantenimiento.</h2>
         <p class="dash-panel-subtitle">Seguimiento de centros, cuatrimestres y estados en un solo lugar.</p>
 
-          <!-- Search box -->
-          <div class="dash-search">
-            <div class="search-input-wrapper">
-              <input
-                aria-label="Buscar informes o cuatrimestres"
-                placeholder="Buscar obra, cuatrimestre o nº orden..."
-                class="search-input"
-                bind:value={searchQuery}
-                oninput={() => showSearchResults = !!searchQuery.trim()}
-                onblur={() => setTimeout(() => showSearchResults = false, 120)}
-                onfocus={() => showSearchResults = !!searchQuery.trim()}
-              />
-              <button class="search-clear" onclick={() => { searchQuery = ''; showSearchResults = false; }} title="Borrar búsqueda">✕</button>
-              <span class="search-icon" aria-hidden="true">🔍</span>
-            </div>
-
-            {#if showSearchResults && resultadosBusqueda.length > 0}
-              <div class="search-results">
-                {#each resultadosBusqueda as r}
-                <button class="search-result-item" onclick={() => abrirDesdeBusqueda(r)}>
-                    <div class="sr-title">{r.nombreObra}</div>
-                    <div class="sr-meta">{r.cuatrimestre || 'Sin cuatrimestre'} {#if r.nOrdenCuadro}· Ord: {r.nOrdenCuadro}{/if}</div>
-                  </button>
-                {/each}
-              </div>
-            {:else if showSearchResults}
-              <div class="search-results empty">No se encontraron resultados</div>
-            {/if}
+        <!-- Search box -->
+        <div class="dash-search">
+          <div class="search-input-wrapper">
+            <input
+              aria-label="Buscar informes o cuatrimestres"
+              placeholder="Buscar obra, cuatrimestre o nº orden..."
+              class="search-input"
+              bind:value={searchQuery}
+              oninput={() => showSearchResults = !!searchQuery.trim()}
+              onblur={() => setTimeout(() => showSearchResults = false, 120)}
+              onfocus={() => showSearchResults = !!searchQuery.trim()}
+            />
+            <button class="search-clear" onclick={() => { searchQuery = ''; showSearchResults = false; }} title="Borrar búsqueda">✕</button>
+            <span class="search-icon" aria-hidden="true">🔍</span>
           </div>
+
+          {#if showSearchResults && resultadosBusqueda.length > 0}
+            <div class="search-results">
+              {#each resultadosBusqueda as r}
+              <button class="search-result-item" onclick={() => abrirDesdeBusqueda(r)}>
+                  <div class="sr-title">{r.nombreObra}</div>
+                  <div class="sr-meta">{r.cuatrimestre || 'Sin cuatrimestre'} {#if r.nOrdenCuadro}· Ord: {r.nOrdenCuadro}{/if}</div>
+                </button>
+              {/each}
+            </div>
+          {:else if showSearchResults}
+            <div class="search-results empty">No se encontraron resultados</div>
+          {/if}
+        </div>
 
         <!-- Tab Switcher -->
         <div class="tab-switcher">
@@ -268,6 +273,50 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
         </div>
       </div>
 
+      <!-- Mobile Header -->
+      <div class="mobile-only">
+        <DsMobileHeader
+          title="Control total del mantenimiento."
+          subtitle="Seguimiento de centros y cuatrimestres"
+          showSearch={true}
+          searchValue={searchQuery}
+          onSearchChange={(val) => {
+            searchQuery = val;
+            showSearchResults = !!val.trim();
+          }}
+          searchResults={resultadosBusqueda.map(r => ({
+            title: r.nombreObra,
+            meta: `${r.cuatrimestre || 'Sin cuatrimestre'} ${r.nOrdenCuadro ? '· Ord: ' + r.nOrdenCuadro : ''}`
+          }))}
+          onSelectResult={(idx) => abrirDesdeBusqueda(resultadosBusqueda[idx])}
+          showSearchResults={showSearchResults}
+          showAdminButton={true}
+          onAdminClick={toggleAdmin}
+        >
+          <!-- Tab Switcher para mobile -->
+          <div class="tab-switcher-mobile">
+            <button
+              class="tab-btn mobile"
+              class:active={tabActual === 'mantenimiento'}
+              onclick={() => switchTab('mantenimiento')}>
+              <span class="tab-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Mantenimiento"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+              </span>
+              <span class="tab-text">Mantenimientos</span>
+            </button>
+            <button
+              class="tab-btn mobile"
+              class:active={tabActual === 'cuadros'}
+              onclick={() => switchTab('cuadros')}>
+              <span class="tab-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Cuadros Eléctricos"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </span>
+              <span class="tab-text">Cuadros</span>
+            </button>
+          </div>
+        </DsMobileHeader>
+      </div>
+
       <div class="dash-panel-body">
         {#if tabActual === 'mantenimiento'}
           <!-- ===== MANTENIMIENTO: Cuatrimestre list ===== -->
@@ -287,7 +336,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
               {/each}
             </div>
           {/if}
-        {:else}
+        {:else if tabActual === 'cuadros'}
           <!-- ===== CUADROS ELÉCTRICOS ===== -->
           <div class="dash-section-label">CUADROS ELÉCTRICOS</div>
 
@@ -297,29 +346,21 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
               <span class="dcv-metric-value">{ metricasCuadro.total }</span>
               <span class="dcv-metric-label">Cuadros</span>
             </div>
-            <div class="dcv-metric dcv-metric--green" class:dcv-metric--active={filtroCuadro === 'completado'} onclick={() => filtroCuadro = 'completado'} role="button" tabindex="0">
+            <div class="dcv-metric" class:dcv-metric--active={filtroCuadro === 'completado'} onclick={() => filtroCuadro = 'completado'} role="button" tabindex="0">
               <span class="dcv-metric-value">{ metricasCuadro.completados }</span>
               <span class="dcv-metric-label">Completados</span>
             </div>
-            <div class="dcv-metric dcv-metric--blue" class:dcv-metric--active={filtroCuadro === 'en-progreso'} onclick={() => filtroCuadro = 'en-progreso'} role="button" tabindex="0">
+            <div class="dcv-metric" class:dcv-metric--active={filtroCuadro === 'en-progreso'} onclick={() => filtroCuadro = 'en-progreso'} role="button" tabindex="0">
               <span class="dcv-metric-value">{ metricasCuadro.enProgreso }</span>
               <span class="dcv-metric-label">En progreso</span>
             </div>
-            <div class="dcv-metric dcv-metric--amber" class:dcv-metric--active={filtroCuadro === 'pendiente'} onclick={() => filtroCuadro = 'pendiente'} role="button" tabindex="0">
+            <div class="dcv-metric" class:dcv-metric--active={filtroCuadro === 'pendiente'} onclick={() => filtroCuadro = 'pendiente'} role="button" tabindex="0">
               <span class="dcv-metric-value">{ metricasCuadro.pendientes }</span>
               <span class="dcv-metric-label">Pendientes</span>
             </div>
           </div>
 
-          <!-- Filters -->
-          <div class="dcv-pills">
-            <button class="dcv-pill" class:active={filtroCuadro === 'todos'} onclick={() => filtroCuadro = 'todos'}>Todos</button>
-            <button class="dcv-pill dcv-pill--green" class:active={filtroCuadro === 'completado'} onclick={() => filtroCuadro = 'completado'}>Completado</button>
-            <button class="dcv-pill dcv-pill--blue" class:active={filtroCuadro === 'en-progreso'} onclick={() => filtroCuadro = 'en-progreso'}>En progreso</button>
-            <button class="dcv-pill dcv-pill--amber" class:active={filtroCuadro === 'pendiente'} onclick={() => filtroCuadro = 'pendiente'}>Pendiente</button>
-          </div>
-
-          <!-- Header row -->
+           <!-- Header row -->
           <div class="ce-header-row">
             <span class="ce-count">{informesCuadroFiltrados.length} cuadro{informesCuadroFiltrados.length !== 1 ? 's' : ''}</span>
             <button class="btn-nuevo-cuadro" onclick={() => showCrearCuadroModal = true}>
@@ -333,7 +374,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
           {:else}
             <div class="dcv-grid">
               {#each informesCuadroFiltrados as inf (inf.id)}
-                <div class="dcv-card" style="--accent: {colorEstado(inf)}" data-estado={estadoDe(inf)} role="button" tabindex="0" onclick={() => editarInformeCuadro(inf)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInformeCuadro(inf); } }}>
+                <div class="dcv-card" role="button" tabindex="0" onclick={() => editarInformeCuadro(inf)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInformeCuadro(inf); } }}>
                   <div class="dcv-card-accent"></div>
                   <div class="dcv-card-body">
                     <div class="dcv-card-top">
@@ -341,7 +382,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
                         <span class="dcv-card-icon">⚡</span>
                         <span class="dcv-card-name">{ inf.nombreObra }</span>
                       </div>
-                      <span class="dcv-card-badge" style="background: {colorEstado(inf) === '#059669' ? '#E1F5EE' : colorEstado(inf) === '#d97706' ? '#E6F1FB' : '#f1f5f9'}; color: {colorEstado(inf)}">{ labelEstado(inf) }</span>
+                      <span class="dcv-card-badge">{ labelEstado(inf) }</span>
                     </div>
                     <div class="dcv-card-meta">
                       {#if inf.nOrdenCuadro}<span class="dcv-card-tag">Ord: {inf.nOrdenCuadro}</span>{/if}
@@ -349,7 +390,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
                     </div>
                     <div class="dcv-card-progress-row">
                       <div class="dcv-card-progress">
-                        <div class="dcv-card-progress-bar" style="width: {progresoDe(inf)}%; background: {colorEstado(inf)}"></div>
+                        <div class="dcv-card-progress-bar" style="width: {progresoDe(inf)}%;"></div>
                       </div>
                       <span class="dcv-card-pct">{progresoDe(inf)}%</span>
                     </div>
@@ -359,12 +400,31 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
               {/each}
             </div>
           {/if}
+        {:else}
+          <div class="dash-empty-tabs">
+            <span class="dash-empty-icon">📋</span>
+            <p class="dash-empty-text">Selecciona una opción para ver los informes</p>
+          </div>
         {/if}
       </div>
     </div>
 
     <!-- ===== VIEW 2: Cuatrimestre detail (centro cards) ===== -->
     <div class="dash-view dash-cuatrimestre-view" class:active={!vistaPanel}>
+      <!-- Mobile Header for Detail View -->
+      <div class="mobile-only" style="width: 100%; display: block;">
+        <DsMobileHeader
+          title={ grupoSeleccionado?.label || 'Informes' }
+          subtitle="INFORMES DE MANTENIMIENTO"
+          backButton={{
+            label: 'Cuatrimestre',
+            onClick: cerrarDetalle
+          }}
+          showAdminButton={true}
+          onAdminClick={toggleAdmin}
+        />
+      </div>
+
       <div class="dcv-header">
         <button class="dcv-back" onclick={cerrarDetalle}>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Volver"><path d="m15 18-6-6 6-6"/></svg> Cuatrimestre
@@ -381,29 +441,21 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
             <span class="dcv-metric-value">{ metricas.total }</span>
             <span class="dcv-metric-label">Centros</span>
           </div>
-          <div class="dcv-metric dcv-metric--green" class:dcv-metric--active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'} role="button" tabindex="0">
+          <div class="dcv-metric" class:dcv-metric--active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'} role="button" tabindex="0">
             <span class="dcv-metric-value">{ metricas.completados }</span>
             <span class="dcv-metric-label">Completados</span>
           </div>
-          <div class="dcv-metric dcv-metric--blue" class:dcv-metric--active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'} role="button" tabindex="0">
+          <div class="dcv-metric" class:dcv-metric--active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'} role="button" tabindex="0">
             <span class="dcv-metric-value">{ metricas.enProgreso }</span>
             <span class="dcv-metric-label">En progreso</span>
           </div>
-          <div class="dcv-metric dcv-metric--amber" class:dcv-metric--active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'} role="button" tabindex="0">
+          <div class="dcv-metric" class:dcv-metric--active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'} role="button" tabindex="0">
             <span class="dcv-metric-value">{ metricas.pendientes }</span>
             <span class="dcv-metric-label">Pendientes</span>
           </div>
         </div>
 
-        <!-- Filter pills -->
-        <div class="dcv-pills">
-          <button class="dcv-pill" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>Todos</button>
-          <button class="dcv-pill dcv-pill--green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>Completado</button>
-          <button class="dcv-pill dcv-pill--blue" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>En progreso</button>
-          <button class="dcv-pill dcv-pill--amber" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>Pendiente</button>
-        </div>
-
-        <div class="dcv-count">{informesFiltrados.length} centro{informesFiltrados.length !== 1 ? 's' : ''}</div>
+         <div class="dcv-count">{informesFiltrados.length} centro{informesFiltrados.length !== 1 ? 's' : ''}</div>
 
         <!-- Centro cards -->
         {#if informesFiltrados.length === 0}
@@ -411,16 +463,16 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
         {:else}
           <div class="dcv-grid">
             {#each informesFiltrados as inf (inf.id)}
-              <div class="dcv-card" style="--accent: {colorEstado(inf)}" data-estado={estadoDe(inf)} role="button" tabindex="0" onclick={() => editarInforme(inf)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInforme(inf); } }}>
+              <div class="dcv-card" role="button" tabindex="0" onclick={() => editarInforme(inf)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInforme(inf); } }}>
                 <div class="dcv-card-accent"></div>
                 <div class="dcv-card-body">
                   <div class="dcv-card-top">
                     <span class="dcv-card-name">{ inf.nombreObra }</span>
-                    <span class="dcv-card-badge" style="background: {colorEstado(inf) === '#059669' ? '#E1F5EE' : colorEstado(inf) === '#d97706' ? '#E6F1FB' : '#f1f5f9'}; color: {colorEstado(inf)}">{ labelEstado(inf) }</span>
+                    <span class="dcv-card-badge">{ labelEstado(inf) }</span>
                   </div>
                   <div class="dcv-card-progress-row">
                     <div class="dcv-card-progress">
-                      <div class="dcv-card-progress-bar" style="width: {progresoDe(inf)}%; background: {colorEstado(inf)}"></div>
+                      <div class="dcv-card-progress-bar" style="width: {progresoDe(inf)}%;"></div>
                     </div>
                     <span class="dcv-card-pct">{progresoDe(inf)}%</span>
                   </div>
@@ -548,8 +600,18 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   display: none;
 }
 
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .desktop-only {
+    display: block;
+  }
+}
+
 @media (max-width: 768px) {
-  .mobile-only { display: flex; }
+  .mobile-only { display: flex; width: 100%; }
 }
 
 /* ============================================================
@@ -557,7 +619,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
    ============================================================ */
 .dash-panel-header {
   position: relative;
-  background: linear-gradient(135deg, #1e3a5f 0%, #234670 100%);
+  background: var(--gradient-header);
   padding: 32px 40px;
   flex-shrink: 0;
   color: #ffffff;
@@ -581,31 +643,32 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   margin: 0;
 }
 
-@media (max-width: 768px) {
-  .dash-panel-title { font-size: 24px; }
-}
-
 /* Admin gear in mobile header */
-.dash-admin-gear {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.04);
-  color: rgba(255,255,255,0.85);
-  font-size: 20px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 5;
-}
+
 
 @media (max-width: 768px) {
-  .dash-admin-gear.mobile-only { display: flex; }
+  .dash-panel-title { font-size: 22px; }
+  .dash-panel-subtitle { font-size: 13px; }
+
+
+  /* Buscador debajo del título en móvil */
+  .dash-search {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    margin-top: 16px;
+    margin-bottom: 4px;
+  }
+
+  .tab-switcher {
+    margin-top: 16px;
+    max-width: 100%;
+  }
+
+  .tab-text {
+    font-size: 0.8rem;
+  }
 }
 
 /* ============================================================
@@ -719,6 +782,26 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   font-size: 15px;
 }
 
+.dash-empty-tabs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px;
+  gap: 12px;
+}
+
+.dash-empty-icon {
+  font-size: 40px;
+  opacity: 0.4;
+}
+
+.dash-empty-text {
+  font-size: 15px;
+  color: #94a3b8;
+  margin: 0;
+}
+
 /* Cuatrimestre cards */
 .dash-cuatrimestres-list {
   display: grid;
@@ -780,16 +863,17 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
    CUATRIMESTRE DETAIL VIEW — HEADER
    ============================================================ */
 .dcv-header {
-  background: linear-gradient(135deg, #1e3a5f 0%, #234670 100%);
+  background: var(--gradient-header);
   padding: 24px 40px 20px;
   flex-shrink: 0;
   color: #ffffff;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 768px) {
   .dcv-header {
-    padding: 20px 20px 16px;
-    border-radius: 0 0 20px 20px;
+    display: none;
   }
 }
 
@@ -855,29 +939,32 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 }
 
 /* ============================================================
-   METRICS CARDS
-   2×2 in mobile, inline row in desktop
-   ============================================================ */
+    METRICS CARDS
+    Mobile: 2x2 grid, tight spacing
+    Desktop: inline row
+    ============================================================ */
 .dcv-metrics {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 @media (min-width: 900px) {
   .dcv-metrics {
     grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
   }
 }
 
 .dcv-metric {
-  background: var(--gray-100, #f3f4f6);
+  background: #f8fafc;
   border-radius: 12px;
-  padding: 16px 12px;
+  padding: 12px 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   cursor: pointer;
   transition: all 0.2s ease;
   border: 2px solid transparent;
@@ -885,18 +972,23 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   text-align: center;
 }
 
+
 .dcv-metric:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 .dcv-metric--active {
-  border-color: #1e293b;
-  background: #ffffff;
+  border-color: #1e3a5f;
+  background: #1e3a5f;
+}
+.dcv-metric--active .dcv-metric-value,
+.dcv-metric--active .dcv-metric-label {
+  color: #ffffff;
 }
 
 .dcv-metric-value {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 800;
   color: #1e293b;
   line-height: 1.1;
@@ -907,59 +999,14 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 }
 
 .dcv-metric-label {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
 }
 
-/* Metric color variants */
-.dcv-metric--green .dcv-metric-value { color: #1D9E75; }
-.dcv-metric--blue .dcv-metric-value  { color: #185FA5; }
-.dcv-metric--amber .dcv-metric-value { color: #b45309; }
-
-/* ============================================================
-   FILTER PILLS (scrollable horizontal)
-   ============================================================ */
-.dcv-pills {
-  display: flex;
-  gap: 8px;
-  margin: 20px 0 12px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding-bottom: 4px;
-}
-
-.dcv-pills::-webkit-scrollbar {
-  display: none;
-}
-
-.dcv-pill {
-  flex-shrink: 0;
-  padding: 8px 16px;
-  border-radius: 100px;
-  border: 1.5px solid #d1d5db;
-  background: transparent;
-  font-size: 13px;
-  font-weight: 600;
-  color: #64748b;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.dcv-pill:hover {
-  border-color: #9ca3af;
-  color: #374151;
-}
-
-.dcv-pill.active {
-  background: #1e293b;
-  border-color: #1e293b;
-  color: #ffffff;
-}
+/* Metric color variants — unified to blue + gray */
 
 .dcv-count {
   font-size: 12px;
@@ -1010,7 +1057,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
 
 .dcv-card-accent {
   height: 3px;
-  background: var(--accent, #94a3b8);
+  background: #1e3a5f;
   flex-shrink: 0;
 }
 
@@ -1061,6 +1108,8 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   border-radius: 100px;
   white-space: nowrap;
   flex-shrink: 0;
+  background: #f1f5f9;
+  color: #475569;
 }
 
 .dcv-card-meta {
@@ -1095,6 +1144,7 @@ import { progresoDe, estadoDe, colorEstado, labelEstado } from '$lib/utils/infor
   height: 100%;
   border-radius: 4px;
   transition: width 0.4s ease;
+  background: #1e3a5f;
 }
 
 .dcv-card-pct {

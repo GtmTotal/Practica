@@ -116,3 +116,4 @@ ngrok http 192.168.1.135:5000 --url=earthly-discard-tarmac.ngrok-free.dev
 ## Licencia
 
 Proyecto privado – GTM Total.
+  

@@ -15,6 +15,7 @@ import TareasEditor from '$lib/components/admin/TareasEditor.svelte';
 import TareasEditorCuadros from '$lib/components/admin/TareasEditorCuadros.svelte';
 import CrearCuadroElectricoModal from '$lib/components/admin/CrearCuadroElectricoModal.svelte';
 import ProgressBar from '$lib/components/ProgressBar.svelte';
+import { DsMobileHeader } from '$lib/components/design-system';
 
 
 
@@ -264,13 +265,19 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
     <!-- Vista Principal de Bienvenida/Selección -->
     <div class="admin-root-menu">
       <div class="root-menu-container">
-        <header class="root-menu-header">
+        <div class="mobile-only">
+          <DsMobileHeader
+            title="Administración"
+            subtitle="Panel de Control GTM"
+            showAdminButton={false}
+          />
+        </div>
+        <header class="root-menu-header desktop-only">
           <img src="/gtmCompleto.png" alt="GTM" class="root-logo" style="width: 140px;">
           <h1>Panel de Administración</h1>
           <p>Selecciona un módulo de trabajo para continuar</p>
-
-          
         </header>
+
 
         <div class="root-menu-grid">
           <!-- Card Mantenimiento Mercadona -->
@@ -419,18 +426,13 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 
       <!-- ===== MOBILE: PANEL VIEW ===== -->
       <div class="mobile-view mobile-panel-view" class:active={selectedCuadroId === null}>
-        <div class="mobile-panel-header">
-          <div class="mobile-brand-row">
-            <button class="admin-back-link" onclick={() => { menuPrincipal = 'raiz'; selectedCuadroId = null; }}>‹ Menú</button>
-            <div class="mobile-brand">
-              <span class="mobile-brand-arrow">▶</span>
-              <img src="/gtmCompleto.png" alt="GTM" class="mobile-brand-name" style="height: 20px; vertical-align: middle;">
-            </div>
-          </div>
-          <h2 class="mobile-panel-title">Cuadros Eléctrico</h2>
-          <p class="mobile-panel-subtitle">Gestión de informes de cuadros eléctricos</p>
-        </div>
-
+        <DsMobileHeader
+          title="Cuadros Eléctricos"
+          subtitle="Gestión de informes de cuadros eléctricos"
+          backButton={{ label: '‹ Menú', onClick: () => { menuPrincipal = 'raiz'; selectedCuadroId = null; } }}
+          showAdminButton={false}
+        />
+        
         <div class="mobile-panel-body">
           <div class="mobile-section-label">ACCIONES</div>
           <div class="mobile-actions-grid">
@@ -454,88 +456,57 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
               <div class="mac-desc">Editar plantilla de tareas predeterminada</div>
             </button>
           </div>
-
-          <!-- Metrics -->
-          <div class="admin-metrics">
-            <div class="admin-metric" class:admin-metric--active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'} role="button" tabindex="0">
-              <span class="admin-metric-value">{ metricasCuadro.total }</span>
-              <span class="admin-metric-label">Cuadros</span>
-            </div>
-            <div class="admin-metric admin-metric--green" class:admin-metric--active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'} role="button" tabindex="0">
-              <span class="admin-metric-value">{ metricasCuadro.completados }</span>
-              <span class="admin-metric-label">Completados</span>
-            </div>
-            <div class="admin-metric admin-metric--blue" class:admin-metric--active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'} role="button" tabindex="0">
-              <span class="admin-metric-value">{ metricasCuadro.enProgreso }</span>
-              <span class="admin-metric-label">En progreso</span>
-            </div>
-            <div class="admin-metric admin-metric--amber" class:admin-metric--active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'} role="button" tabindex="0">
-              <span class="admin-metric-value">{ metricasCuadro.pendientes }</span>
-              <span class="admin-metric-label">Pendientes</span>
-            </div>
-          </div>
-          <!-- Filter pills -->
-          <div class="admin-pills">
-            <button class="admin-pill" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>Todos</button>
-            <button class="admin-pill admin-pill--green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>Completado</button>
-            <button class="admin-pill admin-pill--blue" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>En progreso</button>
-            <button class="admin-pill admin-pill--amber" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>Pendiente</button>
-          </div>
-          <div class="admin-count">{informesCuadroFiltrados.length} cuadro{informesCuadroFiltrados.length !== 1 ? 's' : ''}</div>
-          <!-- Cards -->
-          <div class="admin-grid">
-            {#each informesCuadroFiltrados as inf (inf.id)}
-              <div class="admin-card" style="--accent: {colorEstado(inf)}" data-estado={estadoDe(inf)} role="button" tabindex="0" onclick={() => seleccionarCuadro(inf.id)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); seleccionarCuadro(inf.id); } }}>
-                <div class="admin-card-accent"></div>
-                <div class="admin-card-body">
-                  <div class="admin-card-top">
-                    <div class="admin-card-name-row">
-                      <span class="admin-card-icon">⚡</span>
-                      <span class="admin-card-name">{ inf.nombreObra }</span>
-                    </div>
-                    <span class="admin-card-badge" style="background: {colorEstado(inf) === '#059669' ? '#E1F5EE' : colorEstado(inf) === '#d97706' ? '#E6F1FB' : '#f1f5f9'}; color: {colorEstado(inf)}">{ labelEstado(inf) }</span>
-                  </div>
-                  <div class="admin-card-meta">
-                    {#if inf.nOrdenCuadro}<span class="admin-card-tag">Ord: {inf.nOrdenCuadro}</span>{/if}
-                    {#if inf.nProy}<span class="admin-card-tag">Proy: {inf.nProy}</span>{/if}
-                  </div>
-                  <div class="admin-card-progress-row">
-                    <div class="admin-card-progress">
-                      <div class="admin-card-progress-bar" style="width: {progresoDe(inf)}%; background: {colorEstado(inf)}"></div>
-                    </div>
-                    <span class="admin-card-pct">{progresoDe(inf)}%</span>
-                  </div>
-                  <span class="admin-card-date">{ inf.ultimaModificacion || '—' }</span>
-                </div>
-              </div>
-            {/each}
-          </div>
-        </div>
+        
+           <div class="admin-count">{informesCuadroFiltrados.length} cuadro{informesCuadroFiltrados.length !== 1 ? 's' : ''}</div>
+           <!-- Cards -->
+           <div class="admin-grid">
+             {#each informesCuadroFiltrados as inf (inf.id)}
+               <div class="admin-card" style="--accent: {colorEstado(inf)}" data-estado={estadoDe(inf)} role="button" tabindex="0" onclick={() => seleccionarCuadro(inf.id)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); seleccionarCuadro(inf.id); } }}>
+                 <div class="admin-card-accent"></div>
+                 <div class="admin-card-body">
+                   <div class="admin-card-top">
+                     <div class="admin-card-name-row">
+                       <span class="admin-card-icon">⚡</span>
+                       <span class="admin-card-name">{ inf.nombreObra }</span>
+                     </div>
+                     <span class="admin-card-badge" style="background: {colorEstado(inf) === '#059669' ? '#E1F5EE' : colorEstado(inf) === '#d97706' ? '#E6F1FB' : '#f1f5f9'}; color: {colorEstado(inf)}">{ labelEstado(inf) }</span>
+                   </div>
+                   <div class="admin-card-meta">
+                     {#if inf.nOrdenCuadro}<span class="admin-card-tag">Ord: {inf.nOrdenCuadro}</span>{/if}
+                     {#if inf.nProy}<span class="admin-card-tag">Proy: {inf.nProy}</span>{/if}
+                   </div>
+                   <div class="admin-card-progress-row">
+                     <div class="admin-card-progress">
+                       <div class="admin-card-progress-bar" style="width: {progresoDe(inf)}%; background: {colorEstado(inf)}"></div>
+                     </div>
+                     <span class="admin-card-pct">{progresoDe(inf)}%</span>
+                   </div>
+                   <span class="admin-card-date">{ inf.ultimaModificacion || '—' }</span>
+                 </div>
+               </div>
+             {/each}
+           </div>
+         </div>
       </div>
+
 
       <!-- ===== MOBILE: DETAIL VIEW ===== -->
       <div class="mobile-view mobile-detail-view" class:active={selectedCuadroId !== null}>
-        <div class="mobile-cuatrimestre-header">
-          <div class="mobile-brand-row">
-            <button class="admin-back-link" onclick={() => { selectedCuadroId = null; }}>‹ Cuadros</button>
-            <div class="mobile-brand">
-              <span class="mobile-brand-arrow">▶</span>
-              <img src="/gtmCompleto.png" alt="GTM" class="mobile-brand-name" style="height: 20px; vertical-align: middle;">
-            </div>
-          </div>
-          <div class="mobile-cuatri-row">
-            <span class="mobile-cuatri-title">{ selectedCuadro?.nombreObra || 'Cuadro Eléctrico' }</span>
-          </div>
-          <p class="mobile-subtitle">Cuadro Eléctrico · detalle de informe</p>
-        </div>
-
+        <DsMobileHeader
+          title={ selectedCuadro?.nombreObra || 'Detalle de Cuadro' }
+          subtitle="Cuadro Eléctrico · detalle de informe"
+          backButton={{ label: '‹ Cuadros', onClick: () => { selectedCuadroId = null; } }}
+          showAdminButton={false}
+        />
+        
         <div class="mobile-cuatrimestre-body">
           {#if selectedCuadro}
-            <div style="padding: 12px 16px 0; display: flex; gap: 8px;">
+            <div style="padding: 12px 16px 0; display: flex; gap: 8px; flex-wrap: wrap;">
               {#if selectedCuadro.nProy}<span style="font-size:12px;color:#64748b;background:#f1f5f9;padding:4px 10px;border-radius:100px;">Proy: {selectedCuadro.nProy}</span>{/if}
               {#if selectedCuadro.nOrdenCuadro}<span style="font-size:12px;color:#64748b;background:#f1f5f9;padding:4px 10px;border-radius:100px;">Orden: {selectedCuadro.nOrdenCuadro}</span>{/if}
               {#if selectedCuadro.nOrdenInstalacion}<span style="font-size:12px;color:#64748b;background:#f1f5f9;padding:4px 10px;border-radius:100px;">Inst: {selectedCuadro.nOrdenInstalacion}</span>{/if}
             </div>
+
 
             <div style="padding: 16px;">
               <div class="cuadro-progreso-row">
@@ -634,33 +605,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
             {/each}
           </div>
         {:else if informesCuadro.length > 0}
-          <!-- Metrics -->
-          <div class="admin-metrics">
-            <div class="admin-metric" class:admin-metric--active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'} role="button" tabindex="0">
-              <span class="admin-metric-value">{ metricasCuadro.total }</span>
-              <span class="admin-metric-label">Cuadros</span>
-            </div>
-            <div class="admin-metric admin-metric--green" class:admin-metric--active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'} role="button" tabindex="0">
-              <span class="admin-metric-value">{ metricasCuadro.completados }</span>
-              <span class="admin-metric-label">Completados</span>
-            </div>
-            <div class="admin-metric admin-metric--blue" class:admin-metric--active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'} role="button" tabindex="0">
-              <span class="admin-metric-value">{ metricasCuadro.enProgreso }</span>
-              <span class="admin-metric-label">En progreso</span>
-            </div>
-            <div class="admin-metric admin-metric--amber" class:admin-metric--active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'} role="button" tabindex="0">
-              <span class="admin-metric-value">{ metricasCuadro.pendientes }</span>
-              <span class="admin-metric-label">Pendientes</span>
-            </div>
-          </div>
-          <!-- Filter pills -->
-          <div class="admin-pills">
-            <button class="admin-pill" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>Todos</button>
-            <button class="admin-pill admin-pill--green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>Completado</button>
-            <button class="admin-pill admin-pill--blue" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>En progreso</button>
-            <button class="admin-pill admin-pill--amber" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>Pendiente</button>
-          </div>
-          <div class="admin-count">{informesCuadroFiltrados.length} cuadro{informesCuadroFiltrados.length !== 1 ? 's' : ''}</div>
+           <div class="admin-count">{informesCuadroFiltrados.length} cuadro{informesCuadroFiltrados.length !== 1 ? 's' : ''}</div>
           <!-- Cards -->
           <div class="admin-grid">
             {#each informesCuadroFiltrados as inf (inf.id)}
@@ -817,17 +762,12 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 
       <!-- ===== MOBILE: PANEL VIEW ===== -->
       <div class="mobile-view mobile-panel-view" class:active={vistaPanel}>
-        <div class="mobile-panel-header">
-          <div class="mobile-brand-row">
-            <button class="admin-back-link" onclick={() => { menuPrincipal = 'raiz'; cuatrimestreSeleccionado = ''; }}>‹ Menú</button>
-            <div class="mobile-brand">
-              <span class="mobile-brand-arrow">▶</span>
-              <img src="/gtmCompleto.png" alt="GTM" class="mobile-brand-name" style="height: 20px; vertical-align: middle;">
-            </div>
-          </div>
-          <h2 class="mobile-panel-title">Mantenimiento Mercadona</h2>
-          <p class="mobile-panel-subtitle">Gestiona datos base y estructura de cuatrimestres</p>
-        </div>
+        <DsMobileHeader
+          title="Mantenimiento Mercadona"
+          subtitle="Gestión de cuatrimestres y tareas"
+          backButton={{ label: '‹ Menú', onClick: () => { menuPrincipal = 'raiz'; cuatrimestreSeleccionado = ''; } }}
+          showAdminButton={false}
+        />
         
         <div class="mobile-panel-body">
           <div class="mobile-section-label">ACCIONES</div>
@@ -841,11 +781,21 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
                   <line x1="9" y1="17" x2="15" y2="17"/>
                 </svg>
               </div>
-              <div class="mac-title">Crear cuatrimestre</div>
-              <div class="mac-desc">Nuevo cuatrimestre de seguimiento</div>
+              <div class="mac-title">Nuevo Cuatrimestre</div>
+              <div class="mac-desc">Crear nuevo periodo de seguimiento</div>
+            </button>
+            <button class="mobile-action-card" onclick={() => showTareasEditor = true}>
+              <div class="mac-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+              </div>
+              <div class="mac-title">Editar Tareas</div>
+              <div class="mac-desc">Configurar plantillas de tareas</div>
             </button>
           </div>
-
+        
           <div class="mobile-section-label">CUATRIMESTRES</div>
           <div class="mobile-cuatrimestres-list">
             {#each cuatrimestres as grupo (grupo.clave)}
@@ -868,103 +818,66 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
         </div>
       </div>
 
+
       <!-- ===== MOBILE: CUATRIMESTRE VIEW ===== -->
       <div class="mobile-view mobile-cuatrimestre-view" class:active={!vistaPanel}>
-        <div class="mobile-cuatrimestre-header">
-          <div class="mobile-brand-row">
-            <button class="admin-back-link" onclick={() => { vistaPanel = true; cuatrimestreSeleccionado = ''; }}>‹ Cuatrimestre</button>
-            <div class="mobile-brand">
-              <span class="mobile-brand-arrow">▶</span>
-              <img src="/gtmCompleto.png" alt="GTM" class="mobile-brand-name" style="height: 20px; vertical-align: middle;">
-            </div>
-          </div>
-          <div class="mobile-cuatri-row">
-            <span class="mobile-cuatri-title">{ grupoSeleccionado?.label }</span>
-          </div>
-          <p class="mobile-subtitle">Mercadona · informes de mantenimiento</p>
-        </div>
-
+        <DsMobileHeader
+          title={ grupoSeleccionado?.label || 'Cuatrimestre' }
+          subtitle="Mercadona · informes de mantenimiento"
+          backButton={{ label: '‹ Cuatrimestre', onClick: () => { vistaPanel = true; cuatrimestreSeleccionado = ''; } }}
+          showAdminButton={false}
+        />
+        
         <div class="mobile-cuatrimestre-body">
-          <!-- Metrics -->
-          <div class="admin-metrics">
-            <div class="admin-metric" class:admin-metric--active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'} role="button" tabindex="0">
-              <span class="admin-metric-value">{ metricas.total }</span>
-              <span class="admin-metric-label">Centros</span>
-            </div>
-            <div class="admin-metric admin-metric--green" class:admin-metric--active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'} role="button" tabindex="0">
-              <span class="admin-metric-value">{ metricas.completados }</span>
-              <span class="admin-metric-label">Completados</span>
-            </div>
-            <div class="admin-metric admin-metric--blue" class:admin-metric--active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'} role="button" tabindex="0">
-              <span class="admin-metric-value">{ metricas.enProgreso }</span>
-              <span class="admin-metric-label">En progreso</span>
-            </div>
-            <div class="admin-metric admin-metric--amber" class:admin-metric--active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'} role="button" tabindex="0">
-              <span class="admin-metric-value">{ metricas.pendientes }</span>
-              <span class="admin-metric-label">Pendientes</span>
-            </div>
-          </div>
-          <!-- Filter pills -->
-          <div class="admin-pills">
-            <button class="admin-pill" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>Todos</button>
-            <button class="admin-pill admin-pill--green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>Completado</button>
-            <button class="admin-pill admin-pill--blue" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>En progreso</button>
-            <button class="admin-pill admin-pill--amber" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>Pendiente</button>
-          </div>
-          <div class="admin-count">{informesFiltrados.length} centro{informesFiltrados.length !== 1 ? 's' : ''}</div>
-          <!-- Cards -->
-          <div class="admin-grid">
-            {#each informesFiltrados as inf (inf.id)}
-              <div class="admin-card" style="--accent: {colorEstado(inf)}" data-estado={estadoDe(inf)} role="button" tabindex="0" onclick={() => editarInforme(inf)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInforme(inf); } }}>
-                <div class="admin-card-accent"></div>
-                <div class="admin-card-body">
-                  <div class="admin-card-top">
-                    <span class="admin-card-name">{ inf.nombreObra }</span>
-                    <span class="admin-card-badge" style="background: {colorEstado(inf) === '#059669' ? '#E1F5EE' : colorEstado(inf) === '#d97706' ? '#E6F1FB' : '#f1f5f9'}; color: {colorEstado(inf)}">{ labelEstado(inf) }</span>
-                  </div>
-                  <div class="admin-card-progress-row">
-                    <div class="admin-card-progress">
-                      <div class="admin-card-progress-bar" style="width: {progresoDe(inf)}%; background: {colorEstado(inf)}"></div>
-                    </div>
-                    <span class="admin-card-pct">{progresoDe(inf)}%</span>
-                  </div>
-                  <span class="admin-card-date">{ inf.ultimaModificacion || '—' }</span>
-                </div>
-              </div>
-            {/each}
-          </div>
-        </div>
+           <div class="admin-count">{informesFiltrados.length} centro{informesFiltrados.length !== 1 ? 's' : ''}</div>
+           <!-- Cards -->
+           <div class="admin-grid">
+             {#each informesFiltrados as inf (inf.id)}
+               <div class="admin-card" style="--accent: {colorEstado(inf)}" data-estado={estadoDe(inf)} role="button" tabindex="0" onclick={() => editarInforme(inf)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editarInforme(inf); } }}>
+                 <div class="admin-card-accent"></div>
+                 <div class="admin-card-body">
+                   <div class="admin-card-top">
+                     <span class="admin-card-name">{ inf.nombreObra }</span>
+                     <span class="admin-card-badge" style="background: {colorEstado(inf) === '#059669' ? '#E1F5EE' : colorEstado(inf) === '#d97706' ? '#E6F1FB' : '#f1f5f9'}; color: {colorEstado(inf)}">{ labelEstado(inf) }</span>
+                   </div>
+                   <div class="admin-card-progress-row">
+                     <div class="admin-card-progress">
+                       <div class="admin-card-progress-bar" style="width: {progresoDe(inf)}%; background: {colorEstado(inf)}"></div>
+                     </div>
+                     <span class="admin-card-pct">{progresoDe(inf)}%</span>
+                   </div>
+                   <span class="admin-card-date">{ inf.ultimaModificacion || '—' }</span>
+                 </div>
+               </div>
+             {/each}
+           </div>
+         </div>
       </div>
+
 
       <!-- ===== DESKTOP CONTENT ===== -->
       <div class="desktop-content">
         {#if grupoSeleccionado}
           <!-- Metrics -->
           <div class="admin-metrics">
-            <div class="admin-metric" class:admin-metric--active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'} role="button" tabindex="0">
+            <div class="admin-metric" class:admin-metric--active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filtroSeleccionado = 'todos'; } }} role="button" tabindex="0">
               <span class="admin-metric-value">{ metricas.total }</span>
               <span class="admin-metric-label">Centros</span>
             </div>
-            <div class="admin-metric admin-metric--green" class:admin-metric--active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'} role="button" tabindex="0">
+            <div class="admin-metric admin-metric--green" class:admin-metric--active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filtroSeleccionado = 'completado'; } }} role="button" tabindex="0">
               <span class="admin-metric-value">{ metricas.completados }</span>
               <span class="admin-metric-label">Completados</span>
             </div>
-            <div class="admin-metric admin-metric--blue" class:admin-metric--active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'} role="button" tabindex="0">
+            <div class="admin-metric admin-metric--blue" class:admin-metric--active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filtroSeleccionado = 'en-progreso'; } }} role="button" tabindex="0">
               <span class="admin-metric-value">{ metricas.enProgreso }</span>
               <span class="admin-metric-label">En progreso</span>
             </div>
-            <div class="admin-metric admin-metric--amber" class:admin-metric--active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'} role="button" tabindex="0">
+            <div class="admin-metric admin-metric--amber" class:admin-metric--active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); filtroSeleccionado = 'pendiente'; } }} role="button" tabindex="0">
               <span class="admin-metric-value">{ metricas.pendientes }</span>
               <span class="admin-metric-label">Pendientes</span>
             </div>
           </div>
-          <!-- Filter pills -->
-          <div class="admin-pills">
-            <button class="admin-pill" class:active={filtroSeleccionado === 'todos'} onclick={() => filtroSeleccionado = 'todos'}>Todos</button>
-            <button class="admin-pill admin-pill--green" class:active={filtroSeleccionado === 'completado'} onclick={() => filtroSeleccionado = 'completado'}>Completado</button>
-            <button class="admin-pill admin-pill--blue" class:active={filtroSeleccionado === 'en-progreso'} onclick={() => filtroSeleccionado = 'en-progreso'}>En progreso</button>
-            <button class="admin-pill admin-pill--amber" class:active={filtroSeleccionado === 'pendiente'} onclick={() => filtroSeleccionado = 'pendiente'}>Pendiente</button>
-          </div>
+
           <div class="admin-count">{informesFiltrados.length} centro{informesFiltrados.length !== 1 ? 's' : ''}</div>
           <!-- Cards -->
           <div class="admin-grid">
@@ -1016,26 +929,26 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 }
 
 .admin-sidebar {
-  width: 260px;
+  width: 320px;
   flex-shrink: 0;
-  border-right: 1px solid #e2e8f0;
+  border-right: 1px solid rgba(255,255,255,0.04);
   display: flex;
   flex-direction: column;
-  background: #fafafa;
+  background: #162d4a;
+  color: #ffffff;
 }
 
 .sidebar-brand {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 24px;
-  border-bottom: 1px solid #e2e8f0;
+  padding: 24px 40px;
 }
 
 .brand-logo {
   font-weight: 800;
   font-size: 18px;
-  color: #1e3a5f;
+  color: #ffffff;
   letter-spacing: -0.5px;
 }
 
@@ -1043,27 +956,27 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #94a3b8;
+  background: rgba(255,255,255,0.3);
 }
 
 .brand-text {
   font-size: 12px;
   font-weight: 500;
-  color: #64748b;
+  color: rgba(255,255,255,0.7);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .sidebar-nav {
   flex: 1;
-  padding: 16px 12px;
+  padding: 16px 24px;
   overflow-y: auto;
 }
 
 .nav-label {
   font-size: 11px;
   font-weight: 600;
-  color: #94a3b8;
+  color: rgba(255,255,255,0.5);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: 0 12px;
@@ -1087,7 +1000,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 }
 
 .nav-item:hover {
-  background: #f1f5f9;
+  background: rgba(255,255,255,0.08);
 }
 
 .nav-item.active {
@@ -1108,7 +1021,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 .nav-item-title {
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: rgba(255,255,255,0.85);
   line-height: 1.4;
 }
 
@@ -1118,7 +1031,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 
 .nav-item-meta {
   font-size: 11px;
-  color: #94a3b8;
+  color: rgba(255,255,255,0.5);
   margin-top: 2px;
 }
 
@@ -1145,7 +1058,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  color: #cbd5e1;
+  color: rgba(255,255,255,0.3);
   transition: all 0.15s;
   padding: 0;
 }
@@ -1156,17 +1069,16 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 }
 
 .sidebar-footer {
-  padding: 16px;
-  border-top: 1px solid #e2e8f0;
+  padding: 16px 24px;
 }
 
 .btn-logout {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 6px;
   background: transparent;
-  color: #64748b;
+  color: rgba(255,255,255,0.7);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -1174,8 +1086,8 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 }
 
 .btn-logout:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
 }
 
 .admin-main {
@@ -1190,22 +1102,23 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
   align-items: center;
   justify-content: space-between;
   padding: 24px 32px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   gap: 16px;
+  background: var(--gradient-header);
 }
 
 .header-title h1 {
   margin: 0;
   font-size: 20px;
   font-weight: 700;
-  color: #0f172a;
+  color: #ffffff;
   letter-spacing: -0.3px;
 }
 
 .header-subtitle {
   display: block;
   font-size: 12px;
-  color: #94a3b8;
+  color: rgba(255,255,255,0.5);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-top: 4px;
@@ -1220,10 +1133,10 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 /* Admin search styles reuse */
 .admin-search { position: relative; width: 360px; }
 .admin-search .search-input-wrapper { position: relative; }
-.admin-search .search-input { width: 100%; padding: 8px 36px 8px 12px; border-radius: 8px; border: 1px solid #e2e8f0; }
-.admin-search .search-input::placeholder { color: #94a3b8; }
-.admin-search .search-icon { position: absolute; right: 8px; top: 8px; pointer-events: none; }
-.admin-search .search-clear { position: absolute; right: 28px; top: 6px; background: transparent; border: none; color: #64748b; cursor: pointer; }
+.admin-search .search-input { width: 100%; padding: 8px 36px 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.1); color: #ffffff; }
+.admin-search .search-input::placeholder { color: rgba(255,255,255,0.5); }
+.admin-search .search-icon { position: absolute; right: 8px; top: 8px; pointer-events: none; color: rgba(255,255,255,0.5); }
+.admin-search .search-clear { position: absolute; right: 28px; top: 6px; background: transparent; border: none; color: rgba(255,255,255,0.6); cursor: pointer; }
 .admin-search .search-results { position: absolute; top: 42px; left: 0; width: 100%; background: #fff; border-radius: 8px; box-shadow: 0 8px 30px rgba(2,6,23,0.08); max-height: 300px; overflow: auto; z-index: 60; }
 .admin-search .search-result-item { width: 100%; text-align: left; padding: 10px 12px; border: none; background: none; display: block; cursor: pointer; }
 .admin-search .search-result-item:hover { background: #f1f5f9; }
@@ -1235,7 +1148,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
   align-items: center;
   gap: 8px;
   padding-left: 24px;
-  border-left: 1px solid #e2e8f0;
+  border-left: 1px solid rgba(255,255,255,0.1);
 }
 
 .action-group:first-child {
@@ -1266,14 +1179,14 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 
 
 .btn-icon-label.primary {
-  background: #0f172a;
-  color: #ffffff;
+  background: #ffffff;
+  color: #162d4a;
 }
 
 .btn-icon-label.primary:hover:not(:disabled) {
-  background: #1e293b;
+  background: #f1f5f9;
   transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(15, 23, 42, 0.15);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-icon-label.danger {
@@ -1622,8 +1535,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
   }
 
   .mobile-panel-header {
-    background: #1e3a5f;
-    padding: 20px;
+  background: var(--gradient-header);
     flex-shrink: 0;
   }
 
@@ -1768,8 +1680,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
   }
 
   .mobile-cuatrimestre-header {
-    background: #1e3a5f;
-    padding: 20px;
+  background: var(--gradient-header);
     flex-shrink: 0;
   }
 
@@ -1965,15 +1876,8 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 }
 
 .root-logo {
-  font-size: 14px;
-  font-weight: 800;
-  color: #ffffff;
-  background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
-  padding: 6px 16px;
-  border-radius: 100px;
-  letter-spacing: 1.5px;
-  box-shadow: 0 4px 10px rgba(30, 58, 95, 0.2);
-  text-transform: uppercase;
+  display: block;
+  margin: 0 auto;
 }
 
 .root-menu-header h1 {
@@ -2140,8 +2044,7 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 }
 
 .sidebar-nav-back {
-  padding: 12px 16px;
-  border-bottom: 1px solid #e2e8f0;
+  padding: 12px 24px;
 }
 
 .btn-back-to-menu {
@@ -2150,10 +2053,10 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
   gap: 8px;
   width: 100%;
   padding: 8px 12px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 6px;
-  color: #475569;
+  color: rgba(255,255,255,0.75);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -2161,9 +2064,9 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 }
 
 .btn-back-to-menu:hover {
-  background: #f1f5f9;
-  color: #0f172a;
-  border-color: #cbd5e1;
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.3);
 }
 
 .btn-back-to-menu .icon {
@@ -2245,47 +2148,8 @@ import ProgressBar from '$lib/components/ProgressBar.svelte';
 .admin-metric--amber .admin-metric-value { color: #b45309; }
 
 /* ============================================================
-   Admin Filter Pills
+   Admin Count
    ============================================================ */
-.admin-pills {
-  display: flex;
-  gap: 8px;
-  margin: 20px 0 12px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding-bottom: 4px;
-}
-
-.admin-pills::-webkit-scrollbar {
-  display: none;
-}
-
-.admin-pill {
-  flex-shrink: 0;
-  padding: 8px 16px;
-  border-radius: 100px;
-  border: 1.5px solid #d1d5db;
-  background: transparent;
-  font-size: 13px;
-  font-weight: 600;
-  color: #64748b;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.admin-pill:hover {
-  border-color: #9ca3af;
-  color: #374151;
-}
-
-.admin-pill.active {
-  background: #1e293b;
-  border-color: #1e293b;
-  color: #ffffff;
-}
-
 .admin-count {
   font-size: 12px;
   font-weight: 600;

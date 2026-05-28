@@ -1,3 +1,5 @@
+@import './design-system.css';
+
 :root {
   --primary: #1e3c72;
   --primary-light: #2a4d8a;
@@ -24,6 +26,7 @@
   --bg-elevated: #ffffff;
   --bg-sidebar: #1e3a5f;
   --brand-accent: #ffcc00;
+  --gradient-header: linear-gradient(135deg, #1e3a5f 0%, #234670 100%);
 }
 
 * {
