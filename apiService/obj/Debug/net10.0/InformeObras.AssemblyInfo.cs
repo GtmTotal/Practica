@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InformeObras")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+651285ba1fc70aa5cffe75e57917e5db5c187df6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b35aebc8198580b97d517d78dc9d1b510d6dc986")]
 [assembly: System.Reflection.AssemblyProductAttribute("InformeObras")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InformeObras")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiService\\InformeObras.csproj": {}
+    "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiservice\\InformeObras.csproj": {}
   },
   "projects": {
-    "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiService\\InformeObras.csproj": {
+    "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiservice\\InformeObras.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiService\\InformeObras.csproj",
+        "projectUniqueName": "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiservice\\InformeObras.csproj",
         "projectName": "InformeObras",
-        "projectPath": "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiService\\InformeObras.csproj",
+        "projectPath": "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiservice\\InformeObras.csproj",
         "packagesPath": "C:\\Users\\alepe\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiService\\obj\\",
+        "outputPath": "C:\\Users\\alepe\\Desktop\\svelte\\informeObrasMercadona\\apiservice\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\alepe\\AppData\\Roaming\\NuGet\\NuGet.Config"
