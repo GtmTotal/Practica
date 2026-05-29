@@ -37,6 +37,11 @@
   function asignarTecnicoSeccion(tecnico: string) {
     seccion.tareas.forEach(t => {
       t.tecnico = tecnico;
+      if (t.subtareas && t.subtareas.length > 0) {
+        t.subtareas.forEach(st => {
+          st.tecnico = tecnico;
+        });
+      }
     });
   }
  
@@ -68,14 +73,16 @@
       <span class="seccion-texto seccion-texto--cuadro">{textoSeccion}</span>
     </div>
     <div class="seccion-header-right">
-      <div class="seccion-tecnico-assign">
-        <select onchange={(e) => asignarTecnicoSeccion(e.currentTarget.value)} aria-label="Asignar técnico a toda la sección">
-          <option value="">Asignar técnico a todos...</option>
-          {#each tecnicosService.lista as tecnico}
-            <option value={tecnico}>{tecnico}</option>
-          {/each}
-        </select>
-      </div>
+      {#if tipoFormulario === 'cuadro_electrico'}
+        <div class="seccion-tecnico-assign">
+          <select onchange={(e) => asignarTecnicoSeccion(e.currentTarget.value)} aria-label="Asignar técnico a toda la sección">
+            <option value="">Asignar técnico a todos...</option>
+            {#each tecnicosService.lista as tecnico}
+              <option value={tecnico}>{tecnico}</option>
+            {/each}
+          </select>
+        </div>
+      {/if}
       <span class="seccion-progreso">{progSec.completadas}/{progSec.total}</span>
       <span class="icon-toggle" class:is-open={!colapsada}>{!colapsada ? '▼' : '▶'}</span>
     </div>

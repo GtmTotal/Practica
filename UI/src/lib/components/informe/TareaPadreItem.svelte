@@ -78,6 +78,7 @@
         <SubTareaItem
           bind:subtarea={tarea.subtareas[stIdx]}
           indiceCompleto={tarea.indice ? `${tarea.indice}.${stIdx + 1}` : `${prefijo}.${idxTarea + 1}.${stIdx + 1}`}
+          {tipo}
         />
       {/each}
     </div>

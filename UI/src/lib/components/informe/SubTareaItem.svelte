@@ -4,10 +4,12 @@
  
   let {
     subtarea = $bindable(),
-    indiceCompleto
+    indiceCompleto,
+    tipo = 'mantenimiento'
   }: {
     subtarea: SubTareaState;
     indiceCompleto: string;
+    tipo?: string;
   } = $props();
  
   function toggleOk() {
@@ -34,14 +36,16 @@
     <span class="subtarea-indice">{ indiceCompleto }</span>
     <p class="subtarea-descripcion">{ subtarea.descripcion }</p>
     
-    <div class="subtarea-tecnico-selector">
-      <select bind:value={subtarea.tecnico} aria-label="Asignar técnico">
-        <option value="">Técnico...</option>
-        {#each tecnicosService.lista as tecnico}
-          <option value={tecnico}>{tecnico}</option>
-        {/each}
-      </select>
-    </div>
+    {#if tipo === 'cuadro_electrico'}
+      <div class="subtarea-tecnico-selector">
+        <select bind:value={subtarea.tecnico} aria-label="Asignar técnico">
+          <option value="">Técnico...</option>
+          {#each tecnicosService.lista as tecnico}
+            <option value={tecnico}>{tecnico}</option>
+          {/each}
+        </select>
+      </div>
+    {/if}
 
     {#if !subtarea.sinCheck}
       <div class="subtarea-controles">

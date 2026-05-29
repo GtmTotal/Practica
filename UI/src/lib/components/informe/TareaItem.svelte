@@ -52,14 +52,16 @@
 
   {#if !tarea.sinCheck}
    <div class="inspeccion-controles inspeccion-controles--cuadro">
-        <div class="tecnico-selector">
-          <select bind:value={tarea.tecnico} aria-label="Asignar técnico">
-            <option value="">Técnico...</option>
-            {#each tecnicosService.lista as tecnico}
-              <option value={tecnico}>{tecnico}</option>
-            {/each}
-          </select>
-        </div>
+        {#if tipo === 'cuadro_electrico'}
+          <div class="tecnico-selector">
+            <select bind:value={tarea.tecnico} aria-label="Asignar técnico">
+              <option value="">Técnico...</option>
+              {#each tecnicosService.lista as tecnico}
+                <option value={tecnico}>{tecnico}</option>
+              {/each}
+            </select>
+          </div>
+        {/if}
         <label class="check-inspeccion ok" class:checked={tarea.ok}>
           <input type="checkbox" bind:checked={tarea.ok} onchange={toggleOk} aria-label="OK">
           <span class="box-icon">
