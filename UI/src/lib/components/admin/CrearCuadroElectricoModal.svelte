@@ -102,7 +102,20 @@
 
       const secciones = baseTemplate.secciones.map((sec: CuadroSeccionTemplate) => ({
         ...sec,
-        tareas: sec.tareas.map((t: CuadroTareaTemplate) => ({ ...t, ok: false, noOk: false, notaTarea: '' }))
+        tareas: sec.tareas.map((t: CuadroTareaTemplate) => ({
+          ...t,
+          ok: false,
+          noOk: false,
+          notaTarea: '',
+          tecnico: '',
+          subtareas: t.subtareas ? t.subtareas.map((st: any) => ({
+            ...st,
+            ok: false,
+            noOk: false,
+            notaTarea: '',
+            tecnico: ''
+          })) : undefined
+        }))
       }));
 
       const informe = {

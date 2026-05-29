@@ -303,13 +303,15 @@
     }
 
     .inspeccion-controles {
-      justify-content: center;
+      justify-content: flex-start;
       margin-top: 12px;
       margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .inspeccion-controles--cuadro {
-      justify-content: flex-end;
+      justify-content: flex-start;
     }
 
     .inspeccion-item--cuadro {
@@ -318,6 +320,16 @@
 
     .check-inspeccion {
       padding: 6px 12px;
+    }
+
+    .tecnico-selector {
+      flex: 1;
+      min-width: 120px;
+      margin-right: 0;
+    }
+
+    .tecnico-selector select {
+      width: 100%;
     }
   }
 

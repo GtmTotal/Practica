@@ -263,6 +263,7 @@ class ServicioPersistenciaFormulario {
           ok: st.ok || false,
           noOk: st.noOk || false,
           notaTarea: st.notaTarea || '',
+          tecnico: (st as any).tecnico || '',
           sinCheck: st.sinCheck
         }));
       } else if (templateTarea?.subtareas?.length) {
@@ -271,6 +272,7 @@ class ServicioPersistenciaFormulario {
           ok: false,
           noOk: false,
           notaTarea: st.notaTarea || '',
+          tecnico: '',
           sinCheck: st.sinCheck
         }));
       }
@@ -282,6 +284,7 @@ class ServicioPersistenciaFormulario {
         ok: t.ok || false,
         noOk: t.noOk || false,
         notaTarea: t.notaTarea || '',
+        tecnico: (t as any).tecnico || '',
         grupo: t.grupo,
         campos: (t.campos || []).map((c: CampoState) => ({
           clave: c.clave,
@@ -331,6 +334,7 @@ class ServicioPersistenciaFormulario {
       ok: false,
       noOk: false,
       notaTarea: '',
+      tecnico: '',
       campos: (tareaTemplate.campos || []).map((campo: CampoMedicion) => ({
         clave: campo.clave,
         valor: null,
@@ -341,6 +345,7 @@ class ServicioPersistenciaFormulario {
         ok: false,
         noOk: false,
         notaTarea: '',
+        tecnico: '',
         sinCheck: st.sinCheck
       })),
       indice: tareaTemplate.indice,

@@ -180,6 +180,14 @@
   border-bottom: 1px solid transparent;
 }
 
+@media (max-width: 480px) {
+  .seccion-titulo--cuadro {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+  }
+}
+
 .seccion-titulo-left {
   display: flex;
   align-items: center;
@@ -209,6 +217,15 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .seccion-header-right {
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 .seccion-progreso {
@@ -317,6 +334,8 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    flex: 1;
+    min-width: 0;
   }
  
   .seccion-tecnico-assign select {
@@ -328,6 +347,8 @@
     color: var(--gray-600);
     outline: none;
     cursor: pointer;
+    width: 100%;
+    max-width: 160px;
   }
   
   .seccion-tecnico-assign select:hover {

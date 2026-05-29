@@ -167,6 +167,7 @@ class ServicioInicializacionFormulario {
             ok: false,
             noOk: false,
             notaTarea: '',
+            tecnico: '',
             sinCheck: st.sinCheck
           })),
           indice: tareaTemplate.indice,
